@@ -1,11 +1,16 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
-var dateFormat = require('dateformat');
 
+var dateFormat = require('dateformat');
+config = require('./config/config.js');
 var fs = require('fs');
 
 require('console-stamp')(console, '[HH:MM:ss.l]');
+
+app.set('host',config.host);
+app.set('port',process.env.PORT || 3000)
+
 
 var options = {
   inflate: true,
@@ -208,7 +213,7 @@ app.post('/fingerprint_create.fcgi', function (req, res) {
 })
 
 
-var server = app.listen(8000, function () {
+var server = app.listen('port', function () {
    var host = server.address().address
    var port = server.address().port
 
