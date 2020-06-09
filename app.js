@@ -1,16 +1,22 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var app = express();
-
+var app = express(); 
 var dateFormat = require('dateformat');
 config = require('./config/config.js');
 var fs = require('fs');
-
+var request = require('request');
 require('console-stamp')(console, '[HH:MM:ss.l]');
 
-app.set('host',config.host);
-app.set('port',process.env.PORT || 3000)
 
+
+
+
+
+
+
+ app.set('host',config.host);
+ app.set('port',process.env.PORT || 3000)
+// console.log(config.host)
 
 var options = {
   inflate: true,
@@ -49,6 +55,37 @@ var access_pending_answer = {
 app.use(bodyParser.raw(options));
 app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
+
+
+app.get('/sendpost', function(req, res) {
+   var options = {
+      'method': 'POST',
+      'url': 'http://192.168.1.129:8000/login.fcgi',
+      'headers': {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"login":"admin","password":"admin"})
+    
+    };
+    console.log(options.url)
+    request(options, function (error, response) { 
+      if (error) throw new Error(error);
+      console.log();
+    });
+    res.json(options)
+});
+
+
+
+app.get('/user_get_image.fcgi', function(req, res) {
+   console.log('Device requested user image at /user_get_image.fcgi');
+   console.log('Query: ');
+   console.log(req.query);
+   console.log('');
+
+   res.contentType('image/jpeg');
+   res.sendFile(__dirname + '/images/idtouch.jpeg');
+});
 
 app.post('/device_is_alive.fcgi', function (req, res) {
    console.log("Data: ");
@@ -213,9 +250,9 @@ app.post('/fingerprint_create.fcgi', function (req, res) {
 })
 
 
-var server = app.listen('port', function () {
-   var host = server.address().address
-   var port = server.address().port
+var server = app.listen(app.get('port'), function () {
+   //var host = server.address().address
+   //var port = server.address().port
 
-   console.log("Example app listening at http://%s:%s", host, port)
+   console.log("Example app listening at ", app.get('host'), app.get('port'));
 })
