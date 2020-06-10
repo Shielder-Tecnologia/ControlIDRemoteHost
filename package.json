@@ -7,6 +7,7 @@
     "console-stamp": "^0.2.6",
     "dateformat": "^3.0.3",
     "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
     "request": "^2.88.2"
   }
 }

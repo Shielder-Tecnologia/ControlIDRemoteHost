@@ -5,6 +5,7 @@ var dateFormat = require('dateformat');
 config = require('./config/config.js');
 var fs = require('fs');
 var request = require('request');
+var fetch = require('node-fetch')
 require('console-stamp')(console, '[HH:MM:ss.l]');
 
 
@@ -57,25 +58,44 @@ app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
+// app.get('/sendpost', function(req, res) {
+//    var resp;
+//    var options = {
+//       'method': 'POST',
+//       'url': 'http://192.168.1.129:8000/login.fcgi',
+//       'headers': {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({"login":"admin","password":"admin"})
+    
+//     };
+//     console.log(options.url)
+//     request(options, function (error, response) { 
+//       if (error) throw new Error(error);
+//       //resp = JSON.parse(response);
+//       console.log(response.body);
+//     });
+//     res.json("vamo ver")
+// });
 app.get('/sendpost', function(req, res) {
+   var url = 'http://192.168.1.129:8000/login.fcgi';
    var options = {
       'method': 'POST',
-      'url': 'http://192.168.1.129:8000/login.fcgi',
       'headers': {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({"login":"admin","password":"admin"})
-    
     };
-    console.log(options.url)
-    request(options, function (error, response) { 
-      if (error) throw new Error(error);
-      console.log();
-    });
-    res.json(options)
+    var sessionObj 
+    (async () => {
+      const rawResponse = await fetch(url, options);
+      const content = await rawResponse.json();
+      const obj = JSON.stringify(content);
+      sessionObj = JSON.parse(obj)
+      console.log(sessionObj.session);
+    })();
+    res.send("1");
 });
-
-
 
 app.get('/user_get_image.fcgi', function(req, res) {
    console.log('Device requested user image at /user_get_image.fcgi');
