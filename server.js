@@ -4,20 +4,18 @@ var app = express();
 var dateFormat = require('dateformat');
 config = require('./config/config.js');
 var fs = require('fs');
-var request = require('request');
-var fetch = require('node-fetch')
+var fetch = require('node-fetch');
+const session = require('express-session');
 require('console-stamp')(console, '[HH:MM:ss.l]');
 
 
-
-
-
-
-
+let session_key;
+const routes = require('./app/index');
 
  app.set('host',config.host);
- app.set('port',process.env.PORT || 3000)
-// console.log(config.host)
+ app.set('port',process.env.PORT || 3000);
+
+
 
 var options = {
   inflate: true,
@@ -52,10 +50,15 @@ var access_pending_answer = {
     portal_id: 0,
   }
 }
-
 app.use(bodyParser.raw(options));
 app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/',routes)
+//routes.initialize(app)
+//app.use(session);
+
+//app.get('/', routes);
+
 
 
 // app.get('/sendpost', function(req, res) {
@@ -78,24 +81,64 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //     res.json("vamo ver")
 // });
 app.get('/sendpost', function(req, res) {
-   var url = 'http://192.168.1.129:8000/login.fcgi';
+   //var url = 'http://192.168.1.129:8000/login.fcgi';
+   console.log(session_key)
+   res.send("1");
+});
+
+
+app.get('/activate-monitor', function(req, res) {
+   //var url = 'http://192.168.1.129:8000/login.fcgi';
+   data = 
+   {
+      "monitor": {
+         "request_timeout": "1000",
+         "hostname": "192.168.1.103",
+         "port": "3000"
+      }
+   }
+   
+   var url = 'http://192.168.1.129:8000/set_configuration.fcgi?session='+session_key;
    var options = {
       'method': 'POST',
       'headers': {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"login":"admin","password":"admin"})
-    };
-    var sessionObj 
+      body: JSON.stringify(data)
+    }; 
     (async () => {
       const rawResponse = await fetch(url, options);
       const content = await rawResponse.json();
-      const obj = JSON.stringify(content);
-      sessionObj = JSON.parse(obj)
-      console.log(sessionObj.session);
+      console.log(content);
     })();
     res.send("1");
 });
+
+app.get('/deactivate-online', function(req, res) {
+   //var url = 'http://192.168.1.129:8000/login.fcgi';
+   data = 
+   {
+      "general": {
+         "online": "0"
+      }  
+   }
+
+   var url = 'http://192.168.1.129:8000/set_configuration.fcgi?session='+session_key;
+   var options = {
+      'method': 'POST',
+      'headers': {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }; 
+    (async () => {
+      const rawResponse = await fetch(url, options);
+      const content = await rawResponse.json();
+      console.log(content);
+    })();
+    res.send("1");
+});
+
 
 app.get('/user_get_image.fcgi', function(req, res) {
    console.log('Device requested user image at /user_get_image.fcgi');
@@ -267,7 +310,13 @@ app.post('/fingerprint_create.fcgi', function (req, res) {
   } else {
     res.status(400).send();
   }
-})
+});
+
+
+
+
+
+
 
 
 var server = app.listen(app.get('port'), function () {
@@ -275,4 +324,26 @@ var server = app.listen(app.get('port'), function () {
    //var port = server.address().port
 
    console.log("Example app listening at ", app.get('host'), app.get('port'));
+
+   sessionRetriever()
 })
+
+ function sessionRetriever(){
+    
+   if (!session_key){
+      var url = 'http://192.168.1.129:8000/login.fcgi';
+      var options = {
+         'method': 'POST',
+         'headers': {
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({"login":"admin","password":"admin"})
+         };
+         var sessionObj = (async() => {
+         const rawResponse = await fetch(url, options);
+         const content = await rawResponse.json();
+         console.log(content.session)
+         session_key = content.session
+         })();
+   }
+};
