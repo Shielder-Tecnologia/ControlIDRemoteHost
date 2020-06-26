@@ -4,7 +4,7 @@ var pullshielder = require('./pull_shielder');
 
 
 
-module.exports = (url,keypath,key,subkey)=>{
+module.exports = async (url,keypath,key,subkey)=>{
     //Pega do Dicionario o json que a funcao requer
     var data = dtjson(keypath,key,subkey);
 
@@ -24,12 +24,17 @@ module.exports = (url,keypath,key,subkey)=>{
             body: data
     };
     //Envia o JSON para o dispositivo e obtem a resposta
-    sendJson.dispFetch(url,options).then((response)=>{
+    await sendJson.dispFetch(url,options).then((response)=>{
         if(response.status==1){
             console.log(response.content)
+            return response.content
         }else{
             console.log(response.error)
+            return response.error
         }
+    }).catch(response=>{
+        console.log(response)
+        return response
     })
     
 }

@@ -5,11 +5,19 @@ var set_net_config = {
 	"web_server_port": 80
 }
 
+var login = {
+    "login": "{{login}}",
+    "password": "{{password}}"
+}
+
+
+
 
 system_data = {
     get_system_information : 0, 
 	set_net_config : set_net_config,
-	session_is_valid : 0
+	session_is_valid : 0,
+	login : login
 }
 
 

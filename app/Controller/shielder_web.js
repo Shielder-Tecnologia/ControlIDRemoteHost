@@ -1,6 +1,6 @@
 var sendJson = require('./send_json');
 var url = "http://box.shielder.com.br/controle/"
-const mac = get_mac_address();
+// const mac = get_mac_address();
 
 autorizaBox = (ip,serialnumber)=>{
     url = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip;
@@ -57,6 +57,8 @@ get_mac_address = ()=>{
         return macAddress
     })
 }
+
+
 
 module.exports = {
     autorizaBox,

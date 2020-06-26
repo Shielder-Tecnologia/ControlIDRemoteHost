@@ -6,9 +6,11 @@
     "body-parser": "^1.0.2",
     "console-stamp": "^0.2.6",
     "dateformat": "^3.0.3",
+    "evilscan": "^1.7.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.4",
     "request": "^2.88.2"
   }
 }

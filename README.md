@@ -1,9 +1,9 @@
-# Exemplo Servidor Enterprise em Node.Js
+#  Servidor em Node.Js utilizando Express
 
-## Instale o Node.Js no sio sistema
+## Instale o Node.Js no sistema
 Siga as orientações de instalação do seu sistema operacional.
 
-## Instale o **express** framework:
+## Instale o **Package**:
 npm install express
 
 ## Configure o monitor para notificar eventos na porta 8000.
