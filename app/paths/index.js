@@ -32,6 +32,42 @@ module.exports = ()=>{
                 device(url,'objects_data','load_users');
                 res.send("1");
             },
+            '/api/notifications/dao':(req,res,next) => {
+                //console.log(req.app.get('session_key'))
+                console.log("Data: ");
+                console.log("Length: " + req.body.length);
+                console.log(req.body);
+                console.log(req.body.object_changes[0].values);
+                res.send();
+            },
+            '/api/notifications/catra_event':(req,res,next) => {
+                //console.log(req.app.get('session_key'))
+                console.log("Catra event: ");
+                var date = new Date((req.body.event.time+3*60*60) * 1000);
+                console.log("Time: " + dateFormat(date, '[HH:MM:ss.l]'));
+                
+                console.log(req.body);
+                res.send();
+            },
+            '/api/notifications/operation_mode':(req,res,next) => {
+                console.log("Data: ");
+                console.log("Length: " + req.body.length);
+                console.log(req.body);
+                res.send();
+            },
+            '/api/notifications/template':(req,res,next) => {
+                console.log("Data: ");
+                console.log("Length: " + req.body.length);
+                console.log(req.body);
+                res.send();
+            },
+            '/api/notifications/card':(req,res,next) => {
+                console.log("Data: ");
+                console.log("Length: " + req.body.length);
+                console.log(req.body);
+                res.send();
+            },
+            
             
 
         },

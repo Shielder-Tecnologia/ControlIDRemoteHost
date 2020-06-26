@@ -5,10 +5,7 @@ var set_net_config = {
 	"web_server_port": 80
 }
 
-var login = {
-    "login": "{{login}}",
-    "password": "{{password}}"
-}
+var login = {"login":"admin","password":"admin"}
 
 
 
