@@ -7,9 +7,13 @@ module.exports = ()=>{
             '/':(req,res,next)=>{
                 res.send("1");
             },
-            '/teste':(req,res,next) => {
-                console.log("ola")
-                res.send("1");
+            '/activate-monitor':(req,res,next) => {
+                var url = 'http://'+element.ip+':'+element.port+'/set_configuration.fcgi?session='+req.app.get('session_key');;
+                device(url,'monitor_data','activate_monitor').then(response=>{
+                    console.log(response)
+                 }).catch(response=>{
+                    console.log(response)
+                 })
             },
             '/all-config':(req,res,next) => {
                 //console.log(req.app.get('session_key'))

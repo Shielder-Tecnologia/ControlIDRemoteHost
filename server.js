@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/',routes.router)
 
-
+var device_list = []
 var server = app.listen(app.get('port'), function () {
    //var host = server.address().address
    //var port = server.address().port
@@ -32,7 +32,19 @@ var server = app.listen(app.get('port'), function () {
    console.log("Example app listening at ", app.get('host'), app.get('port'));
    //timer
    get_ips.then(devices=>{
-      get_session(devices)
+      //var device_data = get_session(devices)
+      console.log(devices.length)
+      for (var i=0; i<devices.length;i++){
+         var d = {
+            ip : devices.ip,
+            port : devices.port,
+            session : get_session(devices[i])
+         }
+         console.log("meu piru")
+         device_list.push(d) 
+      }
+      //console.log(device_list)
+      //console.log(devices)
    }).catch(message=>{
       console.log(message)
    })
@@ -40,32 +52,42 @@ var server = app.listen(app.get('port'), function () {
 })
 
 var options_scan = {
-   target: '192.168.1.0/24',
+   target: '192.168.15.0/24',
    port:'8000',
    status: 'O',
    banner:true,
    concurrency: '2000',
    json:true
 }
+//TODO, ou fazer um async await, e throw error no catch, ou fazer uma promise e enviar um reject no catch e dai pegar esse erro 
+
 
 /** PEGAR A SESSAO E GUARDALA COM O VETOR DE INFORMACOES DO DISPOSITIVO */
-get_session = (array)=>{
-   array.forEach(element => {
-      var url = 'http://'+element.ip+':'+element.port+'/login.fcgi';
-      device(url,'system_data','login').then(response=>{
-         element.session = response.session
-         console.log(element.session)
-      }).catch(response=>{
-         console.log(response)
+// get_session = (array)=>{
+   function get_session(item) {
+
+      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
+
+      device(url,'system_data','login')
+      .then(response=>{
+         item.session = response.session
+        //console.log(response.session)
+         return response.session
       })
-   });
-}
+      .catch(response=>{
+         console.log(response)
+         return response
+      })
+   };
+   //return array
+// }
 
 let get_ips = new Promise((resolve,reject)=>{
    var scanner = new evilscan(options_scan);
    var data_device = []
    scanner.on('result',function(data) {
       // fired when item is matching options
+      //console.log(data)
       data_device.push(data)
    });
 
