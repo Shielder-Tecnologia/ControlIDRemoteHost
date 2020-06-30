@@ -41,11 +41,21 @@ var get_config = {
         "push_remote_address"
     ]
 }
+var activate_daily_reboot = {
+	"general": {
+		"auto_reboot": "1"
+	}
+}
 
-
+var deactivate_daily_reboot = {
+	"general": {
+		"auto_reboot": "0"
+	}
+}
 config_data = {
-    get_config : get_config
-
+    get_config : get_config,
+    activate_daily_reboot : activate_daily_reboot,
+    deactivate_daily_reboot : deactivate_daily_reboot
 }
 
 
