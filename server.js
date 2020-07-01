@@ -64,23 +64,29 @@ var options_scan = {
 
 /** PEGAR A SESSAO E GUARDALA COM O VETOR DE INFORMACOES DO DISPOSITIVO */
 // get_session = (array)=>{
-   function get_session(item) {
+   let get_session = (item) =>{
+      return new Promise((reseolve, reject){
+         var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
 
-      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
-
-      device(url,'system_data','login')
-      .then(response=>{
-         item.session = response.session
-        //console.log(response.session)
-         return response.session
+         device(url,'system_data','login')
+         .then(response=>{
+            item.session = response.session
+           //console.log(response.session)
+            resolve (response.session)
+         })
+         .catch(response=>{
+            console.log(response)
+            reject(response)
+         })
       })
-      .catch(response=>{
-         console.log(response)
-         return response
-      })
+      
    };
    //return array
 // }
+
+
+
+
 
 let get_ips = new Promise((resolve,reject)=>{
    var scanner = new evilscan(options_scan);
