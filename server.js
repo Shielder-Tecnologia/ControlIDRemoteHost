@@ -25,49 +25,89 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/',routes.router)
 
 var device_list = []
-var server = app.listen(app.get('port'), function () {
+var server = app.listen(app.get('port'), async function () {
    //var host = server.address().address
    //var port = server.address().port
 
    console.log("Example app listening at ", app.get('host'), app.get('port'));
    //timer
-   get_ips.then(devices=>{
-      //var device_data = get_session(devices)
-      console.log(devices.length)
-      for (var i=0; i<devices.length;i++){
-         var d = {
-            ip : devices.ip,
-            port : devices.port,
-            session : get_session(devices[i])
-         }
-         console.log("meu piru")
-         device_list.push(d) 
-      }
-      //console.log(device_list)
-      //console.log(devices)
-   }).catch(message=>{
-      console.log(message)
-   })
+   await put_session()
+   //console.log(device_list)
+   app.set('device_list',device_list);
+   console.log(app.get('device_list'));
+   // get_ips.then(devices=>{
+   //    //var device_data = get_session(devices)
+   //    //console.log(devices.ip)
+   //    for (var i=0; i<devices.length;i++){
+   //       var d = {
+   //          ip : devices[i].ip,
+   //          port : devices[i].port,
+   //          session : ""
+   //       }
+   //           get_session(devices[i]).then(session=>{
+   //              //console.log(session)
+   //             d.session = session;
+   //             device_list.push(d);
+   //          }).catch(response=>{
+   //             console.log("Não foi possível pegar sessão"+response)
+   //             device_list.push(d);
+   //          })
+         
+   //    }
+   //    //console.log(device_list)
+   //    //console.log(devices)
+   // }).catch(message=>{
+   //    console.log("Nenhum ip encontrado"+message)
+   // })
    
 })
 
 var options_scan = {
    target: '192.168.15.0/24',
-   port:'8000',
+   port:'443',
    status: 'O',
    banner:true,
    concurrency: '2000',
    json:true
 }
+
+async function put_session(){
+   var devices
+   try{
+    devices = await get_ips
+   }catch(e){
+      console.log("Não foi possível adquirir os IP'S " + e);
+   }
+
+   for (var i=0; i<devices.length;i++){
+      var d = {
+         ip : devices[i].ip,
+         port : devices[i].port,
+         session : ""
+      }
+      try{
+         session = await get_session(devices[i])
+         d.session = session;
+         device_list.push(d)
+      }catch(e){
+         console.log("Não foi possível adquirir a sessão " + e);
+      }
+   }
+}
+
+
+
+
 //TODO, ou fazer um async await, e throw error no catch, ou fazer uma promise e enviar um reject no catch e dai pegar esse erro 
 
 
 /** PEGAR A SESSAO E GUARDALA COM O VETOR DE INFORMACOES DO DISPOSITIVO */
 // get_session = (array)=>{
    let get_session = (item) =>{
-      return new Promise((reseolve, reject){
+      return new Promise((resolve, reject)=>{
          var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
-
+         resolve("pipi")
+         return;
          device(url,'system_data','login')
          .then(response=>{
             item.session = response.session
