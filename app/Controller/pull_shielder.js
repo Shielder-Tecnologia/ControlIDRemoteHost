@@ -2,10 +2,11 @@ var shielderweb = require('./shielder_web');
 
 
 const call_Shielder = ()=>{
-    shielderweb.copiaMoradores()
+    response = shielderweb.copiaMoradores()
+    
 }
 module.exports = ()=>{
-    timer:setInterval(())
+    timer:setInterval
     
     
     setInterval(

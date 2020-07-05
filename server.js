@@ -62,6 +62,40 @@ var server = app.listen(app.get('port'), async function () {
    
 })
 
+
+
+
+
+
+
+
+
+
+
+
+let get_serial = (item) =>{
+   return new Promise((resolve, reject)=>{
+      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
+      device(url,'system_data','get_system_information')
+      .then(response=>{
+         item.session = response.session
+         resolve (response.session)
+      })
+      .catch(response=>{
+         console.log(response)
+         reject(response)
+      })
+   })
+   
+};
+
+
+
+
+
+
+
+
 var options_scan = {
    target: '192.168.15.0/24',
    port:'443',
@@ -97,31 +131,24 @@ async function put_session(){
 
 
 
-
-//TODO, ou fazer um async await, e throw error no catch, ou fazer uma promise e enviar um reject no catch e dai pegar esse erro 
-
-
 /** PEGAR A SESSAO E GUARDALA COM O VETOR DE INFORMACOES DO DISPOSITIVO */
 // get_session = (array)=>{
-   let get_session = (item) =>{
-      return new Promise((resolve, reject)=>{
-         var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
-         device(url,'system_data','login')
-         .then(response=>{
-            item.session = response.session
-           //console.log(response.session)
-            resolve (response.session)
-         })
-         .catch(response=>{
-            console.log(response)
-            reject(response)
-         })
+let get_session = (item) =>{
+   return new Promise((resolve, reject)=>{
+      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
+      device(url,'system_data','login')
+      .then(response=>{
+         item.session = response.session
+         //console.log(response.session)
+         resolve (response.session)
       })
-      
-   };
-   //return array
-// }
-
+      .catch(response=>{
+         console.log(response)
+         reject(response)
+      })
+   })
+   
+};
 
 
 
