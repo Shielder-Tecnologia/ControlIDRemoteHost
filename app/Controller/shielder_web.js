@@ -3,31 +3,36 @@ var url = "http://box.shielder.com.br/controle/"
 // const mac = get_mac_address();
 
 autorizaBox = (ip,serialnumber)=>{
-    url = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip;
+    return new Promise((resolve,reject)=>{
+        url = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip;
 
-    sendJson.webFetch(url).then((response)=>{
-        if(response.status==1){
-            console.log(response.content)
-            return response.content
-        }else{
-            console.log(response.error)
-            return response.error
-        }
+        sendJson.webFetch(url).then((response)=>{
+            if(response.status==1){
+                console.log(response.content)
+                return response.content
+            }else{
+                console.log(response.error)
+                return response.error
+            }
+        })
     })
 }
 
 
 copiaMoradores = ()=>{
-    url = url + "getCopiaMoradores.php?mac=" + mac;
-    sendJson.webFetch(url).then((response)=>{
-        if(response.status==1){
-            console.log(response.content)
-            return response.content
-        }else{
-            console.log(response.error)
-            return response.error
-        }
+    return new Promise((resolve,reject)=>{
+        url = url + "getCopiaMoradores.php?mac=" + mac;
+        sendJson.webFetch(url).then((response)=>{
+            if(response.status==1){
+                console.log(response.content)
+                resolve (response.content)
+            }else{
+                console.log(response.error)
+                reject (response.error)
+            }
+        })
     })
+    
 
 }
 

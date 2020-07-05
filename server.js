@@ -34,7 +34,7 @@ var server = app.listen(app.get('port'), async function () {
    await put_session()
    //console.log(device_list)
    app.set('device_list',device_list);
-   console.log(app.get('device_list'));
+   //console.log(app.get('device_list'));
    // get_ips.then(devices=>{
    //    //var device_data = get_session(devices)
    //    //console.log(devices.ip)
@@ -106,8 +106,6 @@ async function put_session(){
    let get_session = (item) =>{
       return new Promise((resolve, reject)=>{
          var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
-         resolve("pipi")
-         return;
          device(url,'system_data','login')
          .then(response=>{
             item.session = response.session
