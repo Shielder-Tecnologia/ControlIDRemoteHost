@@ -1,12 +1,14 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express(); 
-var dateFormat = require('dateformat');
 config = require('./config/config.js');
-var fetch = require('node-fetch');
 const routes = require('./app');
 var evilscan = require('evilscan')
 const device =require('./app/Controller/contact_device')
+const push_shielder =require('./app/Controller/push_Shielder')
+const shielderweb =require('./app/Controller/shielder_web');
+const pull_shielder = require('./app/Controller/pull_shielder.js');
+
 
 app.set('host',config.host);
 app.set('port',process.env.PORT || 3000);
@@ -25,51 +27,61 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/',routes.router)
 
 var device_list = []
+
+
+
 var server = app.listen(app.get('port'), async function () {
-   //var host = server.address().address
-   //var port = server.address().port
+
 
    console.log("Example app listening at ", app.get('host'), app.get('port'));
-   //timer
+
+   shielderweb.get_mac_address().then(response=>{
+      //console.log(response)
+      app.set('mac',response);
+      push_shielder.autorizaBox(app.get('mac'),app.get('host')).then(response=>{
+         console.log(response)
+      })
+   })
+
+   
    try{
       await put_session()
-      console.log(device_list)
+      //console.log(device_list)
    }catch(error){
       console.log(error);
    }
    
 
-
-
-   // if(device_list!=null){
-   //    for (var i=0; i<device_list.length;i++){
-   //       try{
-   //          device_list.serial = await get_serial()
-   //       }catch(error){
-   //          console.log("Erro ao pegar serial"+error);
-   //       }
+   if(device_list){
+      for (var i=0; i<device_list.length;i++){
+         try{
+            device_list.serial = await get_serial(device_list[i])
+         }catch(error){
+            console.log("Erro ao pegar serial"+error);
+         }
          
-   //    }
-   // }
-   //console.log(device_list)
+      }
+   }
+   console.log(device_list)
    app.set('device_list',device_list);
-   
    
 })
 
 
 
-async function get_serial(item) {
+let get_serial = (item) =>{
+   return new Promise((resolve, reject)=>{
       var url = 'http://'+item.ip+':'+item.port+'/system_information.fcgi?session='+ item.session;
       device(url,'system_data','get_system_information')
       .then(response=>{
-         return response.serial
+         //console.log(response)
+         resolve (response.serial)
       })
       .catch(response=>{
-         console.log(response)
-         throw TypeError(response)
+         //console.log(response)
+         reject (response)
       })
-   
+   })
 }
 
 
@@ -79,14 +91,7 @@ async function get_serial(item) {
 
 
 
-var options_scan = {
-   target: '192.168.0.0/24',
-   port:'8000',
-   status: 'O',
-   banner:true,
-   concurrency: '2000',
-   json:true
-}
+
 
 async function put_session(){
    var devices
@@ -138,7 +143,14 @@ let get_session = (item) =>{
 
 
 
-
+var options_scan = {
+   target: '192.168.15.0/24',
+   port:'8000',
+   status: 'O',
+   banner:true,
+   concurrency: '2000',
+   json:true
+}
 let get_ips = new Promise((resolve,reject)=>{
    var scanner = new evilscan(options_scan);
    var data_device = []

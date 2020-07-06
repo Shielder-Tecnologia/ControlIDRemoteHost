@@ -1,19 +1,18 @@
 var sendJson = require('./send_json');
+var macaddress = require('macaddress');
+
 var url = "http://box.shielder.com.br/controle/"
+
 // const mac = get_mac_address();
 
 autorizaBox = (ip,serialnumber)=>{
     return new Promise((resolve,reject)=>{
         url = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip;
 
-        sendJson.webFetch(url).then((response)=>{
-            if(response.status==1){
-                console.log(response.content)
-                return response.content
-            }else{
-                console.log(response.error)
-                return response.error
-            }
+        sendJson.webAxios(url).then(response=>{                
+            resolve (response);
+        }).catch(response=>{
+            reject (response);
         })
     })
 }
@@ -22,7 +21,7 @@ autorizaBox = (ip,serialnumber)=>{
 copiaMoradores = ()=>{
     return new Promise((resolve,reject)=>{
         url = url + "getCopiaMoradores.php?mac=" + mac;
-        sendJson.webFetch(url).then((response)=>{
+        sendJson.webAxios(url).then((response)=>{
             if(response.status==1){
                 console.log(response.content)
                 resolve (response.content)
@@ -56,10 +55,12 @@ cadastraBio = (userid,id,serial,tipo)=>{
 
 
 get_mac_address = ()=>{
-    require('getmac').getMac(function(err,macAddress){
-        if (err)  throw err
-        console.log(macAddress)
-        return macAddress
+    return new Promise((resolve,reject)=>{
+        macaddress.one().then(function (mac) {
+            resolve(mac)
+          }).catch(response=>{
+              reject(response)
+          });
     })
 }
 
@@ -70,6 +71,7 @@ module.exports = {
     copiaMoradores,
     apagaMoradores,
     autorizaMorador,
-    cadastraBio
+    cadastraBio,
+    get_mac_address
 
 }
