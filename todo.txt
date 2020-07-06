@@ -1,5 +1,5 @@
-no create user mandar 
+quando for create user mandar 
 
 mandar values como json ja
 
-wherer tentar da um append mas criar o objeto
+where tentar da um append criando o atributo do objeto

@@ -31,7 +31,26 @@ var server = app.listen(app.get('port'), async function () {
 
    console.log("Example app listening at ", app.get('host'), app.get('port'));
    //timer
-   await put_session()
+   try{
+      await put_session()
+      console.log(device_list)
+   }catch(error){
+      console.log("Erro ao pegar sessao !" + error);
+   }
+   
+
+
+
+   if(device_list!=null){
+      for (var i=0; i<device_list.length;i++){
+         try{
+            device_list.serial = await get_serial()
+         }catch(error){
+            console.log("Erro ao pegar serial"+error);
+         }
+         
+      }
+   }
    //console.log(device_list)
    app.set('device_list',device_list);
    //console.log(app.get('device_list'));
@@ -64,30 +83,18 @@ var server = app.listen(app.get('port'), async function () {
 
 
 
-
-
-
-
-
-
-
-
-
-let get_serial = (item) =>{
-   return new Promise((resolve, reject)=>{
-      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
+async function get_serial(item) {
+      var url = 'http://'+item.ip+':'+item.port+'/system_information.fcgi?session='+ item.session;
       device(url,'system_data','get_system_information')
       .then(response=>{
-         item.session = response.session
-         resolve (response.session)
+         return response.serial
       })
       .catch(response=>{
          console.log(response)
-         reject(response)
+         throw TypeError(response)
       })
-   })
    
-};
+}
 
 
 
@@ -97,8 +104,8 @@ let get_serial = (item) =>{
 
 
 var options_scan = {
-   target: '192.168.15.0/24',
-   port:'443',
+   target: '192.168.0.0/24',
+   port:'8000',
    status: 'O',
    banner:true,
    concurrency: '2000',
@@ -124,7 +131,7 @@ async function put_session(){
          d.session = session;
          device_list.push(d)
       }catch(e){
-         console.log("Não foi possível adquirir a sessão " + e);
+         throw TypeError("Não foi possível adquirir a sessão " + e);
       }
    }
 }
