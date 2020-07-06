@@ -38,7 +38,7 @@ var server = app.listen(app.get('port'), async function () {
    shielderweb.get_mac_address().then(response=>{
       //console.log(response)
       app.set('mac',response);
-      push_shielder.autorizaBox(app.get('mac'),app.get('host')).then(response=>{
+      push_shielder.autorizaBox(app.get('host',app.get('mac'))).then(response=>{
          console.log(response)
       })
    })
@@ -56,6 +56,9 @@ var server = app.listen(app.get('port'), async function () {
       for (var i=0; i<device_list.length;i++){
          try{
             device_list.serial = await get_serial(device_list[i])
+            push_shielder.autorizaBox(device_list.ip,device_list.serial).then(response=>{
+               console.log(response)
+            })
          }catch(error){
             console.log("Erro ao pegar serial"+error);
          }
