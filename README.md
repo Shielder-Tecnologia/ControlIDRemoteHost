@@ -13,4 +13,7 @@ npm install express
 [Exemplo de configuração do monitor](https://www.controlid.com.br/docs/access-api-pt/configuracoes/parametros-configuracao/#monitor)
 
 ## Execute o exemplo e realize as tentativas de acesso nos dispositivos.
-node ./app.js
+$env:NODE_ENV="development" para windows powershell
+set NODE_ENV=development para cmd
+
+nodemon server.js
