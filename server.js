@@ -38,7 +38,9 @@ var server = app.listen(app.get('port'), async function () {
    shielderweb.get_mac_address().then(response=>{
       //console.log(response)
       app.set('mac',response);
-      await push_shielder.autorizaBox()
+      push_shielder.autorizaBox(app.get('mac'),app.get('host')).then(response=>{
+         console.log(response)
+      })
    })
 
    
