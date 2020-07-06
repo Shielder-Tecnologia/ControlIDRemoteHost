@@ -10,30 +10,28 @@ var call_device = function(url,keypath,key,subkey)
 
         //verifica se o json é um objeto de objeto
         if(subkey){
-            data1 = JSON.stringify(data)
-            subkeystr = JSON.stringify(subkey)
+            data1 = (data)
+            subkeystr = (subkey)
             data = "{"+subkeystr + ":"+  data1+"}"
         }else
-            data = (JSON.stringify(data))
+            data = data
         
         var options = {
-            'method': 'POST',
-            'headers': {
-                'Content-Type': 'application/json'
+            url : url,
+            method: 'POST',
+            timeout: 3000,
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
             },
-                body: data
+                data: data
         };
         //Envia o JSON para o dispositivo e obtem a resposta
-        sendJson.dispFetch(url,options).then((response)=>{
-            if(response.status==1){
+        sendJson.dispFetch(options).then((response)=>{
+            if(response){
                 //console.log(response.content)
-                resolve (response.content)
-            }else{
-                //console.log(response.error)
-                reject (response.error)
+                resolve (response)
             }
         }).catch(response=>{
-            //console.log(response)
             reject (response)
         })
         })

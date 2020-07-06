@@ -35,49 +35,25 @@ var server = app.listen(app.get('port'), async function () {
       await put_session()
       console.log(device_list)
    }catch(error){
-      console.log("Erro ao pegar sessao !" + error);
+      console.log(error);
    }
    
 
 
 
-   if(device_list!=null){
-      for (var i=0; i<device_list.length;i++){
-         try{
-            device_list.serial = await get_serial()
-         }catch(error){
-            console.log("Erro ao pegar serial"+error);
-         }
-         
-      }
-   }
-   //console.log(device_list)
-   app.set('device_list',device_list);
-   //console.log(app.get('device_list'));
-   // get_ips.then(devices=>{
-   //    //var device_data = get_session(devices)
-   //    //console.log(devices.ip)
-   //    for (var i=0; i<devices.length;i++){
-   //       var d = {
-   //          ip : devices[i].ip,
-   //          port : devices[i].port,
-   //          session : ""
+   // if(device_list!=null){
+   //    for (var i=0; i<device_list.length;i++){
+   //       try{
+   //          device_list.serial = await get_serial()
+   //       }catch(error){
+   //          console.log("Erro ao pegar serial"+error);
    //       }
-   //           get_session(devices[i]).then(session=>{
-   //              //console.log(session)
-   //             d.session = session;
-   //             device_list.push(d);
-   //          }).catch(response=>{
-   //             console.log("Não foi possível pegar sessão"+response)
-   //             device_list.push(d);
-   //          })
          
    //    }
-   //    //console.log(device_list)
-   //    //console.log(devices)
-   // }).catch(message=>{
-   //    console.log("Nenhum ip encontrado"+message)
-   // })
+   // }
+   //console.log(device_list)
+   app.set('device_list',device_list);
+   
    
 })
 
@@ -116,20 +92,24 @@ async function put_session(){
    var devices
    try{
     devices = await get_ips
+    
    }catch(e){
       console.log("Não foi possível adquirir os IP'S " + e);
    }
 
    for (var i=0; i<devices.length;i++){
-      var d = {
-         ip : devices[i].ip,
-         port : devices[i].port,
-         session : ""
-      }
+      
       try{
          session = await get_session(devices[i])
+         var d = {
+            ip : devices[i].ip,
+            port : devices[i].port,
+            session : ""
+         }
+         //console.log(session)
          d.session = session;
-         device_list.push(d)
+         if(d.session)
+            device_list.push(d)
       }catch(e){
          throw TypeError("Não foi possível adquirir a sessão " + e);
       }
@@ -138,19 +118,18 @@ async function put_session(){
 
 
 
-/** PEGAR A SESSAO E GUARDALA COM O VETOR DE INFORMACOES DO DISPOSITIVO */
-// get_session = (array)=>{
+/** utiliza a instancia da classe contact_device, para obter , através do Axios, a resposta que será a sessao,
+ * com ela retorna a sessao
+ */
 let get_session = (item) =>{
    return new Promise((resolve, reject)=>{
       var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
       device(url,'system_data','login')
       .then(response=>{
          item.session = response.session
-         //console.log(response.session)
          resolve (response.session)
       })
       .catch(response=>{
-         console.log(response)
          reject(response)
       })
    })

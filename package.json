@@ -1,8 +1,11 @@
 {
   "name": "node-api",
   "main": "server.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=development launch *./config/config.js"
+  },
   "dependencies": {
-    "Express": "^3.0.1",
+    "axios": "^0.19.2",
     "body-parser": "^1.0.2",
     "console-stamp": "^0.2.6",
     "dateformat": "^3.0.3",
@@ -12,5 +15,8 @@
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.4",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2"
   }
 }
