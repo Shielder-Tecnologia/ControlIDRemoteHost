@@ -34,15 +34,21 @@ var server = app.listen(app.get('port'), async function () {
 
 
    console.log("Example app listening at ", app.get('host'), app.get('port'));
+   try{
+      macAddress = await shielderweb.get_mac_address()
+      app.set('mac',macAddress);
+   }catch(error){
+      console.log(error)
+   }
 
-   shielderweb.get_mac_address().then(response=>{
-      //console.log(response)
-      app.set('mac',response);
-      push_shielder.autorizaBox(app.get('host',app.get('mac'))).then(response=>{
+   try{
+      
+      response = await push_shielder.autorizaBox(app.get('host'),app.get('mac'))
          console.log(response)
-      })
-   })
-
+      
+   }catch(error){
+         console.log(error)
+   }
    
    try{
       await put_session()
@@ -55,17 +61,16 @@ var server = app.listen(app.get('port'), async function () {
    if(device_list){
       for (var i=0; i<device_list.length;i++){
          try{
-            device_list.serial = await get_serial(device_list[i])
-            push_shielder.autorizaBox(device_list.ip,device_list.serial).then(response=>{
-               console.log(response)
-            })
+            device_list[i].serial = await get_serial(device_list[i])
+            response = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
+            console.log(response)
          }catch(error){
             console.log("Erro ao pegar serial"+error);
          }
          
       }
    }
-   console.log(device_list)
+   console.log(device_list)   
    app.set('device_list',device_list);
    
 })
