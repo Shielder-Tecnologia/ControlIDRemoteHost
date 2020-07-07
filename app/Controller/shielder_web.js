@@ -8,8 +8,7 @@ var url = "http://box.shielder.com.br/controle/"
 autorizaBox = (ip,serialnumber)=>{
     return new Promise((resolve,reject)=>{
         urlaut = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip;
-        console.log(urlaut)
-        sendJson.webAxios(urlaut).then(response=>{                
+        sendJson.getAxios(urlaut).then(response=>{                
             resolve (response);
         }).catch(response=>{
             reject (response);
@@ -21,7 +20,7 @@ autorizaBox = (ip,serialnumber)=>{
 copiaMoradores = (mac)=>{
     return new Promise((resolve,reject)=>{
         urlcopia = url + "getCopiaMoradores.php?mac=" + mac;
-        sendJson.webAxios(urlcopia).then((response)=>{
+        sendJson.getAxios(urlcopia).then((response)=>{
             resolve (response)
             }).catch(error=>{
             //console.log(response)
@@ -34,16 +33,13 @@ copiaMoradores = (mac)=>{
 
 lerDigital = (mac)=>{
     return new Promise((resolve,reject)=>{
-        urlcopia = url + "getCopiaMoradores.php?mac=" + mac;
-        sendJson.webAxios(urlcopia).then((response)=>{
+        urlcopia = url + "getLerDigital.php?mac=" + mac;
+        sendJson.getAxios(urlcopia).then((response)=>{
             resolve (response)
             }).catch(error=>{
-            //console.log(response)
             reject (error)
             })
     })
-    
-
 }
 
 apagaMoradores = ()=>{
@@ -57,13 +53,47 @@ autorizaMorador = (id,datetime,serial,ip)=>{
 
 }
 
-
+/**
+ * @param {number}userid idusuario 
+ * @param {number}id idusuario shielder
+ * @param {string}serial serial dispositivo efetuada a operacao
+ * @param {string}tipo remocao/cadastro
+ */
 cadastraBio = (userid,id,serial,tipo)=>{
-    
+    return new Promise((resolve,reject)=>{
+        urlaut = url + "getCadastraBio.php?usuario=" + userid + "&id=" + id + "&mac="+serial +"&tipo="+tipo;
+        sendJson.getAxios(urlaut).then(response=>{                
+            resolve (response);
+        }).catch(response=>{
+            reject (response);
+        })
+    })
 
 }
 
+cadastraDigital = (userid,id,serial,tipo,fp)=>{
+    return new Promise((resolve,reject)=>{
+        urlaut = url + "getCadastraBio.php?usuario=" + userid + "&id=" + id + "&mac="+serial +"&tipo="+tipo;
+        data = {
+            "fp":fp
+        }
+        var options = {
+            url : urlaut,
+            method: 'POST',
+            timeout: 3000,
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+                data: data
+        };
+        sendJson.postAxios(options).then(response=>{                
+            resolve (response);
+        }).catch(response=>{
+            reject (response);
+        })
+    })
 
+}
 
 
 get_mac_address = ()=>{
@@ -93,6 +123,7 @@ module.exports = {
     apagaMoradores,
     autorizaMorador,
     cadastraBio,
+    cadastraDigital,
     get_mac_address
 
 }

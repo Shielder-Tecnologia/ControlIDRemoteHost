@@ -3,7 +3,10 @@ const { raw } = require('body-parser');
 
 
 module.exports = {
-    dispAxios:
+    /**
+     * @param options url, method, timeout, headers, body ->POST
+     */
+    postAxios:
     async (options) => {
         
          if(options.data=='0')
@@ -18,7 +21,10 @@ module.exports = {
         }
         
     },
-    webAxios:
+    /**
+     * @param url URL -> GET
+     */
+    getAxios:
     async (url) => {
               
        try{

@@ -43,15 +43,7 @@ var server = app.listen(app.get('port'), async function () {
    }catch(error){
       console.log("Erro"+error)
    }
-   
-      //console.log(app.get('mac'))
-      setInterval(function(){pull_shielder.copiaMoradores(app.get('mac')).then(response =>{
-         console.log(response)
-      }).catch(error=>{
-         console.log("Erro ao obter moradores para copiar"+error);
-      })},10000)
-      
-   
+     
    /**enviar o servidor para registrar */
    try{
       response = await push_shielder.autorizaBox(app.get('host'),app.get('mac'))      
@@ -80,6 +72,20 @@ var server = app.listen(app.get('port'), async function () {
    }
    //console.log(device_list)   
    app.set('device_list',device_list);
+
+
+   //console.log(app.get('mac'))
+   setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
+      console.log(response)
+   }).catch(error=>{
+      console.log("Erro ao obter moradores para copiar"+error);
+   })},10000)
+
+   setInterval(function(){pull_shielder.lerDigital(app.get('mac'),app.get('device_list')).then(response =>{
+      console.log(response)
+   }).catch(error=>{
+      console.log("Erro ao obter moradores para copiar"+error);
+   })},10000)
    
 })
 

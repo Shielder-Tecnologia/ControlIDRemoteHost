@@ -28,7 +28,7 @@ var call_device = function(url,keypath,key,subkey,paramObj)
                 data: data
         };
         //Envia o JSON para o dispositivo e obtem a resposta
-        sendJson.dispAxios(options).then((response)=>{
+        sendJson.postAxios(options).then((response)=>{
             if(response){
                 //console.log(response.content)
                 resolve (response)

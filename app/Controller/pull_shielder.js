@@ -1,6 +1,6 @@
 var shielderweb = require('./shielder_web');
-
-function copiaMoradores(mac){
+const device =require('./app/Controller/contact_device')
+function copiaMoradores(mac,device_list){
     return new Promise((resolve,reject)=>{
         shielderweb.copiaMoradores(mac).then(response=>{
             //console.log(response)
@@ -13,10 +13,14 @@ function copiaMoradores(mac){
 
 }
 
-function lerDigital(mac){
+function lerDigital(mac,device_list){
     return new Promise((resolve,reject)=>{
-        shielderweb.copiaMoradores(mac).then(response=>{
-            //console.log(response)
+        shielderweb.lerDigital(mac).then(response=>{
+            var url = 'http://'+device_list[0].ip+':'+device_list[0].port+'/load_objects.fcgi?session='+device_list[0].session;
+                
+            if(response){
+                device()
+            }
             resolve (response)
         }).catch(response=>{
             reject(response)
@@ -31,5 +35,6 @@ function lerDigital(mac){
 
 
 module.exports = {
-    copiaMoradores
+    copiaMoradores,
+    lerDigital
 }
