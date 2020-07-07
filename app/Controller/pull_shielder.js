@@ -1,15 +1,24 @@
 var shielderweb = require('./shielder_web');
 
+function copiaMoradores(mac){
+    return new Promise((resolve,reject)=>{
+        shielderweb.copiaMoradores(mac).then(response=>{
+            //console.log(response)
+            resolve (response)
+        }).catch(response=>{
+            reject(response)
+        });
+        
+    })
 
-const call_Shielder = ()=>{
-    response = shielderweb.copiaMoradores()
-    
 }
-module.exports = ()=>{
-    timer:setInterval
-    
-    
-    setInterval(
-        ()=>console.log("Ola pra vocs"),1000
-     )
+
+
+
+
+
+
+
+module.exports = {
+    copiaMoradores
 }

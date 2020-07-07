@@ -7,9 +7,9 @@ var url = "http://box.shielder.com.br/controle/"
 
 autorizaBox = (ip,serialnumber)=>{
     return new Promise((resolve,reject)=>{
-        url = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip;
-
-        sendJson.webAxios(url).then(response=>{                
+        urlaut = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip;
+        console.log(urlaut)
+        sendJson.webAxios(urlaut).then(response=>{                
             resolve (response);
         }).catch(response=>{
             reject (response);
@@ -18,18 +18,18 @@ autorizaBox = (ip,serialnumber)=>{
 }
 
 
-copiaMoradores = ()=>{
+copiaMoradores = (mac)=>{
     return new Promise((resolve,reject)=>{
-        url = url + "getCopiaMoradores.php?mac=" + mac;
-        sendJson.webAxios(url).then((response)=>{
-            if(response.status==1){
-                console.log(response.content)
-                resolve (response.content)
-            }else{
-                console.log(response.error)
-                reject (response.error)
-            }
-        })
+        urlcopia = url + "getCopiaMoradores.php?mac=" + mac;
+        sendJson.webAxios(urlcopia).then((response)=>{
+            resolve (response)
+            }).catch(error=>{
+            //console.log(response)
+            reject (error)
+            })
+                
+            
+        
     })
     
 
@@ -64,6 +64,15 @@ get_mac_address = ()=>{
     })
 }
 
+get_mac_address = ()=>{
+    return new Promise((resolve,reject)=>{
+        macaddress.one().then(function (mac) {
+            resolve(mac)
+          }).catch(response=>{
+              reject(response)
+          });
+    })
+}
 
 
 module.exports = {
