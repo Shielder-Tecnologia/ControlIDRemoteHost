@@ -10,7 +10,6 @@ var delete_user = {
 	"object": "users"
 }
 
-
 var create_templates = {
 	"object": "templates",
 	"values": [{}]

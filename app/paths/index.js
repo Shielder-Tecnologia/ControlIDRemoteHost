@@ -22,6 +22,27 @@ module.exports = ()=>{
                 device(url,'config_data','get_config');
                 res.send("1");
             },
+            
+            '/send-template':(req,res,next) => {
+                //console.log(req.app.get('session_key'))
+                var device_list = req.app.get('device_list')
+                
+                var url = 'http://'+device_list[0].ip+':'+device_list[0].port+'/load_objects.fcgi?session='+device_list[0].session;
+                
+                var loadobj = {
+                    "where":{
+                        "templates":{
+                            "user_id": 43454336
+                        }
+                    }
+                }
+                device(url,'objects_data','load_templates',null,loadobj).then(response=>{
+                    console.log(response)
+                 }).catch(response=>{
+                    console.log(response)
+                 })
+                 res.send()
+            },
             '/session-valid':(req,res,next) => {
                 //console.log(req.app.get('session_key'))
                  

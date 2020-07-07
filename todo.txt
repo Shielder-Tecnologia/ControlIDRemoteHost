@@ -1,5 +1,9 @@
-quando for create user mandar 
+**1**
+No pull_Shielder procurar por novos ips a cada 1 minuto e meio se tiver acrescentar se nao continua
 
-mandar values como json ja
 
-where tentar da um append criando o atributo do objeto
+**2**
+Enviar no response um objeto com informações, como url, e etc...
+
+**3**
+colocar tudo esses negocio de get, put session, em outro lugar e nao no server start

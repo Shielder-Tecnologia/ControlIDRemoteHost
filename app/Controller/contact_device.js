@@ -3,7 +3,7 @@ var sendJson = require('./send_json');
 var pullshielder = require('./pull_shielder');
 
 
-var call_device = function(url,keypath,key,subkey)
+var call_device = function(url,keypath,key,subkey,paramObj)
 {
     return new Promise((resolve,reject)=>{
         var data = dtjson(keypath,key,subkey);
@@ -13,9 +13,11 @@ var call_device = function(url,keypath,key,subkey)
             data1 = (data)
             subkeystr = (subkey)
             data = "{"+subkeystr + ":"+  data1+"}"
-        }else
-            data = data
-        
+        }
+        if(paramObj)
+            data = Object.assign(data,paramObj)
+
+        console.log(data)
         var options = {
             url : url,
             method: 'POST',

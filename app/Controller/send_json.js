@@ -22,7 +22,7 @@ module.exports = {
     async (url) => {
               
        try{
-            const rawResponse = await axios.get(url);                 
+            const rawResponse = await axios.get(url);   
             return rawResponse.data
              
         }catch(error){

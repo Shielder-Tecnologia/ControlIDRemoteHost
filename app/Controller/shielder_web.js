@@ -27,14 +27,24 @@ copiaMoradores = (mac)=>{
             //console.log(response)
             reject (error)
             })
-                
-            
-        
     })
     
 
 }
 
+lerDigital = (mac)=>{
+    return new Promise((resolve,reject)=>{
+        urlcopia = url + "getCopiaMoradores.php?mac=" + mac;
+        sendJson.webAxios(urlcopia).then((response)=>{
+            resolve (response)
+            }).catch(error=>{
+            //console.log(response)
+            reject (error)
+            })
+    })
+    
+
+}
 
 apagaMoradores = ()=>{
     
@@ -52,6 +62,8 @@ cadastraBio = (userid,id,serial,tipo)=>{
     
 
 }
+
+
 
 
 get_mac_address = ()=>{
