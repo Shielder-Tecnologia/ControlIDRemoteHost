@@ -8,11 +8,12 @@ const device =require('./app/Controller/contact_device')
 const push_shielder =require('./app/Controller/push_Shielder')
 const shielderweb =require('./app/Controller/shielder_web');
 const pull_shielder = require('./app/Controller/pull_shielder.js');
-
+const control = require('./app/Controller/controlServer.js');
 
 app.set('host',config.host);
 app.set('port',process.env.PORT || 3000);
 process.on('warning', e => console.warn(e.stack));
+
 var options = {
   inflate: true,
   limit: '2mb',
@@ -25,9 +26,6 @@ app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/',routes.router)
-
-var device_list = []
-
 
 
 var server = app.listen(app.get('port'), async function () {
@@ -52,7 +50,7 @@ var server = app.listen(app.get('port'), async function () {
    }
    
    try{
-      await put_session()
+      device_list = await control.put_session()
    }catch(error){
       console.log("Erro ao Pegar sessao"+error);
    }
@@ -61,7 +59,7 @@ var server = app.listen(app.get('port'), async function () {
    if(device_list){
       for (var i=0; i<device_list.length;i++){
          try{
-            device_list[i].serial = await get_serial(device_list[i])
+            device_list[i].serial = await control.get_serial(device_list[i])
             response = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
             //console.log(response)
          }catch(error){
@@ -74,7 +72,6 @@ var server = app.listen(app.get('port'), async function () {
    app.set('device_list',device_list);
 
 
-   //console.log(app.get('mac'))
    setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
       console.log(response)
    }).catch(error=>{
@@ -87,113 +84,4 @@ var server = app.listen(app.get('port'), async function () {
       console.log("Erro ao obter moradores para copiar"+error);
    })},10000)
    
-})
-
-
-/**
- * 
- * @param {object} item como parametro objeto device ja registrado,
- * @returns {object} response resposta do dispositivo, onde contem varias informações do disp
- * retorna o serial do respectivo dispositivo 
- */
-let get_serial = (item) =>{
-   return new Promise((resolve, reject)=>{
-      var url = 'http://'+item.ip+':'+item.port+'/system_information.fcgi?session='+ item.session;
-      device(url,'system_data','get_system_information')
-      .then(response=>{
-         //console.log(response)
-         resolve (response.serial)
-      })
-      .catch(response=>{
-         //console.log(response)
-         reject (response)
-      })
-   })
-}
-
-
-
-
-
-
-
-
-
-
-async function put_session(){
-   var devices
-   try{
-    devices = await get_ips
-    
-   }catch(e){
-      console.log("Não foi possível adquirir os IP'S " + e);
-   }
-
-   for (var i=0; i<devices.length;i++){
-      
-      try{
-         session = await get_session(devices[i])
-         var d = {
-            ip : devices[i].ip,
-            port : devices[i].port,
-            session : ""
-         }
-         //console.log(session)
-         d.session = session;
-         if(d.session)
-            device_list.push(d)
-      }catch(e){
-         throw TypeError("Não foi possível adquirir a sessão " + e);
-      }
-   }
-}
-
-
-
-/** utiliza a instancia da classe contact_device, para obter , através do Axios, a resposta que será a sessao,
- * com ela retorna a sessao
- */
-let get_session = (item) =>{
-   return new Promise((resolve, reject)=>{
-      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
-      device(url,'system_data','login')
-      .then(response=>{
-         item.session = response.session
-         resolve (response.session)
-      })
-      .catch(response=>{
-         reject(response)
-      })
-   })
-   
-};
-
-
-
-var options_scan = {
-   target: '192.168.0.0/24',
-   port:'8000',
-   status: 'O',
-   banner:true,
-   concurrency: '2000',
-   json:true
-}
-let get_ips = new Promise((resolve,reject)=>{
-   var scanner = new evilscan(options_scan);
-   var data_device = []
-   scanner.on('result',function(data) {
-      // fired when item is matching options
-      //console.log(data)
-      data_device.push(data)
-   });
-
-   scanner.on('error',function(err) {
-      reject(data.toString());
-   });
-
-   scanner.on('done',function() {
-      resolve (data_device)
-   });
-
-   scanner.run();
 })
