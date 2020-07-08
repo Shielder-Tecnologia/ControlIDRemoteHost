@@ -93,21 +93,29 @@ var options_scan = {
     
  };
 
- let set_monitor = (item) =>{
+ let set_monitor = (local_ip,item) =>{
    return new Promise((resolve, reject)=>{
-      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
-      device(url,'system_data','login')
+      var url = 'http://'+item.ip+':'+item.port+'/set_configuration.fcgi?session='+ item.session;
+      var loadobj = {
+         "monitor": {
+            "request_timeout": "5000",
+		      "hostname": local_ip,
+            "port": "3000"
+         }
+         
+     }
+      device(url,'monitor_data','activate_monitor',null,loadobj)
       .then(response=>{
-         item.session = response.session
-         resolve (response.session)
+         //console.log(response)
+         resolve (response)
       })
       .catch(response=>{
-         reject(response)
+         //console.log(response)
+         reject (response)
       })
    })
    
-}; 
-
+};
  module.exports = {
     get_serial,
     put_session,

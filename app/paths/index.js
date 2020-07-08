@@ -16,10 +16,16 @@ module.exports = ()=>{
                  })
             },
             '/all-config':(req,res,next) => {
-                //console.log(req.app.get('session_key'))
-                 
-                var url = 'http://'+req.app.get('ip_device')+':'+req.app.get('port_device')+'/get_configuration.fcgi?session='+req.app.get('session_key');
-                device(url,'config_data','get_config');
+                var device_list = req.app.get('device_list')
+                
+                var url = 'http://'+device_list[0].ip+':'+device_list[0].port+'/get_configuration.fcgi?session='+device_list[0].session;
+                device(url,'config_data','get_config').then(response=>{
+                    console.log(response)
+                 }).catch(response=>{
+                    console.log(response)
+                 })
+                 res.send()
+                
                 res.send("1");
             },
             
@@ -56,7 +62,9 @@ module.exports = ()=>{
                 var url = 'http://'+req.app.get('ip_device')+':'+req.app.get('port_device')+'/load_objects.fcgi?session='+req.app.get('session_key');
                 device(url,'objects_data','load_users');
                 res.send("1");
-            },
+            }
+        },
+        'post':{
             '/api/notifications/dao':(req,res,next) => {
                 //console.log(req.app.get('session_key'))
                 console.log("Data: ");
@@ -92,12 +100,6 @@ module.exports = ()=>{
                 console.log(req.body);
                 res.send();
             },
-            
-            
-
-        },
-        'post':{
-
         }
 
     }

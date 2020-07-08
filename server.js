@@ -75,13 +75,15 @@ var server = app.listen(app.get('port'), async function () {
          try{
             device_list[i].serial = await control.get_serial(device_list[i])
             device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
-            res = await control.set_monitor(device_list[i])
+            res = await control.set_monitor(app.get('ip'),device_list[i])
+            console.log(res)
          }catch(error){
             console.log("Erro ao configurar o dispositivo"+error);
          }
          
       }
    }
+   
    //console.log(device_list)   
    app.set('device_list',device_list);
 

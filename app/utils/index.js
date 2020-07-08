@@ -12,7 +12,7 @@ let _registerRoutes = (routes,method)=>{
             if(method === 'get'){
                 router.get(key,routes[key]);
             }else if(method === 'post'){
-                //do something
+                router.post(key,routes[key]);
             }
         }
     }
