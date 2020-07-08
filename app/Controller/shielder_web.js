@@ -1,6 +1,6 @@
 var sendJson = require('./send_json');
 var macaddress = require('macaddress');
-
+var ip = require('ip');
 var url = "http://box.shielder.com.br/controle/"
 
 // const mac = get_mac_address();
@@ -107,16 +107,15 @@ get_mac_address = ()=>{
     })
 }
 
-get_mac_address = ()=>{
+get_local_ip = ()=>{
     return new Promise((resolve,reject)=>{
-        macaddress.one().then(function (mac) {
-            resolve(mac)
-          }).catch(response=>{
-              reject(response)
-          });
+        ip = ip.address()
+        if(ip)
+            resolve(ip)
+        else
+            reject(ip)
     })
 }
-
 
 module.exports = {
     autorizaBox,
@@ -126,6 +125,7 @@ module.exports = {
     cadastraBio,
     cadastraDigital,
     get_mac_address,
-    lerDigital
+    lerDigital,
+    get_local_ip
 
 }

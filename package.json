@@ -12,6 +12,7 @@
     "evilscan": "^1.7.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "ip": "^1.1.5",
     "macaddress": "^0.5.1",
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.4",

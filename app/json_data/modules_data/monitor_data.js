@@ -1,7 +1,5 @@
 var activate_monitor= {
     "monitor": {
-        "request_timeout": "1000",
-        "hostname": "192.168.1.103",
         "port": "3000"
      }
      

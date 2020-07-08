@@ -91,9 +91,26 @@ var options_scan = {
        })
     })
     
- }; 
+ };
+
+ let set_monitor = (item) =>{
+   return new Promise((resolve, reject)=>{
+      var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
+      device(url,'system_data','login')
+      .then(response=>{
+         item.session = response.session
+         resolve (response.session)
+      })
+      .catch(response=>{
+         reject(response)
+      })
+   })
+   
+}; 
+
  module.exports = {
     get_serial,
     put_session,
-    get_session
+    get_session,
+    set_monitor
  }

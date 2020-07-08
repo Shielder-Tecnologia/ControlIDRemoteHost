@@ -45,10 +45,18 @@ var server = app.listen(app.get('port'), async function () {
    }catch(error){
       console.log("Erro"+error)
    }
+   /**Pegar IP do Host */
+   try{
+      ip = await shielderweb.get_local_ip()
+      app.set('ip',ip);
+   }catch(error){
+      console.log("Erro"+error)
+   }
+
      
    /**enviar o servidor para registrar */
    try{
-      response = await push_shielder.autorizaBox(app.get('host'),app.get('mac'))   
+      response = await push_shielder.autorizaBox(app.get('ip'),app.get('mac'))   
       console.log(response)   
    }catch(error){
          console.log("Erro"+ error)
@@ -67,8 +75,9 @@ var server = app.listen(app.get('port'), async function () {
          try{
             device_list[i].serial = await control.get_serial(device_list[i])
             device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
+            res = await control.set_monitor(device_list[i])
          }catch(error){
-            console.log("Erro ao pegar serial"+error);
+            console.log("Erro ao configurar o dispositivo"+error);
          }
          
       }
