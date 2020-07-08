@@ -37,7 +37,12 @@ var delete_card = {
 	"object": "cards"
 }
 
-
+var remote_enroll_async = {
+    "type": "biometry",
+    "user_id": 43454336,
+    "save": true,
+    "sync": true,
+}
 objects_data = {
     create_users : create_users,
     load_users : load_users,
@@ -47,8 +52,8 @@ objects_data = {
     delete_templates : delete_templates,
     create_cards: create_cards,
     load_cards : load_cards, 
-    delete_card : delete_card
-
+    delete_card : delete_card,
+	remote_enroll_async: remote_enroll_async
 }
 module.exports = objects_data
 

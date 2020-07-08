@@ -1,6 +1,5 @@
 const dtjson = require('../json_data');
 var sendJson = require('./send_json');
-var pullshielder = require('./pull_shielder');
 
 
 var call_device = function(url,keypath,key,subkey,paramObj)
@@ -17,7 +16,7 @@ var call_device = function(url,keypath,key,subkey,paramObj)
         if(paramObj)
             data = Object.assign(data,paramObj)
 
-        console.log(data)
+        //console.log(data)
         var options = {
             url : url,
             method: 'POST',

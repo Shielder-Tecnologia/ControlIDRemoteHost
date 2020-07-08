@@ -1,5 +1,5 @@
 var shielderweb = require('./shielder_web');
-const device =require('./app/Controller/contact_device')
+const device = require('./contact_device')
 function copiaMoradores(mac,device_list){
     return new Promise((resolve,reject)=>{
         shielderweb.copiaMoradores(mac).then(response=>{
@@ -13,20 +13,32 @@ function copiaMoradores(mac,device_list){
 
 }
 
-function lerDigital(mac,device_list){
-    return new Promise((resolve,reject)=>{
-        shielderweb.lerDigital(mac).then(response=>{
-            var url = 'http://'+device_list[0].ip+':'+device_list[0].port+'/load_objects.fcgi?session='+device_list[0].session;
-                
-            if(response){
-                device()
+async function lerDigital(mac,device_list){
+    
+        try{
+        var response = await shielderweb.lerDigital(mac)
+        }catch(error){
+            throw Error(error)
+        }
+            var d = device_list.find(x => x.id == response[0].id_terminal);
+            var url = 'http://'+d.ip+':'+d.port+'/load_objects.fcgi?session='+d.session;
+            var loadobj = {
+                "user_id": 43454336
             }
-            resolve (response)
-        }).catch(response=>{
-            reject(response)
-        });
         
-    })
+        
+        if(response){
+            try{
+            res = await device(url,'objects_data','remote_enroll_async',null)
+                console.log(res)
+                return res;
+            }catch(error){
+                throw Error(error)
+            }
+            
+        }
+            
+        
 
 }
 

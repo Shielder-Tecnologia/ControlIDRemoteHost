@@ -33,12 +33,13 @@ copiaMoradores = (mac)=>{
 
 lerDigital = (mac)=>{
     return new Promise((resolve,reject)=>{
-        urlcopia = url + "getLerDigital.php?mac=" + mac;
-        sendJson.getAxios(urlcopia).then((response)=>{
+        urlDig = url + "getLerDigital.php?mac=" + mac;
+        sendJson.getAxios(urlDig).then((response)=>{
+            //console.log(urlDig)
             resolve (response)
-            }).catch(error=>{
+        }).catch(error=>{
             reject (error)
-            })
+        })
     })
 }
 
@@ -124,6 +125,7 @@ module.exports = {
     autorizaMorador,
     cadastraBio,
     cadastraDigital,
-    get_mac_address
+    get_mac_address,
+    lerDigital
 
 }

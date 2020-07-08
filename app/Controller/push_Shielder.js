@@ -1,9 +1,7 @@
 var shielderweb = require('./shielder_web');
-const { cadastraBio } = require('./shielder_web');
 autorizaBox = function(ip,serialnumber){
     return new Promise((resolve,reject)=>{
         shielderweb.autorizaBox(ip,serialnumber).then(response=>{
-            //console.log(ip,serialnumber)
             resolve(response)
         }).catch(response=>{
             reject(response)

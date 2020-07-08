@@ -1,8 +1,8 @@
-const device =require('./app/Controller/contact_device')
-const push_shielder =require('./app/Controller/push_Shielder')
-const pull_shielder = require('./app/Controller/pull_shielder.js');
-
-var device_list
+const device =require('./contact_device')
+const push_shielder =require('./push_Shielder')
+const pull_shielder = require('./pull_shielder.js');
+var evilscan = require('evilscan')
+var device_list = []
 var get_serial = (item) =>{
     return new Promise((resolve, reject)=>{
        var url = 'http://'+item.ip+':'+item.port+'/system_information.fcgi?session='+ item.session;
