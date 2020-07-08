@@ -39,9 +39,9 @@ var delete_card = {
 
 var remote_enroll_async = {
     "type": "biometry",
-    "user_id": 43454336,
     "save": true,
     "sync": true,
+    "panic_finger": 0
 }
 objects_data = {
     create_users : create_users,

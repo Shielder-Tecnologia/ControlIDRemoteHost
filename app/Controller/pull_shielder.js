@@ -21,15 +21,15 @@ async function lerDigital(mac,device_list){
             throw Error(error)
         }
             var d = device_list.find(x => x.id == response[0].id_terminal);
-            var url = 'http://'+d.ip+':'+d.port+'/load_objects.fcgi?session='+d.session;
+            var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
             var loadobj = {
-                "user_id": 43454336
+                "user_id": parseInt(response[0].id)
             }
         
         
         if(response){
             try{
-            res = await device(url,'objects_data','remote_enroll_async',null)
+            res = await device(url,'objects_data','remote_enroll_async',null,loadobj)
                 console.log(res)
                 return res;
             }catch(error){
