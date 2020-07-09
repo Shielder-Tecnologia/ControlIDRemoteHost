@@ -1,6 +1,7 @@
 'use strict';
 const util = require('../utils');
 const device = require('../Controller/contact_device');
+const push_Shielder = require('../Controller/push_Shielder');
 module.exports = ()=>{
     let routes = {
         'get':{
@@ -56,21 +57,41 @@ module.exports = ()=>{
                 device(url,'system_data','session_is_valid');
                 res.send("1");
             },
-            '/load-users':(req,res,next) => {
-                //console.log(req.app.get('session_key'))
-                 
-                var url = 'http://'+req.app.get('ip_device')+':'+req.app.get('port_device')+'/load_objects.fcgi?session='+req.app.get('session_key');
-                device(url,'objects_data','load_users');
+            '/system-info':(req,res,next) => {
+                var device_list = req.app.get('device_list')
+                
+                var url = 'http://'+device_list[0].ip+':'+device_list[0].port+'/set_configuration.fcgi?session='+device_list[0].session;
+                device(url,'system_data','get_system_information').then(response=>{
+                    console.log(response)
+                 }).catch(response=>{
+                    console.log(response)
+                 })
+                 res.send()
+                
                 res.send("1");
             }
         },
         'post':{
             '/api/notifications/dao':(req,res,next) => {
-                //console.log(req.app.get('session_key'))
+                console.log(req.app.get('session_key'))
                 console.log("Data: ");
-                console.log("Length: " + req.body.length);
                 console.log(req.body);
-                console.log(req.body.object_changes[0].values);
+                if(req.body.object_changes[0].object == 'templates'){
+                    req.app.set('mutex_Ler',true)
+                    push_Shielder.cadastraDigital(0,req.body.object_changes[0].object.user_id,serial).then(response=>{
+                        
+                    }).catch(error=>{
+                        console.log(error)
+                    })
+                }else{
+                    push_Shielder.autorizaMorador(req.body.object_changes[0].object.user_id,req.body.object_changes[0].object.time,serial).then(response=>{
+                        console.log(res)
+                    }).catch(error=>{
+                        console.log(error)
+                    })
+                }
+                //console.log(req.body.object_changes[0].values);
+                
                 res.send();
             },
             '/api/notifications/catra_event':(req,res,next) => {
@@ -83,19 +104,22 @@ module.exports = ()=>{
                 res.send();
             },
             '/api/notifications/operation_mode':(req,res,next) => {
-                console.log("Data: ");
+                console.log("alooo: ");
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
                 res.send();
             },
             '/api/notifications/template':(req,res,next) => {
-                console.log("Data: ");
+                
+                console.log("PINTO: ");
+                
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
+                
                 res.send();
             },
             '/api/notifications/card':(req,res,next) => {
-                console.log("Data: ");
+                console.log("ALOO: ");
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
                 res.send();

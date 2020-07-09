@@ -88,16 +88,22 @@ var server = app.listen(app.get('port'), async function () {
    app.set('device_list',device_list);
 
 
-   // setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
-   //    console.log(response)
-   // }).catch(error=>{
-   //    console.log("Erro ao obter moradores para copiar"+error);
-   // })},10000)
-
-   setInterval(function(){pull_shielder.lerDigital(app.get('mac'),app.get('device_list')).then(response =>{
+   setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
       console.log(response)
    }).catch(error=>{
-      console.log("Erro ao tentar ler digital"+error);
-   })},5000)
+      console.log("Erro ao obter moradores para copiar"+error);
+   })},10000)
+
+
+   app.set('mutex_Ler',false)
+   setInterval(function(){
+      console.log(app.get('mutex_Ler'))
+      if(app.get('mutex_Ler'))
+         pull_shielder.lerDigital(app.get('mac'),app.get('device_list')).then(response =>{
+            app.set('mutex_Ler',false)
+            console.log(response)
+         }).catch(error=>{
+            console.log("Erro ao tentar ler digital"+error);
+      })},5000)
    
 })

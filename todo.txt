@@ -20,3 +20,14 @@ Enviar cadastrabio
 
 **6**
 Fazer o autorizamorador (monitor)
+
+**7**
+Ler Digital tem que parar quando começa a leitura
+->alternativa 1:
+criar variavel de controle no app, dizendo se lê ou não. depois que efetuar o procedimento abrir novamente
+->alternativa 2:
+enviar o cadastrabio uma vez para parar e caso nao receba um segundo cadastrabio ele volta a enviar
+->alternativa 3:
+usar sincronamente e antes de inicar marcar mutex como false, e depois com o retorno marcar como true
+**8**
+Transpor todas as funcoes de controle do Servidor(como cadastrabio, copiamoradores) para o controlServer

@@ -1,6 +1,5 @@
 var create_users = {
 	"object": "users",
-	"values": [{}]
 }
 
 var load_users = {
@@ -11,8 +10,7 @@ var delete_user = {
 }
 
 var create_templates = {
-	"object": "templates",
-	"values": [{}]
+	"object": "templates"
 }
 
 var load_templates = { 
@@ -26,7 +24,6 @@ var delete_templates = {
 
 var create_cards = {
 	"object": "cards",
-	"values": [{}]
 }
 
 var load_cards = { 
@@ -40,7 +37,7 @@ var delete_card = {
 var remote_enroll_async = {
     "type": "biometry",
     "save": true,
-    "sync": true,
+    "sync": false,
     "panic_finger": 0
 }
 objects_data = {

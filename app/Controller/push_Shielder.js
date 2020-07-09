@@ -10,6 +10,17 @@ autorizaBox = function(ip,serialnumber){
     })
 }
 
+autorizaMorador = function(id,datetime,serial){
+    return new Promise((resolve,reject)=>{
+        shielderweb.autorizaMorador(id,datetime,serial).then(response=>{
+            resolve(response)
+        }).catch(response=>{
+            reject(response)
+        });
+        
+    })
+}
+
 cadastraBio = function(ip,serialnumber){
     return new Promise((resolve,reject)=>{
         shielderweb.cadastraBio(ip,serialnumber).then(response=>{
@@ -34,5 +45,8 @@ cadastraDigital = function(userid,id,serial,tipo,fp){
 
 
 module.exports = {
-    autorizaBox
+    autorizaBox,
+    cadastraDigital,
+    autorizaMorador,
+    cadastraBio
 }
