@@ -116,9 +116,48 @@ var options_scan = {
    })
    
 };
+
+let get_devid = (item) =>{
+   return new Promise((resolve, reject)=>{
+      var url = 'http://'+item.ip+':'+item.port+'/load_objects.fcgi?session='+ item.session;
+      device(url,'objects_data','load_device')
+      .then(response=>{
+         //console.log(response.devices[0].id)
+         resolve (response.devices[0].id)
+      })
+      .catch(response=>{
+         //console.log(response)
+         reject (response)
+      })
+   })
+}
+
+let remote_digital = (device_list,response) =>{
+   return new Promise((resolve, reject)=>{
+      //console.log(device_list)
+      var d = device_list.find(x => x.id == response[0].id_terminal);
+        var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
+        var loadobj = {
+            "user_id": parseInt(response[0].id)
+        }
+        if(response){
+         
+             device(url,'objects_data','remote_enroll_async',null,loadobj).then(res=>{
+               resolve (res)
+             }).catch(error=>{
+               reject (error)
+             })         
+     }
+   })
+
+}
+
+
  module.exports = {
     get_serial,
     put_session,
     get_session,
-    set_monitor
+    set_monitor,
+    get_devid,
+    remote_digital
  }

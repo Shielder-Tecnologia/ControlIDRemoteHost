@@ -8,13 +8,13 @@ Toda vez dar um autorizabox para todos os dispositivos
 **2**
 Enviar no response um objeto com informações, como url, e etc...
 
-**3**
+DONE**3**
 colocar tudo esses negocio de get, put session, em outro lugar e nao no server start
 
-**4**
+DONE**4**
 Colocar id do terminal no device_list
 
-**5**
+DONE**5**
 Ler Digital remotamente, com o id do usuario que foi passado
 Enviar cadastrabio
 
@@ -31,3 +31,5 @@ enviar o cadastrabio uma vez para parar e caso nao receba um segundo cadastrabio
 usar sincronamente e antes de inicar marcar mutex como false, e depois com o retorno marcar como true
 **8**
 Transpor todas as funcoes de controle do Servidor(como cadastrabio, copiamoradores) para o controlServer
+**9**
+Quando da cancelar no lerdigital ele nao volta o mutex

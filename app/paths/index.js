@@ -2,6 +2,8 @@
 const util = require('../utils');
 const device = require('../Controller/contact_device');
 const push_Shielder = require('../Controller/push_Shielder');
+const moment = require('moment')
+
 module.exports = ()=>{
     let routes = {
         'get':{
@@ -69,27 +71,48 @@ module.exports = ()=>{
                  res.send()
                 
                 res.send("1");
+            },
+            '/load-device':(req,res,next) => {
+                var device_list = req.app.get('device_list')
+                
+                var url = 'http://'+device_list[0].ip+':'+device_list[0].port+'/load_objects.fcgi?session='+device_list[0].session;
+                device(url,'objects_data','load_device').then(response=>{
+                    console.log(response)
+                 }).catch(response=>{
+                    console.log(response)
+                 })
+                 res.send()
+                
+                res.send("1");
             }
         },
         'post':{
             '/api/notifications/dao':(req,res,next) => {
                 console.log(req.app.get('session_key'))
-                console.log("Data: ");
-                console.log(req.body);
-                if(req.body.object_changes[0].object == 'templates'){
-                    req.app.set('mutex_Ler',true)
-                    push_Shielder.cadastraDigital(0,req.body.object_changes[0].object.user_id,serial).then(response=>{
+                //console.log("Data: ");
+                //console.log(req.body);
+                var device_list = req.app.get('device_list')
+                //console.log(device_list)
+                var d = device_list.find(x => x.devid == req.body.device_id);
+                if(d){
+                    if(req.body.object_changes[0].object == 'templates'){
                         
-                    }).catch(error=>{
-                        console.log(error)
-                    })
-                }else{
-                    push_Shielder.autorizaMorador(req.body.object_changes[0].object.user_id,req.body.object_changes[0].object.time,serial).then(response=>{
-                        console.log(res)
-                    }).catch(error=>{
-                        console.log(error)
-                    })
-                }
+                        //console.log(req.body.object_changes[0].values.template)
+                        push_Shielder.cadastraDigital(0,req.body.object_changes[0].values.user_id, d.serial,'ENTRADA',req.body.object_changes[0].values.template).then(response=>{
+                            req.app.set('mutex_Ler',true)
+                            console.log(response)
+                        }).catch(error=>{
+                            console.log(error)
+                        })
+                    }else{
+                        push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, moment().format('yyyy-MM-dd HH:mm:ss'), d.serial).then(response=>{
+                            console.log(response)
+                        }).catch(error=>{
+                            console.log(error)
+                        })
+                    }
+                }else
+                    console.log('Não encontrado na lista de dispositivos')
                 //console.log(req.body.object_changes[0].values);
                 
                 res.send();
@@ -104,14 +127,14 @@ module.exports = ()=>{
                 res.send();
             },
             '/api/notifications/operation_mode':(req,res,next) => {
-                console.log("alooo: ");
+                console.log(": ");
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
                 res.send();
             },
             '/api/notifications/template':(req,res,next) => {
                 
-                console.log("PINTO: ");
+                console.log(": ");
                 
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
@@ -119,7 +142,7 @@ module.exports = ()=>{
                 res.send();
             },
             '/api/notifications/card':(req,res,next) => {
-                console.log("ALOO: ");
+                console.log(": ");
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
                 res.send();

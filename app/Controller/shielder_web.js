@@ -27,8 +27,6 @@ copiaMoradores = (mac)=>{
             reject (error)
             })
     })
-    
-
 }
 
 lerDigital = (mac)=>{
@@ -43,8 +41,16 @@ lerDigital = (mac)=>{
     })
 }
 
-apagaMoradores = ()=>{
-    
+apagaMoradores = (mac)=>{
+    return new Promise((resolve,reject)=>{
+        urlcopia = url + "getApagaMoradores.php?mac=" + mac;
+        sendJson.getAxios(urlcopia).then((response)=>{
+            resolve (response)
+            }).catch(error=>{
+            //console.log(response)
+            reject (error)
+            })
+    })
 
 }
 
@@ -81,9 +87,11 @@ cadastraBio = (userid,id,serial,tipo)=>{
 cadastraDigital = (userid,id,serial,tipo,fp)=>{
     return new Promise((resolve,reject)=>{
         urlaut = url + "getCadastraBio.php?usuario=" + userid + "&id=" + id + "&mac="+serial +"&tipo="+tipo;
+        console.log(urlaut);
         data = {
             "fp":fp
         }
+        console.log(fp)
         var options = {
             url : urlaut,
             method: 'POST',

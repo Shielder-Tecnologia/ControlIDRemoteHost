@@ -75,8 +75,9 @@ var server = app.listen(app.get('port'), async function () {
          try{
             device_list[i].serial = await control.get_serial(device_list[i])
             device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
+            device_list[i].devid = await control.get_devid(device_list[i])
             res = await control.set_monitor(app.get('ip'),device_list[i])
-            console.log(res)
+            //console.log(res)
          }catch(error){
             console.log("Erro ao configurar o dispositivo"+error);
          }
@@ -92,18 +93,28 @@ var server = app.listen(app.get('port'), async function () {
       console.log(response)
    }).catch(error=>{
       console.log("Erro ao obter moradores para copiar"+error);
-   })},10000)
+   })},5000)
+
+   setInterval(function(){pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
+      console.log(response)
+   }).catch(error=>{
+      console.log("Erro ao obter moradores para apagar"+error);
+   })},5000)
 
 
-   app.set('mutex_Ler',false)
-   setInterval(function(){
-      console.log(app.get('mutex_Ler'))
+   app.set('mutex_Ler',true)
+   setInterval(async function(){
+      //console.log(app.get('mutex_Ler'))
+      try{
       if(app.get('mutex_Ler'))
-         pull_shielder.lerDigital(app.get('mac'),app.get('device_list')).then(response =>{
-            app.set('mutex_Ler',false)
-            console.log(response)
-         }).catch(error=>{
-            console.log("Erro ao tentar ler digital"+error);
-      })},5000)
+         var response = await pull_shielder.lerDigital(app.get('mac'))
+            var res = await control.remote_digital(app.get('device_list'),response)
+            console.log(res);
+         
+            
+      }catch(error){
+         console.log("Erro ao tentar ler digital"+error);
+      }
+      },5000)
    
 })

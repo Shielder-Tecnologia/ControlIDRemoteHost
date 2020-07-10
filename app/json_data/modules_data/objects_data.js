@@ -40,6 +40,10 @@ var remote_enroll_async = {
     "sync": false,
     "panic_finger": 0
 }
+
+var load_device = { 
+	"object": "devices"
+}
 objects_data = {
     create_users : create_users,
     load_users : load_users,
@@ -47,10 +51,12 @@ objects_data = {
     create_templates : create_templates,
     load_templates : load_templates,
     delete_templates : delete_templates,
-    create_cards: create_cards,
+    create_cards : create_cards,
     load_cards : load_cards, 
     delete_card : delete_card,
-	remote_enroll_async: remote_enroll_async
+    remote_enroll_async: remote_enroll_async,
+    load_device : load_device
+    
 }
 module.exports = objects_data
 
