@@ -51,7 +51,7 @@ var get_serial = (item) =>{
  
 
 var options_scan = {
-    target: '192.168.0.0/24',
+    target: '192.168.15.0/24',
     port:'8000',
     status: 'O',
     banner:true,
@@ -152,6 +152,79 @@ let remote_digital = (device_list,response) =>{
 
 }
 
+let controlCopia = (device_list,response) =>{
+   return new Promise((resolve, reject)=>{
+      //console.log(device_list)
+      var d = device_list.find(x => x.id == response[0].id_terminal);
+        var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
+        var loadobj = {
+            "user_id": parseInt(response[0].id)
+        }
+        if(response){
+         
+             device(url,'objects_data','remote_enroll_async',null,loadobj).then(res=>{
+               resolve (res)
+             }).catch(error=>{
+               reject (error)
+             })         
+     }
+   })
+
+}
+
+let controlApaga = (device_list,response) =>{
+   return new Promise((resolve, reject)=>{
+      //console.log(device_list)
+      var d = device_list.find(x => x.id == response[0].id_terminal);
+    var url = 'http://'+d.ip+':'+d.port+'/destroy_objects.fcgi?session='+d.session;
+    var loadobj = {
+        "where": {
+            "users": {
+                "id": parseInt(response[0].id)
+            }
+        }
+    }
+    
+      var resp = null
+      
+         device(url,'objects_data','delete_user',null,loadobj).then(res=>{
+            resp = res
+         }).catch(error=>{
+            reject (error)
+         })
+          
+      
+
+      try{
+          if(resp)
+              resolve (push_shielder.cadastraBio(response[0].user_id,0,d.serial,'SAIDA'))
+      }catch(error){
+          reject(error)
+      }
+  
+   })
+
+}
+
+let check_remote_state = (device_list,response) =>{
+   return new Promise((resolve, reject)=>{
+      //console.log(device_list)
+      var d = device_list.find(x => x.id == response[0].id_terminal);
+        var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
+        var loadobj = {
+            "user_id": parseInt(response[0].id)
+        }
+        if(response){
+         
+             device(url,'objects_data','remote_enroll_async',null,loadobj).then(res=>{
+               resolve (res)
+             }).catch(error=>{
+               reject (error)
+             })         
+     }
+   })
+
+}
 
  module.exports = {
     get_serial,
@@ -159,5 +232,6 @@ let remote_digital = (device_list,response) =>{
     get_session,
     set_monitor,
     get_devid,
-    remote_digital
+    remote_digital,
+    controlApaga
  }

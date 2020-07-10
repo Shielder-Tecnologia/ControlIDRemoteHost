@@ -89,21 +89,15 @@ module.exports = ()=>{
         'post':{
             '/api/notifications/dao':(req,res,next) => {
                 console.log(req.app.get('session_key'))
-                //console.log("Data: ");
+                console.log("Data: ");
                 //console.log(req.body);
                 var device_list = req.app.get('device_list')
-                //console.log(device_list)
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 if(d){
                     if(req.body.object_changes[0].object == 'templates'){
                         
                         //console.log(req.body.object_changes[0].values.template)
-                        push_Shielder.cadastraDigital(0,req.body.object_changes[0].values.user_id, d.serial,'ENTRADA',req.body.object_changes[0].values.template).then(response=>{
-                            req.app.set('mutex_Ler',true)
-                            console.log(response)
-                        }).catch(error=>{
-                            console.log(error)
-                        })
+                       
                     }else{
                         push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, moment().format('yyyy-MM-dd HH:mm:ss'), d.serial).then(response=>{
                             console.log(response)
@@ -133,11 +127,16 @@ module.exports = ()=>{
                 res.send();
             },
             '/api/notifications/template':(req,res,next) => {
-                
-                console.log(": ");
-                
-                console.log("Length: " + req.body.length);
-                console.log(req.body);
+                var device_list = req.app.get('device_list')
+                var d = device_list.find(x => x.devid == req.body.device_id);
+                push_Shielder.cadastraDigital(0,req.body.user_id, d.serial,'ENTRADA',req.body.template).then(response=>{
+                    req.app.set('mutex_Ler',true)
+                    console.log(response)
+                }).catch(error=>{
+                    console.log(error)
+                })
+                // console.log("Length: " + req.body.length);
+                // console.log(req.body);
                 
                 res.send();
             },

@@ -1,6 +1,9 @@
 var sendJson = require('./send_json');
 var macaddress = require('macaddress');
 var ip = require('ip');
+var qs = require('qs');
+
+
 var url = "http://box.shielder.com.br/controle/"
 
 // const mac = get_mac_address();
@@ -87,19 +90,20 @@ cadastraBio = (userid,id,serial,tipo)=>{
 cadastraDigital = (userid,id,serial,tipo,fp)=>{
     return new Promise((resolve,reject)=>{
         urlaut = url + "getCadastraBio.php?usuario=" + userid + "&id=" + id + "&mac="+serial +"&tipo="+tipo;
-        console.log(urlaut);
+        //console.log(urlaut);
         data = {
             "fp":fp
         }
-        console.log(fp)
+        //console.log(fp)
         var options = {
             url : urlaut,
             method: 'POST',
             timeout: 3000,
             headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
-                data: data
+            
+                data: qs.stringify(data)
         };
         sendJson.postAxios(options).then(response=>{                
             resolve (response);

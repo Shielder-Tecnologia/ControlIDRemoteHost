@@ -3,45 +3,61 @@ const device = require('./contact_device')
 const push_shielder = require('./push_Shielder')
 
 async function copiaMoradores(mac,device_list){
+    var response = null
     try{
-        var response = await shielderweb.copiaMoradores(mac)
+        response = await shielderweb.copiaMoradores(mac)
+        if(!response)
+            return
     }catch(error){
         throw Error(error)
     }
-
+    
     var d = device_list.find(x => x.id == response[0].id_terminal);
     var url = 'http://'+d.ip+':'+d.port+'/create_objects.fcgi?session='+d.session;
-    if(response){
+    //console.log(d)
+    
         var loadobj = {
             "values": [
                 {
                     "id":parseInt(response[0].id),
-                    "name": response[0].name,
-                    "registration": ""
+                    "name": response[0].bloco,
+                    "registration": response[0].documento,
                 }
             ]
         }
+        var res = null
+        /**CREATE USER */
         try{
             res = await device(url,'objects_data','create_users',null,loadobj)
-            }catch(error){
-                throw Error(error)
-            }
-        var res
+            var loadobj = {"values": [{"user_id": parseInt(response[0].id),"group_id": 1}]}
+            await device(url,'objects_data','user_group',null,loadobj)
+        }catch(error){
+            throw Error(error)
+        }
+        // console.log("coco")
+        if(res.hasOwnProperty('response'))
+            if(!res.response.data.error==='constraint failed: PRIMARY KEY must be unique')
+                throw Error('Erro ao adicionar usuario')
+            
+        
+        /**CREATE TEMPLATE */
+        var resp = null
         if(response[0].fp){
             var loadobj = {
                 "values": [
                     {
                         "user_id":parseInt(response[0].id),
                         "finger_type": 0,
-                        "template": response[0].fp,
+                        "template": response[0].fp
                     }
                 ]
             }
             try{
-                res = await device(url,'objects_data','create_templates',null,loadobj)
-                }catch(error){
-                    throw Error(error)
-                }
+                resp = await device(url,'objects_data','create_templates',null,loadobj)
+            }catch(error){
+                throw Error(error)
+            }
+            /**CREATE CARD */
         }else{
             var loadobj = {
                 "values": [
@@ -52,19 +68,22 @@ async function copiaMoradores(mac,device_list){
                 ]
             }
             try{
-                res = await device(url,'objects_data','create_cards',null,loadobj)
+                resp = await device(url,'objects_data','create_cards',null,loadobj)
                 }catch(error){
                     throw Error(error)
                 }            
         }
-        if(res){
+        //console.log(resp)
+        /**CADASTRA BIO */
+        if(resp){
             try{
-                return push_shielder.cadastraBio(response[0].user_id,0,d.serial,'ENTRADA')
+                console.log(response[0].id)
+                return push_shielder.cadastraBio(response[0].id,0,d.serial,'ENTRADA')
             }catch(error){
                 throw Error(error)
             }
         }
-    }
+    
 }
 
 async function lerDigital(mac){
@@ -80,20 +99,12 @@ async function lerDigital(mac){
 async function apagaMoradores(mac,device_list){
     
     try{
-        var response = await shielderweb.apagaMoradores(mac)
+        return await shielderweb.apagaMoradores(mac)
     }catch(error){
         throw Error(error)
     }
 
-    var d = device_list.find(x => x.id == response[0].id_terminal);
-    var url = 'http://'+d.ip+':'+d.port+'/destroy_objects.fcgi?session='+d.session;
-    var loadobj = {
-        "where": {
-            "users": {
-                "id": parseInt(response[0].id)
-            }
-        }
-    }
+    
     
     
     if(response){
