@@ -19,7 +19,14 @@ var options = {
   type: 'application/octet-stream'
 };
 
-
+var options_scan = {
+   target: '192.168.15.0/24',
+   port:'8000',
+   status: 'O',
+   banner:true,
+   concurrency: '7000',
+   json:true
+}
 app.use(bodyParser.raw(options));
 app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,6 +39,7 @@ app.use('/',routes.router)
  * @param serial
  */
 var device_list = []
+var submask;
 var server = app.listen(app.get('port'), async function () {
 
    console.log("Example app listening at ", app.get('host'), app.get('port'));
@@ -48,28 +56,31 @@ var server = app.listen(app.get('port'), async function () {
    /**Pegar IP do Host */
    try{
       ip = await shielderweb.get_local_ip()
+      submask = ip.split(".")[2];
       app.set('ip',ip);
    }catch(error){
       console.log("Erro"+error)
    }
 
      
-   /**enviar o servidor para registrar */
+   /**AUTORIZABOX PARA O SERVIDOR */
    try{
       response = await push_shielder.autorizaBox(app.get('ip'),app.get('mac'))   
       console.log(response)   
    }catch(error){
          console.log("Erro"+ error)
    }
-   
+
+
+
    try{
-      device_list = await control.put_session()
+      device_list = await control.put_session(submask)
+      app.set('device_list',device_list);
       //console.log(device_list)
    }catch(error){
       console.log("Erro ao Pegar sessao"+error);
    }
    
-
    if(device_list){
       for (var i=0; i<device_list.length;i++){
          try{
@@ -84,9 +95,38 @@ var server = app.listen(app.get('port'), async function () {
          
       }
    }
+
+   /**TIMER PARA VERIFICAR IPS E DAR AUTORIZABOX */
+   setInterval(async function(){
+      //console.log(app.get('mutex_Ler'))
+      try{
+         device_list = await control.put_session(submask)
+         app.set('device_list',device_list);
+         //console.log(device_list)
+      }catch(error){
+         console.log("Erro ao Pegar sessao"+error);
+      }
+      if(device_list){
+         for (var i=0; i<device_list.length;i++){
+            try{
+               device_list[i].serial = await control.get_serial(device_list[i])
+               device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
+               device_list[i].devid = await control.get_devid(device_list[i])
+               res = await control.set_monitor(app.get('ip'),device_list[i])
+               app.set('device_list',device_list);
+               //console.log(res)
+            }catch(error){
+               console.log("Erro ao configurar o dispositivo"+error);
+            }
+            
+         }
+      }
+      },5000)
+
+  
    
    //console.log(device_list)   
-   app.set('device_list',device_list);
+   
 
 
    setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{

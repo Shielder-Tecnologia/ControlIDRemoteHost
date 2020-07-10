@@ -1,6 +1,5 @@
 const device =require('./contact_device')
 const push_shielder =require('./push_Shielder')
-const pull_shielder = require('./pull_shielder.js');
 var evilscan = require('evilscan')
 var device_list = []
 var get_serial = (item) =>{
@@ -19,10 +18,18 @@ var get_serial = (item) =>{
  }
 
 
- async function put_session(){
+ async function put_session(ip){
     var devices
+    var options_scan = {
+      target: '192.168.'+ip+'.0/24',
+      port:'8000',
+      status: 'O',
+      banner:true,
+      concurrency: '7000',
+      json:true
+   }
     try{
-     devices = await get_ips
+     devices = await get_ips(options_scan)
      
     }catch(e){
        console.log("Não foi possível adquirir os IP'S " + e);
@@ -50,15 +57,8 @@ var get_serial = (item) =>{
 
  
 
-var options_scan = {
-    target: '192.168.15.0/24',
-    port:'8000',
-    status: 'O',
-    banner:true,
-    concurrency: '2000',
-    json:true
- }
- let get_ips = new Promise((resolve,reject)=>{
+
+ let get_ips = (options_scan)=>{return new Promise((resolve,reject)=>{
     var scanner = new evilscan(options_scan);
     var data_device = []
     scanner.on('result',function(data) {
@@ -77,6 +77,7 @@ var options_scan = {
  
     scanner.run();
  })
+}
 
  let get_session = (item) =>{
     return new Promise((resolve, reject)=>{
