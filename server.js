@@ -80,8 +80,8 @@ var server = app.listen(app.get('port'), async function () {
    }catch(error){
       console.log("Erro ao Pegar sessao"+error);
    }
-   
-   if(device_list){
+
+   if(device_list!=null){
       for (var i=0; i<device_list.length;i++){
          try{
             device_list[i].serial = await control.get_serial(device_list[i])
@@ -94,13 +94,21 @@ var server = app.listen(app.get('port'), async function () {
          }
          
       }
-   }
+   }else
+      console.log('Não há dispositivos')
 
    /**TIMER PARA VERIFICAR IPS E DAR AUTORIZABOX */
    setInterval(async function(){
       //console.log(app.get('mutex_Ler'))
       try{
-         device_list = await control.put_session(submask)
+         
+         var device_list_alt = await control.put_session(submask)
+         for(let devicealt in device_list_alt){
+            var d = device_list.find(x => x.ip == devicealt.ip);
+            if(d!=undefined){
+               device_list_alt
+            }
+         }
          app.set('device_list',device_list);
          //console.log(device_list)
       }catch(error){
@@ -128,46 +136,48 @@ var server = app.listen(app.get('port'), async function () {
    //console.log(device_list)   
    
 
+      if(device_list!=null){
+         setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
+            console.log(response)
+         }).catch(error=>{
+            console.log("Erro ao obter moradores para copiar"+error);
+         })},5000)
 
-   setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
-      console.log(response)
-   }).catch(error=>{
-      console.log("Erro ao obter moradores para copiar"+error);
-   })},5000)
-
-   setInterval(async function(){
-      try{
-         var response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
-      if(response)
-         var res = await control.controlApaga(app.get('device_list'),response)
-         console.log(response)
-      }catch(error){
-         console.log("Erro ao obter moradores para apagar"+error);
-      }
-      
-   },5000)
-
-
-   app.set('mutex_Ler',true)
-   setInterval(async function(){
-      //console.log(app.get('mutex_Ler'))
-      try{
-         
-         
-         var response = await pull_shielder.lerDigital(app.get('mac'))
-         //console.log("ss"+response)
-         if(app.get('mutex_Ler')){
-            if(response){
-               var res = await control.remote_digital(app.get('device_list'),response)
-               console.log(res);
-               app.set('mutex_Ler',false)
+         setInterval(async function(){
+            try{
+               var response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
+            if(response)
+               var res = await control.controlApaga(app.get('device_list'),response)
+               console.log(response)
+            }catch(error){
+               console.log("Erro ao obter moradores para apagar"+error);
             }
-         }else if (response){
+            
+         },5000)
 
-         }
-      }catch(error){
-         console.log("Erro ao tentar ler digital"+error);
-      }
-      },5000)
+
+         app.set('mutex_Ler',true)
+         setInterval(async function(){
+            //console.log(app.get('mutex_Ler'))
+            try{
+               
+               
+               var response = await pull_shielder.lerDigital(app.get('mac'))
+               //console.log("ss"+response)
+               if(app.get('mutex_Ler')){
+                  if(response){
+                     var res = await control.remote_digital(app.get('device_list'),response)
+                     console.log(res);
+                     app.set('mutex_Ler',false)
+                  }
+               }else if (response){
+
+               }
+            }catch(error){
+               console.log("Erro ao tentar ler digital"+error);
+            }
+         },5000)
+      }else
+         console.log('Não há dispositivos')
    
 })

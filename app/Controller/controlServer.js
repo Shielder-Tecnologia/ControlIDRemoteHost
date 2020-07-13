@@ -1,7 +1,7 @@
 const device =require('./contact_device')
 const push_shielder =require('./push_Shielder')
 var evilscan = require('evilscan')
-var device_list = []
+
 var get_serial = (item) =>{
     return new Promise((resolve, reject)=>{
        var url = 'http://'+item.ip+':'+item.port+'/system_information.fcgi?session='+ item.session;
@@ -20,6 +20,7 @@ var get_serial = (item) =>{
 
  async function put_session(ip){
     var devices
+    var device_list = []
     var options_scan = {
       target: '192.168.'+ip+'.0/24',
       port:'8000',

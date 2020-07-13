@@ -33,3 +33,8 @@ usar sincronamente e antes de inicar marcar mutex como false, e depois com o ret
 Transpor todas as funcoes de controle do Servidor(como cadastrabio, copiamoradores) para o controlServer
 **9**
 Quando da cancelar no lerdigital ele nao volta o mutex
+
+
+
+
+
