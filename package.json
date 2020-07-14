@@ -1,10 +1,26 @@
 {
   "name": "node-api",
-  "main": "app.js",
+  "main": "server.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=development launch *./config/config.js"
+  },
   "dependencies": {
+    "axios": "^0.19.2",
     "body-parser": "^1.0.2",
     "console-stamp": "^0.2.6",
     "dateformat": "^3.0.3",
-    "express": "^4.17.1"
+    "evilscan": "^1.7.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "ip": "^1.1.5",
+    "macaddress": "^0.5.1",
+    "moment": "^2.27.0",
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.4",
+    "qs": "^6.9.4",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2"
   }
 }

@@ -1,0 +1,40 @@
+**1**
+Dar get_ips
+conferir se esta na lista
+se nao estiver acrescentar
+No pull_Shielder procurar por novos ips a cada 1 minuto e meio se tiver acrescentar se nao continua
+Toda vez dar um autorizabox para todos os dispositivos
+
+**2**
+Enviar no response um objeto com informações, como url, e etc...
+
+DONE**3**
+colocar tudo esses negocio de get, put session, em outro lugar e nao no server start
+
+DONE**4**
+Colocar id do terminal no device_list
+
+DONE**5**
+Ler Digital remotamente, com o id do usuario que foi passado
+Enviar cadastrabio
+
+**6**
+Fazer o autorizamorador (monitor)
+
+**7**
+Ler Digital tem que parar quando começa a leitura
+->alternativa 1:
+criar variavel de controle no app, dizendo se lê ou não. depois que efetuar o procedimento abrir novamente
+->alternativa 2:
+enviar o cadastrabio uma vez para parar e caso nao receba um segundo cadastrabio ele volta a enviar
+->alternativa 3:
+usar sincronamente e antes de inicar marcar mutex como false, e depois com o retorno marcar como true
+**8**
+Transpor todas as funcoes de controle do Servidor(como cadastrabio, copiamoradores) para o controlServer
+**9**
+Quando da cancelar no lerdigital ele nao volta o mutex
+
+
+
+
+
