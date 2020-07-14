@@ -1,6 +1,7 @@
 {
   "name": "node-api",
   "main": "server.js",
+  "version": "1.0.0",
   "scripts": {
     "build": "cross-env NODE_ENV=development launch *./config/config.js"
   },
