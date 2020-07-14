@@ -31,13 +31,12 @@ var get_serial = (item) =>{
    }
     try{
      devices = await get_ips(options_scan)
-     
+     //console.log(devices)
     }catch(e){
        console.log("Não foi possível adquirir os IP'S " + e);
     }
- 
     for (var i=0; i<devices.length;i++){
-       
+
        try{
           session = await get_session(devices[i])
           var d = {
@@ -45,7 +44,6 @@ var get_serial = (item) =>{
              port : devices[i].port,
              session : ""
           }
-          //console.log(session)
           d.session = session;
           if(d.session)
              device_list.push(d)
@@ -119,6 +117,22 @@ var get_serial = (item) =>{
    
 };
 
+let set_date = (item) =>{
+   return new Promise((resolve, reject)=>{
+      var url = 'http://'+item.ip+':'+item.port+'/set_system_time.fcgi?session='+ item.session;
+      device(url,'system_data','set_date')
+      .then(response=>{
+         //console.log(response)
+         resolve (response)
+      })
+      .catch(response=>{
+         //console.log(response)
+         reject (response)
+      })
+   })
+   
+};
+
 let get_devid = (item) =>{
    return new Promise((resolve, reject)=>{
       var url = 'http://'+item.ip+':'+item.port+'/load_objects.fcgi?session='+ item.session;
@@ -138,6 +152,8 @@ let remote_digital = (device_list,response) =>{
    return new Promise((resolve, reject)=>{
       //console.log(device_list)
       var d = device_list.find(x => x.id == response[0].id_terminal);
+      if(d==undefined)
+         return 
         var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
         var loadobj = {
             "user_id": parseInt(response[0].id)
@@ -178,6 +194,8 @@ let controlApaga = (device_list,response) =>{
    return new Promise((resolve, reject)=>{
       //console.log(device_list)
       var d = device_list.find(x => x.id == response[0].id_terminal);
+      if(d==undefined)
+         return
     var url = 'http://'+d.ip+':'+d.port+'/destroy_objects.fcgi?session='+d.session;
     var loadobj = {
         "where": {
@@ -187,10 +205,9 @@ let controlApaga = (device_list,response) =>{
         }
     }
     
-      var resp = null
+   
       
          device(url,'objects_data','delete_user',null,loadobj).then(res=>{
-            resp = res
          }).catch(error=>{
             reject (error)
          })
@@ -198,8 +215,7 @@ let controlApaga = (device_list,response) =>{
       
 
       try{
-          if(resp)
-              resolve (push_shielder.cadastraBio(response[0].user_id,0,d.serial,'SAIDA'))
+              resolve (push_shielder.cadastraBio(response[0].id,0,d.serial,'SAIDA'))
       }catch(error){
           reject(error)
       }
@@ -235,5 +251,6 @@ let check_remote_state = (device_list,response) =>{
     set_monitor,
     get_devid,
     remote_digital,
-    controlApaga
+    controlApaga,
+    set_date
  }

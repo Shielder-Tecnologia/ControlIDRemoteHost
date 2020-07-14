@@ -19,14 +19,6 @@ var options = {
   type: 'application/octet-stream'
 };
 
-var options_scan = {
-   target: '192.168.15.0/24',
-   port:'8000',
-   status: 'O',
-   banner:true,
-   concurrency: '7000',
-   json:true
-}
 app.use(bodyParser.raw(options));
 app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -57,6 +49,7 @@ var server = app.listen(app.get('port'), async function () {
    try{
       ip = await shielderweb.get_local_ip()
       submask = ip.split(".")[2];
+      //console.log(submask)
       app.set('ip',ip);
    }catch(error){
       console.log("Erro"+error)
@@ -76,18 +69,22 @@ var server = app.listen(app.get('port'), async function () {
    try{
       device_list = await control.put_session(submask)
       app.set('device_list',device_list);
-      //console.log(device_list)
    }catch(error){
       console.log("Erro ao Pegar sessao"+error);
    }
-
-   if(device_list!=null){
+   /**Setup primeira vez que conecta */
+   if(device_list!=[]){
       for (var i=0; i<device_list.length;i++){
          try{
             device_list[i].serial = await control.get_serial(device_list[i])
             device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
+            
             device_list[i].devid = await control.get_devid(device_list[i])
             res = await control.set_monitor(app.get('ip'),device_list[i])
+            res = await control.set_date(device_list[i])
+            // console.log("res")
+            // console.log(res)
+            app.set('device_list',device_list);
             //console.log(res)
          }catch(error){
             console.log("Erro ao configurar o dispositivo"+error);
@@ -96,48 +93,71 @@ var server = app.listen(app.get('port'), async function () {
       }
    }else
       console.log('Não há dispositivos')
+      console.log("device_list")
+      console.log(device_list)
 
    /**TIMER PARA VERIFICAR IPS E DAR AUTORIZABOX */
    setInterval(async function(){
       //console.log(app.get('mutex_Ler'))
+      var device_list_in  = [];
+      var device_list_new = [];
       try{
          
-         var device_list_alt = await control.put_session(submask)
-         for(let devicealt in device_list_alt){
-            var d = device_list.find(x => x.ip == devicealt.ip);
-            if(d!=undefined){
-               device_list_alt
+         device_list_new = await control.put_session(submask)
+         /**loop para verificar se tem algum novo ou */
+         for(var i=0; i<device_list_new.length;i++){
+            var d = device_list.findIndex(x => x.ip == device_list_new[i].ip);
+            if(d==-1){
+               device_list_in.push(device_list_new[i]);
+            }
+            device_list[d].session = device_list_new[i].session;
+         }
+         /**loop para verificar se algum foi desconectado */
+         for(var i=0; i<device_list.length;i++){
+            var d = device_list_new.find(x => x.ip == device_list[i].ip);
+            if(d==undefined){
+               device_list.splice(i,1)
+            }
+            if(device_list[i].hasOwnProperty('id') && device_list[i].id<=2){
+               device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
             }
          }
+
          app.set('device_list',device_list);
          //console.log(device_list)
       }catch(error){
-         console.log("Erro ao Pegar sessao"+error);
+         console.log("Erro ao Pegar sessao "+error);
       }
-      if(device_list){
-         for (var i=0; i<device_list.length;i++){
+
+      /**pegar todos dados necessarios dos novos dispositivos conectados */
+      if(device_list_in){
+         for (var i=0; i<device_list_in.length;i++){
             try{
-               device_list[i].serial = await control.get_serial(device_list[i])
-               device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
-               device_list[i].devid = await control.get_devid(device_list[i])
-               res = await control.set_monitor(app.get('ip'),device_list[i])
+               device_list_in[i].serial = await control.get_serial(device_list_in[i])
+               device_list_in[i].id = await push_shielder.autorizaBox(device_list_in[i].ip,device_list_in[i].serial)
+               device_list_in[i].devid = await control.get_devid(device_list_in[i])
+               res = await control.set_monitor(app.get('ip'),device_list_in[i])
+               res = await control.set_date(device_list_in[i])
+               device_list.push(device_list_in[i])
                app.set('device_list',device_list);
                //console.log(res)
             }catch(error){
                console.log("Erro ao configurar o dispositivo"+error);
             }
-            
-         }
+         }  
       }
-      },5000)
+      console.log("device_list")
+      console.log(device_list)
+      },15000)
 
   
    
-   //console.log(device_list)   
+   
    
 
       if(device_list!=null){
          setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
+            console.log("Copia:")
             console.log(response)
          }).catch(error=>{
             console.log("Erro ao obter moradores para copiar"+error);
@@ -146,9 +166,11 @@ var server = app.listen(app.get('port'), async function () {
          setInterval(async function(){
             try{
                var response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
-            if(response)
+               
+            if(response!=null)
                var res = await control.controlApaga(app.get('device_list'),response)
-               console.log(response)
+               
+               
             }catch(error){
                console.log("Erro ao obter moradores para apagar"+error);
             }
@@ -167,7 +189,7 @@ var server = app.listen(app.get('port'), async function () {
                if(app.get('mutex_Ler')){
                   if(response){
                      var res = await control.remote_digital(app.get('device_list'),response)
-                     console.log(res);
+                     //console.log(res);
                      app.set('mutex_Ler',false)
                   }
                }else if (response){

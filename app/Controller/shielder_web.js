@@ -61,6 +61,8 @@ autorizaMorador = (id,datetime,serial)=>{
     return new Promise((resolve,reject)=>{
         
         urlaut = url + "getAutorizaMorador.php?mac=" + serial + "&biometria=" + id + "&data="+datetime;
+        console.log("morador")
+        console.log(urlaut)
         sendJson.getAxios(urlaut).then(response=>{                
             resolve (response);
         }).catch(response=>{

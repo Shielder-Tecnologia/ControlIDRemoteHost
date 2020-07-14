@@ -6,13 +6,15 @@ async function copiaMoradores(mac,device_list){
     var response = null
     try{
         response = await shielderweb.copiaMoradores(mac)
-        if(!response)
-            return
+        if(response<=4)
+            return response
     }catch(error){
         throw Error(error)
     }
     
     var d = device_list.find(x => x.id == response[0].id_terminal);
+    if(d==undefined)
+        return "Dispositivo não encontrado"
     var url = 'http://'+d.ip+':'+d.port+'/create_objects.fcgi?session='+d.session;
     //console.log(d)
     

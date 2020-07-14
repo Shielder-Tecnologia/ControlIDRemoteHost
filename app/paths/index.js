@@ -2,7 +2,6 @@
 const util = require('../utils');
 const device = require('../Controller/contact_device');
 const push_Shielder = require('../Controller/push_Shielder');
-const moment = require('moment')
 
 module.exports = ()=>{
     let routes = {
@@ -88,18 +87,28 @@ module.exports = ()=>{
         },
         'post':{
             '/api/notifications/dao':(req,res,next) => {
-                console.log(req.app.get('session_key'))
                 console.log("Data: ");
                 //console.log(req.body);
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 if(d){
                     if(req.body.object_changes[0].object == 'templates'){
-                        
-                        //console.log(req.body.object_changes[0].values.template)
-                       
                     }else{
-                        push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, moment().format('yyyy-MM-dd HH:mm:ss'), d.serial).then(response=>{
+                        
+                        var date = new Date(req.body.object_changes[0].values.time*1000);
+                        var datevalues = [
+                            date.getFullYear(),
+                            date.getMonth()+1,
+                            date.getDate(),
+                            date.getHours(),
+                            date.getMinutes(),
+                            date.getSeconds(),
+                        ];
+                        //('0' + deg).slice(-2)
+                        //('0' + datevalues[1]).slice(-2)
+                        var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
+                        //console.log(data)
+                        push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial).then(response=>{
                             console.log(response)
                         }).catch(error=>{
                             console.log(error)

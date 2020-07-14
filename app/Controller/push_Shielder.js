@@ -43,6 +43,7 @@ cadastraDigital = function(userid,id,serial,tipo,fp){
 }
 
 
+
 module.exports = {
     autorizaBox,
     cadastraDigital,
