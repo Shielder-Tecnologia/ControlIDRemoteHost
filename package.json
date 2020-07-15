@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "cross-env NODE_ENV=development launch *./config/config.js",
-    "forever" : "forever start server.js"
+    "forever" : "forever start server.js",
+    "forever_clean": "forever cleanlogs"
   },
   
   "dependencies": {
