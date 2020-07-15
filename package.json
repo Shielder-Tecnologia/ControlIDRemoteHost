@@ -1,10 +1,12 @@
 {
-  "name": "node-api",
+  "name": "node-api-controlid-shielder",
   "main": "server.js",
   "version": "1.0.0",
   "scripts": {
-    "build": "cross-env NODE_ENV=development launch *./config/config.js"
+    "build": "cross-env NODE_ENV=development launch *./config/config.js",
+    "forever" : "forever start server.js"
   },
+  
   "dependencies": {
     "axios": "^0.19.2",
     "body-parser": "^1.0.2",
