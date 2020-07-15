@@ -87,8 +87,8 @@ module.exports = ()=>{
         },
         'post':{
             '/api/notifications/dao':(req,res,next) => {
-                console.log("Data: ");
-                //console.log(req.body);
+                console.log("Morador: ");
+                console.log(req.body.object_changes[0].values);
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 if(d){
@@ -100,7 +100,7 @@ module.exports = ()=>{
                             date.getFullYear(),
                             date.getMonth()+1,
                             date.getDate(),
-                            date.getHours()+3,
+                            date.getHours(),
                             date.getMinutes(),
                             date.getSeconds(),
                         ];

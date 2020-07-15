@@ -79,7 +79,7 @@ async function copiaMoradores(mac,device_list){
         /**CADASTRA BIO */
         if(resp!=null){
             try{
-                console.log(response[0].id)
+                console.log("Usuario: "+response[0].id+" cadastrado")
                 return push_shielder.cadastraBio(response[0].id,0,d.serial,'ENTRADA')
             }catch(error){
                 throw Error(error)
