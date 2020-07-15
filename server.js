@@ -156,26 +156,26 @@ var server = app.listen(app.get('port'), async function () {
    
 
       if(device_list!=null){
-         setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
-            // console.log("Copia:")
-            // console.log(response)
-         }).catch(error=>{
-            console.log("Erro ao obter moradores para copiar"+error);
-         })},5000)
+         // setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
+         //    // console.log("Copia:")
+         //    // console.log(response)
+         // }).catch(error=>{
+         //    console.log("Erro ao obter moradores para copiar"+error);
+         // })},5000)
 
-         setInterval(async function(){
-            try{
-               var response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
+         // setInterval(async function(){
+         //    try{
+         //       var response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
                
-            if(response!=null)
-               var res = await control.controlApaga(app.get('device_list'),response)
+         //    if(response!=null)
+         //       var res = await control.controlApaga(app.get('device_list'),response)
                
                
-            }catch(error){
-               console.log("Erro ao obter moradores para apagar"+error);
-            }
+         //    }catch(error){
+         //       console.log("Erro ao obter moradores para apagar"+error);
+         //    }
             
-         },5000)
+         // },5000)
 
 
          app.set('mutex_Ler',true)
