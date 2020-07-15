@@ -17,4 +17,3 @@ $env:NODE_ENV="development" para windows powershell
 set NODE_ENV=development para cmd
 
 nodemon server.js
-ola
