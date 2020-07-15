@@ -193,6 +193,7 @@ let controlCopia = (device_list,response) =>{
 let controlApaga = (device_list,response) =>{
    return new Promise((resolve, reject)=>{
       //console.log(device_list)
+      var resp;
       var d = device_list.find(x => x.id == response[0].id_terminal);
       if(d==undefined)
          return
@@ -208,6 +209,7 @@ let controlApaga = (device_list,response) =>{
    
       
          device(url,'objects_data','delete_user',null,loadobj).then(res=>{
+            resp = res
          }).catch(error=>{
             reject (error)
          })
@@ -215,7 +217,8 @@ let controlApaga = (device_list,response) =>{
       
 
       try{
-              resolve (push_shielder.cadastraBio(response[0].id,0,d.serial,'SAIDA'))
+         if(resp!=null)
+            resolve (push_shielder.cadastraBio(response[0].id,0,d.serial,'SAIDA'))
       }catch(error){
           reject(error)
       }

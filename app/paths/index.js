@@ -92,7 +92,7 @@ module.exports = ()=>{
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 if(d){
-                    if(req.body.object_changes[0].object == 'templates'){
+                    if(req.body.object_changes[0].object == 'templates' || req.body.object_changes[0].object == 'cards'){
                     }else{
                         
                         var date = new Date(req.body.object_changes[0].values.time*1000);
