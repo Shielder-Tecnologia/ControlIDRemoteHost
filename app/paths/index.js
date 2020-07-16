@@ -140,6 +140,7 @@ module.exports = ()=>{
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 push_Shielder.cadastraDigital(0,req.body.user_id, d.serial,'ENTRADA',req.body.template).then(response=>{
                     req.app.set('mutex_Ler',true)
+                    console.log("Digital Cadastrada")
                     console.log(response)
                 }).catch(error=>{
                     console.log(error)
