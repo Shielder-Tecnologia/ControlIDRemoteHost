@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "scripts": {
     "build": "cross-env NODE_ENV=development launch *./config/config.js",
-    "forever": "./node_modules/.bin/forever start -o output.log -e error.log server.js",
+    "forever" : "./node_modules/.bin/forever start -o output%BUILD_NUMBER%.log -e error.log server.js",
     "forever_clean": "forever cleanlogs",
-    "forever_stop": "forever stopall"
+    "forever_stop": "forever stopall",
+    "forever_install": "npm list forever || npm install -g --force forever"
   },
   "dependencies": {
     "axios": "^0.19.2",
