@@ -186,7 +186,7 @@ var server = app.listen(app.get('port'), async function () {
                
                
                var response = await pull_shielder.lerDigital(app.get('mac'))
-               //console.log("ss"+response)
+               console.log("ss"+response)
                if(app.get('mutex_Ler')){
                   if(response){
                      var res = await control.remote_digital(app.get('device_list'),response)
