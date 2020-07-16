@@ -9,7 +9,6 @@
     "forever_stop": "forever stopall",
     "forever_install": "npm list forever || npm install -g --force forever"
   },
-  
   "dependencies": {
     "axios": "^0.19.2",
     "body-parser": "^1.0.2",

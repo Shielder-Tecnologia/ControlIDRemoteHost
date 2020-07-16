@@ -98,7 +98,7 @@ var get_serial = (item) =>{
       var url = 'http://'+item.ip+':'+item.port+'/set_configuration.fcgi?session='+ item.session;
       var loadobj = {
          "monitor": {
-            "request_timeout": "10000",
+            "request_timeout": "15000",
 		      "hostname": local_ip,
             "port": "3000"
          }
