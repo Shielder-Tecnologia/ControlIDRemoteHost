@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var app = express(); 
 config = require('./config/config.js');
 const routes = require('./app');
+var moment = require('moment')
 
 const push_shielder =require('./app/Controller/push_Shielder')
 const shielderweb =require('./app/Controller/shielder_web');
@@ -146,7 +147,7 @@ var server = app.listen(app.get('port'), async function () {
             }
          }  
       }
-      console.log("device_list")
+      console.log(moment().format('MMMM Do YYYY, h:mm:ss a')+" Device List: ");
       console.log(device_list)
       },15000)
 
