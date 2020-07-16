@@ -4,16 +4,16 @@
 Siga as orientações de instalação do seu sistema operacional.
 
 ## Instale o **Package**:
-npm install express
+npm install na raiz da pasta, para instalar o package.json com todas dependências.
 
-## Configure o monitor para notificar eventos na porta 8000.
-
-[Documentação de configuração do monitor](https://documenter.getpostman.com/view/7260734/S1LvX9b1?version=latest#db6a27ad-2a63-4381-810e-39b8e5585963)
-
-[Exemplo de configuração do monitor](https://www.controlid.com.br/docs/access-api-pt/configuracoes/parametros-configuracao/#monitor)
-
-## Execute o exemplo e realize as tentativas de acesso nos dispositivos.
+## Estabeleça o ambiente, ambiente sem ser cloud = development, cloud=production
 $env:NODE_ENV="development" para windows powershell
 set NODE_ENV=development para cmd
 
-nodemon server.js
+## Execução Rápida
+npm run
+
+## Execução com API Forever
+npm run forever
+forever faz com que a aplicação sempre esteja rodando, além de providenciar um gerenciamento melhor de logs.
+

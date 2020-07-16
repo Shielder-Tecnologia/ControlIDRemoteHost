@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var app = express(); 
 config = require('./config/config.js');
 const routes = require('./app');
+var moment = require('moment')
 
 const push_shielder =require('./app/Controller/push_Shielder')
 const shielderweb =require('./app/Controller/shielder_web');
@@ -80,7 +81,9 @@ var server = app.listen(app.get('port'), async function () {
             device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
             
             device_list[i].devid = await control.get_devid(device_list[i])
+            console.log("Setando monitor: "+app.get('ip'),device_list[i])
             res = await control.set_monitor(app.get('ip'),device_list[i])
+            console.log(res)
             res = await control.set_date(device_list[i])
             // console.log("res")
             // console.log(res)
@@ -137,7 +140,9 @@ var server = app.listen(app.get('port'), async function () {
                device_list_in[i].serial = await control.get_serial(device_list_in[i])
                device_list_in[i].id = await push_shielder.autorizaBox(device_list_in[i].ip,device_list_in[i].serial)
                device_list_in[i].devid = await control.get_devid(device_list_in[i])
+               console.log("Setando monitor: "+app.get('ip'),device_list[i])
                res = await control.set_monitor(app.get('ip'),device_list_in[i])
+               console.log(res);
                res = await control.set_date(device_list_in[i])
                device_list.push(device_list_in[i])
                app.set('device_list',device_list);
@@ -147,7 +152,7 @@ var server = app.listen(app.get('port'), async function () {
             }
          }  
       }
-      console.log("device_list")
+      console.log(moment().format('MMMM Do YYYY, h:mm:ss a')+" Device List: ");
       console.log(device_list)
       },15000)
 
@@ -186,7 +191,7 @@ var server = app.listen(app.get('port'), async function () {
                
                
                var response = await pull_shielder.lerDigital(app.get('mac'))
-               //console.log("ss"+response)
+               console.log("ss"+response)
                if(app.get('mutex_Ler')){
                   if(response){
                      var res = await control.remote_digital(app.get('device_list'),response)
