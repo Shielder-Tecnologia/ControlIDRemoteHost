@@ -1,7 +1,7 @@
 var get_config = {
-    // "general": {
-	// 	"local_identification": "0"
-	// }
+    "general": {
+		"local_identification": "0"
+	}
     // "mifare": ["byte_order"],
     // "sec_box": ["out_mode"],
     // "alarm": [
@@ -20,12 +20,12 @@ var get_config = {
     //     "max_request_attempts"
     // ],
     // "bio_module": ["var_min"],
-    "monitor": [
-        "path",
-        "hostname",
-        "port",
-        "request_timeout"
-    ]
+    // "monitor": [
+    //     "path",
+    //     "hostname",
+    //     "port",
+    //     "request_timeout"
+    // ]
     // "push_server": [
     //     "push_request_timeout",
     //     "push_request_period",

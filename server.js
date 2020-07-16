@@ -81,7 +81,9 @@ var server = app.listen(app.get('port'), async function () {
             device_list[i].id = await push_shielder.autorizaBox(device_list[i].ip,device_list[i].serial)
             
             device_list[i].devid = await control.get_devid(device_list[i])
+            console.log("Setando monitor: "+app.get('ip'),device_list[i])
             res = await control.set_monitor(app.get('ip'),device_list[i])
+            console.log(res)
             res = await control.set_date(device_list[i])
             // console.log("res")
             // console.log(res)
@@ -137,8 +139,8 @@ var server = app.listen(app.get('port'), async function () {
                device_list_in[i].serial = await control.get_serial(device_list_in[i])
                device_list_in[i].id = await push_shielder.autorizaBox(device_list_in[i].ip,device_list_in[i].serial)
                device_list_in[i].devid = await control.get_devid(device_list_in[i])
+               console.log("Setando monitor: "+app.get('ip'),device_list[i])
                res = await control.set_monitor(app.get('ip'),device_list_in[i])
-               console.log(app.get('ip'),)
                console.log(res);
                res = await control.set_date(device_list_in[i])
                device_list.push(device_list_in[i])
