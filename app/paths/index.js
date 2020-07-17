@@ -19,13 +19,14 @@ module.exports = ()=>{
             },
             '/all-config':(req,res,next) => {
                 var device_list = req.app.get('device_list')
-                
-                var url = 'http://'+device_list[0].ip+':'+device_list[0].port+'/get_configuration.fcgi?session='+device_list[0].session;
-                device(url,'config_data','get_config').then(response=>{
-                    console.log(response)
-                 }).catch(response=>{
-                    console.log(response)
-                 })
+                for (var i=0; i<device_list.length;i++){
+                    var url = 'http://'+device_list[i].ip+':'+device_list[i].port+'/get_configuration.fcgi?session='+device_list[i].session;
+                    device(url,'config_data','get_config').then(response=>{
+                        console.log(response)
+                    }).catch(response=>{
+                        console.log(response)
+                    })
+                }
                  res.send()
                 
                 res.send("1");
@@ -83,7 +84,25 @@ module.exports = ()=>{
                  res.send()
                 
                 res.send("1");
-            }
+            },
+            '/push':(req,res,next) => {
+                console.log(": ");
+                console.log("Length: " + req.body.length);
+                console.log(req.body);
+                
+                res.end(JSON.stringify({
+                    verb: "POST",
+                    endpoint: "load_objects",
+                    body: { object: "users" },
+                    contentType: "application/json"
+                }));
+            },
+            '/result':(req,res,next) => {
+                console.log(": ");
+                console.log("resposta: 1" + req.body.length);
+                console.log(req.body);
+                res.send();
+            },
         },
         'post':{
             '/api/notifications/dao':(req,res,next) => {
@@ -155,6 +174,20 @@ module.exports = ()=>{
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
                 res.send();
+            },
+            '/push':(req,res,next) => {
+                res.send(JSON.stringify({
+                    verb: "POST",
+                    endpoint: "load_objects",
+                    body: { object: "users" },
+                    contentType: "application/json"
+                }));
+            },
+            '/result':(req,res,next) => {
+                console.log(": ");
+                console.log("resposta: " + req.body.length);
+                console.log(req.body);
+                //res.send(system_information);
             },
         }
 

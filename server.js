@@ -83,7 +83,7 @@ var server = app.listen(app.get('port'), async function () {
             device_list[i].devid = await control.get_devid(device_list[i])
             console.log("Setando monitor: "+app.get('ip'),device_list[i])
             res = await control.set_monitor(app.get('ip'),device_list[i])
-            console.log(res)
+            //console.log(res)
             res = await control.set_date(device_list[i])
             // console.log("res")
             // console.log(res)
@@ -197,7 +197,8 @@ var server = app.listen(app.get('port'), async function () {
                
                
                var response = await pull_shielder.lerDigital(app.get('mac'))
-               console.log("ss"+response)
+               console.log("Ler digital")
+               console.log(response)
                if(app.get('mutex_Ler')){
                   if(response){
                      var res = await control.remote_digital(app.get('device_list'),response)
