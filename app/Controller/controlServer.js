@@ -23,7 +23,7 @@ var get_serial = (item) =>{
     var device_list = []
     var options_scan = {
       target: '192.168.'+ip+'.0/24',
-      port:'8000',
+      port:'8000,80',
       status: 'O',
       banner:true,
       concurrency: '7000',
