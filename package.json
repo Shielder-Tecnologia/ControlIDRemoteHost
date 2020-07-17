@@ -6,7 +6,7 @@
     "build": "cross-env NODE_ENV=development launch *./config/config.js",
     "forever" : "./node_modules/.bin/forever start -o output%BUILD_NUMBER%.log -e error.log server.js",
     "forever_clean": "forever cleanlogs",
-    "forever_stop": "forever stopall",
+    "forever_stop": "forever stopall netsh http add urlacl url=http://+:3000/user=Todos netsh http add urlacl url=http://+:3000/user=Everyone",
     "forever_install": "npm list forever || npm install -g --force forever"
   },
   "dependencies": {

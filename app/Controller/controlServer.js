@@ -138,8 +138,11 @@ let get_devid = (item) =>{
       var url = 'http://'+item.ip+':'+item.port+'/load_objects.fcgi?session='+ item.session;
       device(url,'objects_data','load_device')
       .then(response=>{
-         //console.log(response.devices[0].id)
-         resolve (response.devices[0].id)
+         //console.log(response)
+         if(response.devices[0].id ==-1)
+            resolve (response.devices[1].id)
+         else
+            resolve (response.devices[0].id)
       })
       .catch(response=>{
          //console.log(response)

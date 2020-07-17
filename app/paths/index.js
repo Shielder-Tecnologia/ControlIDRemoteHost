@@ -89,11 +89,17 @@ module.exports = ()=>{
                 console.log(": ");
                 console.log("Length: " + req.body.length);
                 console.log(req.body);
-                res.send('system_information');
+                
+                res.end(JSON.stringify({
+                    verb: "POST",
+                    endpoint: "load_objects",
+                    body: { object: "users" },
+                    contentType: "application/json"
+                }));
             },
             '/result':(req,res,next) => {
                 console.log(": ");
-                console.log("resposta: " + req.body.length);
+                console.log("resposta: 1" + req.body.length);
                 console.log(req.body);
                 res.send();
             },
@@ -170,13 +176,18 @@ module.exports = ()=>{
                 res.send();
             },
             '/push':(req,res,next) => {
-                res.send('system_information');
+                res.send(JSON.stringify({
+                    verb: "POST",
+                    endpoint: "load_objects",
+                    body: { object: "users" },
+                    contentType: "application/json"
+                }));
             },
             '/result':(req,res,next) => {
                 console.log(": ");
                 console.log("resposta: " + req.body.length);
                 console.log(req.body);
-                res.send(system_information);
+                //res.send(system_information);
             },
         }
 
