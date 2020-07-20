@@ -90,7 +90,6 @@ var get_serial = (item) =>{
           reject(response)
        })
     })
-    
  };
 
  let set_monitor = (local_ip,item) =>{
@@ -100,7 +99,8 @@ var get_serial = (item) =>{
          "monitor": {
             "request_timeout": "15000",
 		      "hostname": local_ip,
-            "port": "3000"
+            "port": "3000",
+            "path":"api/notifications"
          }
          
      }
