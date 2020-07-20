@@ -220,10 +220,10 @@ let controlApaga = (device_list,response) =>{
       
 
       try{
-         if(resp!=null){
+         
             console.log("Usuario: "+response[0].id+" apagado")
             resolve (push_shielder.cadastraBio(response[0].id,0,d.serial,'SAIDA'))
-         }
+         
       }catch(error){
           reject(error)
       }
