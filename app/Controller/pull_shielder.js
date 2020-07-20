@@ -22,7 +22,7 @@ async function copiaMoradores(mac,device_list){
             "values": [
                 {
                     "id":parseInt(response[0].id),
-                    "name": response[0].bloco,
+                    "name": response[0].nome,
                     "registration": response[0].documento,
                 }
             ]
