@@ -110,12 +110,12 @@ var server = app.listen(app.get('port'), async function () {
          /**loop para verificar se tem algum novo ou */
          for(var i=0; i<device_list_new.length;i++){
             var d = device_list.findIndex(x => x.ip == device_list_new[i].ip);
-            console.log("device_list_new")
-               console.log(device_list_new)
+            //   console.log("device_list_new")
+            //   console.log(device_list_new)
             if(d==-1){
                device_list_in.push(device_list_new[i]);
-               console.log("device_list_in")
-               console.log(device_list_in)
+               //console.log("device_list_in")
+               //console.log(device_list_in)
             }
             device_list[d].session = device_list_new[i].session;
          }

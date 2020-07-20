@@ -87,7 +87,7 @@ module.exports = ()=>{
             },
             '/push':(req,res,next) => {
                 console.log(": ");
-                console.log("Length: " + req.body.length);
+                console.log("Lengthdnsndsj: " + req.body.length);
                 console.log(req.body);
                 
                 res.end(JSON.stringify({
@@ -176,7 +176,7 @@ module.exports = ()=>{
                 res.send();
             },
             '/push':(req,res,next) => {
-                res.send(JSON.stringify({
+                res.send(({
                     verb: "POST",
                     endpoint: "load_objects",
                     body: { object: "users" },
