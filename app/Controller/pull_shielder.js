@@ -5,9 +5,7 @@ const push_shielder = require('./push_Shielder')
 async function copiaMoradores(mac,device_list){
     var response = null
     try{
-        response = await shielderweb.copiaMoradores(mac)
-        if(response<=4)
-            return response
+        return await shielderweb.copiaMoradores(mac)
     }catch(error){
         throw Error(error)
     }

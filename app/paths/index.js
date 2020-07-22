@@ -2,6 +2,8 @@
 const util = require('../utils');
 const device = require('../Controller/contact_device');
 const push_Shielder = require('../Controller/push_Shielder');
+const control = require('../Controller/controlServer');
+var moment = require('moment')
 
 module.exports = ()=>{
     let routes = {
@@ -86,23 +88,73 @@ module.exports = ()=>{
                 res.send("1");
             },
             '/push':(req,res,next) => {
-                console.log(": ");
-                console.log("Lengthdnsndsj: " + req.body.length);
-                console.log(req.body);
+                console.log("pushzadas")
+                var push_list = req.app.get('push_list')
+                var device_list = req.app.get('device_list')
+                if(device_list)
+                    var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
+                //se nao tiver nenhum device ou se n tiver o encontrado
+                if(!device_list ||dIndex==-1){
+                    var p = {};
+                    p.devid = req.query.deviceId;
+                    //pegar o serial
+                    p.request = { verb: "POST", endpoint: "system_information" }
+                    p.tipo = 'get_serial';
+                    push_list.push(p);
+                    p = {};
+                    //setar o monitor
+                    p.devid = req.query.deviceId;
+                    p.request = { verb: "POST", endpoint: "set_configuration", body: { "monitor": {
+                        "request_timeout": "15000",
+                            "hostname": req.app.get('ip'),
+                        "port": "3000",
+                        "path":"api/notifications"
+                        }}}
+                    p.tipo = 'set_monitor';
+                    push_list.push(p);
+                    // console.log("push_list")
+                    // console.log(push_list)
+                    req.app.set('push_list',push_list);
+                }else{
+                    //autorizabox para toda vez que um dispositivo der push
+                    push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
+                        console.log("Autoriza"+ response)
+                        device_list[dIndex].lastOn = moment().valueOf();
+                        //console.log(device_list[dIndex].lastOn)
+                        //caso nao tenha sido registrado no shielder ele espera para colocar o id
+                        if(device_list[dIndex].id<=4){
+                            device_list[dIndex].id = response;
+                            
+                            req.app.set('device_list',device_list);
+                        }
+                     }).catch(error=>{
+                        reject(error)
+                     })
+                }
+
+                for (var i=0; i<device_list.length;i++){
+                    //console.log(moment(device_list[i].lastOn,"MMMM Do YYYY, h:mm:ss a").fromNow())
+                    //var date = new Date (moment().valueOf())
+                    if(moment().valueOf() - device_list[dIndex].lastOn >300000){
+                        device_list.splice(i,1);
+                    }
+                }
+
+
                 
-                res.end(JSON.stringify({
-                    verb: "POST",
-                    endpoint: "load_objects",
-                    body: { object: "users" },
-                    contentType: "application/json"
-                }));
-            },
-            '/result':(req,res,next) => {
-                console.log(": ");
-                console.log("resposta: 1" + req.body.length);
-                console.log(req.body);
-                res.send();
-            },
+                if(push_list!=[]){
+                    //seleciona qual comando enviar baseado em qual dispositivo fez o push
+                    var index = push_list.findIndex(x => x.devid == req.query.deviceId);
+                    if(index!= -1){
+                        console.log(push_list)
+                        push_list[index].uuid = req.query.uuid;
+                        req.app.set('push_list',push_list);
+                        res.status(200).json(push_list[index].request)
+                    }else
+                        res.send();
+                }
+                
+            }
         },
         'post':{
             '/api/notifications/dao':(req,res,next) => {
@@ -175,20 +227,27 @@ module.exports = ()=>{
                 console.log(req.body);
                 res.send();
             },
-            '/push':(req,res,next) => {
-                res.send(({
-                    verb: "POST",
-                    endpoint: "load_objects",
-                    body: { object: "users" },
-                    contentType: "application/json"
-                }));
-            },
             '/result':(req,res,next) => {
-                console.log(": ");
-                console.log("resposta: " + req.body.length);
-                console.log(req.body);
+                if(req.body!=null || req.body!=undefined){
+                    console.log("resultzada")
+                    console.log(req.body)
+                    control.resolve_result(req).then(index=>{
+                        var push_list = req.app.get('push_list');
+                        push_list.splice(index,1);
+                        console.log("push_list removed")
+                        console.log(push_list)
+                        
+                        req.app.set('push_list', push_list);
+                    }).catch(error=>{
+                        console.log("Erro " + error)
+
+                    });
+
+
+                    
+                }
                 //res.send(system_information);
-            },
+            }
         }
 
     }
