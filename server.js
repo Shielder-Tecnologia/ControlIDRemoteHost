@@ -31,6 +31,7 @@ var submask;
 
 /** Pegar e guardar no Express o MacAddress da maquina host*/
     shielderweb.get_mac_address().then(macAddress=>{
+       console.log(macAddress)
       app.set('mac',macAddress);
    }).catch(error=>{
       console.log("Erro"+error)
@@ -41,7 +42,7 @@ var submask;
 
    shielderweb.get_local_ip().then(ip=>{
       submask = ip.split(".")[2];
-      //console.log(submask)
+      console.log(ip)
       app.set('ip',ip);
    }).catch(error=>{
       console.log("Erro"+error)
