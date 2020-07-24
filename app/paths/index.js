@@ -21,15 +21,21 @@ module.exports = ()=>{
             },
             '/all-config':(req,res,next) => {
                 var device_list = req.app.get('device_list')
+                var push_list = req.app.get('push_list')
                 for (var i=0; i<device_list.length;i++){
-                    var url = 'http://'+device_list[i].ip+':'+device_list[i].port+'/get_configuration.fcgi?session='+device_list[i].session;
-                    device(url,'config_data','get_config').then(response=>{
-                        console.log(response)
-                    }).catch(response=>{
-                        console.log(response)
-                    })
+                    var p = {};
+                    p.devid = device_list[i].devid;
+                    //pegar o serial
+                    p.request = { verb: "POST", endpoint: "get_configuration", body: { "monitor": [
+                        "path",
+                        "hostname",
+                        "port",
+                        "request_timeout"
+                    ]}} 
+                    p.tipo = 'get_config';
+                    push_list.push(p);
                 }
-                 res.send()
+                req.app.set('push_list',push_list)
                 
                 res.send("1");
             },

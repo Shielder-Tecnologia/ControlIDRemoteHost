@@ -81,7 +81,9 @@ var resolve_result = (req) =>{
                   break;
                case "remote_digital":
                   console.log("Template capturada")
-               
+                  break;
+               case "get_config":
+                  console.log("get config");          
 
             }
             resolve(pIndex)
