@@ -96,6 +96,7 @@ module.exports = ()=>{
                 
                 
                 for (var i=0; i<device_list.length;i++){
+                    console.log(moment().valueOf() - device_list[dIndex].lastOn)
                     if(moment().valueOf() - device_list[dIndex].lastOn >300000){
                         device_list.splice(i,1);
                     }
