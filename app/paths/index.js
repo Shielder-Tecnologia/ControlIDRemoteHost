@@ -158,7 +158,7 @@ module.exports = ()=>{
 
                 
 
-                //var push_list = push_list.filter(control.onlyUnique);
+                push_list = push_list.filter(control.onlyUnique);
                 
                 if(push_list.length>0){
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
