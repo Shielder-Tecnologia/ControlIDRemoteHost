@@ -96,7 +96,7 @@ module.exports = ()=>{
                 
                 for (var i=0; i<device_list.length;i++){
                     console.log(device_list.length)
-                    if(typeof device_list[dIndex].lastOn !== 'undefined'){
+                    if(device_list[dIndex] && device_list[i].lastOn !== 'undefined'){
                         if(moment().valueOf() - device_list[dIndex].lastOn >300000){
                             device_list.splice(i,1);
                         }
