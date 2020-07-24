@@ -26,7 +26,51 @@ app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/',routes.router)
-/**
+
+var submask;
+
+/** Pegar e guardar no Express o MacAddress da maquina host*/
+    shielderweb.get_mac_address().then(macAddress=>{
+      app.set('mac',macAddress);
+   }).catch(error=>{
+      console.log("Erro"+error)
+   })
+
+
+/**Pegar IP do Host */
+
+   shielderweb.get_local_ip().then(ip=>{
+      submask = ip.split(".")[2];
+      //console.log(submask)
+      app.set('ip',ip);
+   }).catch(error=>{
+      console.log("Erro"+error)
+   })
+   
+
+var res = 0;
+/**AUTORIZABOX PARA O SERVIDOR */
+try{
+   var refreshIntervalId = setInterval(async function(){
+      
+      if(res<4){
+         res = await push_shielder.autorizaBox(app.get('ip'),app.get('mac'))
+      }else{
+         clearInterval(refreshIntervalId);
+         startServer()
+      }
+      console.log(res)
+   }, 2000);
+}catch(error){
+      console.log("Erro"+ error)
+}
+
+
+
+
+
+function startServer(){
+   /**
  * @param ip
  * @param port
  * @param session 
@@ -40,102 +84,79 @@ var device_list = []
  * @param uuid
  */
 var push_list = []
-var submask;
 
 
-var server = app.listen(app.get('port'), async function () {
+   app.listen(app.get('port'), async function () {
 
-   console.log("Example app listening at ", app.get('host'), app.get('port'));
-   
-   app.set('push_list', push_list)
-   app.set('device_list', device_list)
-
-   /** Pegar e guardar no Express o MacAddress da maquina host*/
-   try{
-      macAddress = await shielderweb.get_mac_address()
-      app.set('mac',macAddress);
-   }catch(error){
-      console.log("Erro"+error)
-   }
-   /**Pegar IP do Host */
-   try{
-      ip = await shielderweb.get_local_ip()
-      submask = ip.split(".")[2];
-      //console.log(submask)
-      app.set('ip',ip);
-   }catch(error){
-      console.log("Erro"+error)
-   }
-
-     
-   /**AUTORIZABOX PARA O SERVIDOR */
-   try{
-      response = await push_shielder.autorizaBox(app.get('ip'),app.get('mac'))   
-      console.log(response)   
-   }catch(error){
-         console.log("Erro"+ error)
-   }
-   
-   
-   
-
-      if(device_list!=[]){
-         setInterval(function(){pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list')).then(response =>{
-             console.log("Copia:")
-             
-             if(response!=null){
-               console.log(response)
-               controlServer.controlCopia(response,app.get('device_list'),app.get('push_list')).then(res=>{
-                  push_list = res;
-                  app.set('push_list',push_list)
-               }).catch(error=>{
-                  console.log("Erro"+error)
-               })
-             }
-             
-         }).catch(error=>{
-            console.log("Erro ao obter moradores para copiar"+error);
-         })},5000)
+      console.log("Example app listening at ", app.get('host'), app.get('port'));
+      
+      app.set('push_list', push_list)
+      app.set('device_list', device_list)
+      console.log("device_list");
+      console.log(device_list)
+      try{
+         setInterval(async function(){
+            var response
+            try{
+               if(device_list && device_list.length>0){
+                  response = await pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list'));
+                  console.log("Copia:")
+               
+                  if(response){
+                     console.log(response)
+                     var res = await controlServer.controlCopia(response,app.get('device_list'),app.get('push_list'));
+                     push_list = res;
+                     app.set('push_list',push_list);
+                  }
+               }
+            }catch(error){
+               console.log("Não foi possível copiar o morador " + error + " --resposta url: "+ response)
+            }
+         },5000)
 
          setInterval(async function(){
+            var response
             try{
-               var response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
-               console.log("Apaga: ")
-               console.log(response)
-            if(response!=null)
-               var res = await control.controlApaga(app.get('device_list'),response)
-               
+               if(device_list && device_list.length>0){
+                  response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
+                  console.log("Apaga: ")
+                  
+                  if(response){
+                     
+                     console.log(response)
+                     var res = await control.controlApaga(response,app.get('device_list'),app.get('push_list'))
+                     push_list = res;
+                     app.set('push_list',push_list);
+                  }
+               }
                
             }catch(error){
-               console.log("Erro ao obter moradores para apagar"+error);
+               console.log("Erro ao apagar morador "+error +" --resposta url"+ response);
             }
             
          },5000)
 
-
-         app.set('mutex_Ler',true)
          setInterval(async function(){
             //console.log(app.get('mutex_Ler'))
+            var response
             try{
-               
-               
-               var response = await pull_shielder.lerDigital(app.get('mac'))
-               console.log("Ler digital")
-               console.log(response)
-               if(app.get('mutex_Ler')){
+               if(device_list && device_list.length>0){
+                  response = await pull_shielder.lerDigital(app.get('mac'))
+                  console.log("Ler digital")
+                  console.log(response)
                   if(response){
-                     var res = await control.remote_digital(app.get('device_list'),response)
-                     //console.log(res);
-                     app.set('mutex_Ler',false)
+                     var res = await control.remote_digital(response,app.get('device_list'),app.get('push_list'))
+                     push_list = res;
+                     app.set('push_list',push_list);
                   }
-               }else if (response){
-
                }
             }catch(error){
                console.log("Erro ao tentar ler digital"+error);
             }
          },5000)
-      }else
-         console.log('Não há dispositivos')
-   
-})
+      }catch(error){
+         console.log("Erro ao entrar em contato com o Servidor")
+      }
+      
+   })
+}

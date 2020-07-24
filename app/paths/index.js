@@ -88,13 +88,13 @@ module.exports = ()=>{
                 res.send("1");
             },
             '/push':(req,res,next) => {
-                console.log("pushzadas")
+                console.log("PUSH:")
                 var push_list = req.app.get('push_list')
                 var device_list = req.app.get('device_list')
                 if(device_list)
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                 //se nao tiver nenhum device ou se n tiver o encontrado
-                if(!device_list ||dIndex==-1){
+                if(device_list.length == 0 || dIndex == -1){
                     var p = {};
                     p.devid = req.query.deviceId;
                     //pegar o serial
@@ -127,14 +127,15 @@ module.exports = ()=>{
                             
                             req.app.set('device_list',device_list);
                         }
+                        console.log("Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
+                        console.log(device_list)
+                        
                      }).catch(error=>{
                         reject(error)
                      })
                 }
 
                 for (var i=0; i<device_list.length;i++){
-                    //console.log(moment(device_list[i].lastOn,"MMMM Do YYYY, h:mm:ss a").fromNow())
-                    //var date = new Date (moment().valueOf())
                     if(moment().valueOf() - device_list[dIndex].lastOn >300000){
                         device_list.splice(i,1);
                     }
@@ -142,7 +143,7 @@ module.exports = ()=>{
 
 
                 
-                if(push_list!=[]){
+                if(push_list.length>0){
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
                     var index = push_list.findIndex(x => x.devid == req.query.deviceId);
                     if(index!= -1){
@@ -159,7 +160,7 @@ module.exports = ()=>{
         'post':{
             '/api/notifications/dao':(req,res,next) => {
                 console.log("Morador: ");
-                console.log(req.body.object_changes[0].values);
+                //console.log(req.body.object_changes[0].values);
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 if(d){
@@ -180,7 +181,7 @@ module.exports = ()=>{
                         var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
                         //console.log(data)
                         push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial).then(response=>{
-                            console.log(response)
+                            console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
                         }).catch(error=>{
                             console.log(error)
                         })
@@ -229,24 +230,19 @@ module.exports = ()=>{
             },
             '/result':(req,res,next) => {
                 if(req.body!=null || req.body!=undefined){
-                    console.log("resultzada")
+                    console.log("RESULT:")
                     console.log(req.body)
                     control.resolve_result(req).then(index=>{
                         var push_list = req.app.get('push_list');
                         push_list.splice(index,1);
-                        console.log("push_list removed")
-                        console.log(push_list)
-                        
                         req.app.set('push_list', push_list);
+                        res.send()
                     }).catch(error=>{
                         console.log("Erro " + error)
 
                     });
-
-
-                    
                 }
-                //res.send(system_information);
+                
             }
         }
 

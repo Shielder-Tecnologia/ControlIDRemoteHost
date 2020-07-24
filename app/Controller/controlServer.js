@@ -12,7 +12,7 @@ var resolve_result = (req) =>{
 
       var response = JSON.parse(req.body.response)
       //se push list n for nulo e tiver um endpoint valido
-      if(push_list && req.query.endpoint){         
+      if(push_list && push_list.length>0 && req.query.endpoint){         
          var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
          //acha o request que foi mandado
          if(pIndex!=-1){
@@ -20,7 +20,7 @@ var resolve_result = (req) =>{
             switch(push_list[pIndex].tipo){
 
                case "get_serial":
-                  if(device_list || d == undefined){
+                  if(device_list.length == 0 || d == undefined){
                      var device = {}
                      device.devid = req.query.deviceId;
                      device.serial = response.serial;
@@ -45,13 +45,36 @@ var resolve_result = (req) =>{
                   console.log("Usuário criado ")
                   break;
 
+               case "create_group":
+                  console.log("grupo inserido");
+                  break;
                case "create_template":
-                  console.log("Template criado ")
-
+                  
+                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                     console.log("Usuario: "+push_list[pIndex].user_id+" criado")
+                  }).catch(error=>{
+                     reject(error)
+                  })
                   break;
                case "create_card":
-                  console.log("Cartão criado ")
+                  
+                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                     console.log("Usuario: "+push_list[pIndex].user_id+" criado")
+                  }).catch(error=>{
+                     reject(error)
+                  })
                   break; 
+               case "delete_user":
+                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'SAIDA').then(res=>{
+                     console.log("Usuario: "+push_list[pIndex].user_id+" apagado")
+                  }).catch(error=>{
+                     reject(error)
+                  })
+
+                  break;
+               case "remote_digital":
+                  console.log("Template capturada")
+               
 
             }
             resolve(pIndex)
@@ -80,24 +103,40 @@ let set_date = (item) =>{
 
 
 
-let remote_digital = (device_list,response) =>{
+let remote_digital = (response,device_list,push_list) =>{
    return new Promise((resolve, reject)=>{
       //console.log(device_list)
-      var d = device_list.find(x => x.id == response[0].id_terminal);
-      if(d==undefined)
-         return 
-        var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
-        var loadobj = {
-            "user_id": parseInt(response[0].id)
-        }
-        if(response){
-         
-             device(url,'objects_data','remote_enroll_async',null,loadobj).then(res=>{
-               resolve (res)
-             }).catch(error=>{
-               reject (error)
-             })         
-     }
+      var dIndex = device_list.findIndex(x => x.id == response[0].id_terminal);
+      if(dIndex==-1){
+         reject("Dispositivo não encontrado")
+         return;
+      }
+      if(push_list)
+         var p = push_list.find(x => x.user_id == response[0].id);
+      if(p!=undefined && p.user_id == response[0].id && p.devid ==device_list[dIndex].devid){
+         reject("Aguardando dispositivo para capturar a digital do usuário: "+response[0].id)
+         return;
+      }
+
+
+      var p = {}
+      //REMOTE DIGITAL
+      p.devid = device_list[dIndex].devid;
+      p.request = { 
+         verb: "POST", endpoint: "remote_enroll", body: 
+         { 
+            "user_id": parseInt(response[0].id),
+            "type": "biometry",
+            "save": false,
+            "sync": false,
+            "panic_finger": 0
+         } 
+      }
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'remote_digital'
+      push_list.push(p)
+      console.log("push remote")
+      resolve(push_list)
    })
 
 }
@@ -109,6 +148,14 @@ let controlCopia = (response,device_list,push_list) =>{
          reject("Dispositivo não encontrado")
          return;
       }
+      if(push_list)
+         var p = push_list.find(x => x.user_id == response[0].id);
+      if(p!=undefined && p.user_id == response[0].id && p.devid ==device_list[dIndex].devid){
+         reject("Aguardando dispositivo para copiar o usuário: "+response[0].id)
+         return;
+      }
+
+
       var p = {}
       //CREATE USER
       p.devid = device_list[dIndex].devid;
@@ -125,6 +172,17 @@ let controlCopia = (response,device_list,push_list) =>{
       p.tipo = 'create_user'
       push_list.push(p)
       p ={}
+      //USER GROUP
+      p.devid = device_list[dIndex].devid;
+      p.request = { verb: "POST", endpoint: "create_objects", body: { 
+         "object": "user_groups",
+         "values": [{"user_id": parseInt(response[0].id),"group_id": 1}]}}
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'create_group'
+      push_list.push(p)
+      p ={}
+
+
       if(response[0].fp){
          //CREATE TEMPLATE
          p.devid = device_list[dIndex].devid;
@@ -155,6 +213,7 @@ let controlCopia = (response,device_list,push_list) =>{
          p.tipo = 'create_card'
          push_list.push(p)
       }
+      console.log("push copia")
       resolve(push_list)
 
 
@@ -162,40 +221,39 @@ let controlCopia = (response,device_list,push_list) =>{
 
 }
 
-let controlApaga = (device_list,response) =>{
+let controlApaga = (response,device_list,push_list) =>{
    return new Promise((resolve, reject)=>{
       //console.log(device_list)
-      var resp;
-      var d = device_list.find(x => x.id == response[0].id_terminal);
-      if(d==undefined)
-         return
-    var url = 'http://'+d.ip+':'+d.port+'/destroy_objects.fcgi?session='+d.session;
-    var loadobj = {
-        "where": {
+      var dIndex = device_list.findIndex(x => x.id == response[0].id_terminal);
+      if(dIndex==-1){
+         reject("Dispositivo não encontrado: "+response[0].id_terminal)
+         return;
+      }
+      if(push_list)
+         var p = push_list.find(x => x.user_id == response[0].id);
+      if(p!=undefined && p.user_id == response[0].id && p.devid ==device_list[dIndex].devid){
+         reject("Aguardando dispositivo para apagar o usuário: "+response[0].id)
+         return;
+      }
+      var p = {}
+      //DELETE USER
+      p.devid = device_list[dIndex].devid;
+      p.request = { verb: "POST", endpoint: "destroy_objects", body: { 
+         "object": "users",
+         "where": {
             "users": {
                 "id": parseInt(response[0].id)
             }
-        }
-    }
-    
+        }}}
+
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'delete_user'
+      console.log("push delete")
+      push_list.push(p)
+
+      resolve(push_list)
    
       
-         device(url,'objects_data','delete_user',null,loadobj).then(res=>{
-            resp = res
-         }).catch(error=>{
-            reject (error)
-         })
-          
-      
-
-      try{
-         
-            console.log("Usuario: "+response[0].id+" apagado")
-            resolve (push_shielder.cadastraBio(response[0].id,0,d.serial,'SAIDA'))
-         
-      }catch(error){
-          reject(error)
-      }
   
    })
 
