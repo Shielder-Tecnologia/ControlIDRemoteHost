@@ -3,6 +3,11 @@ const push_shielder =require('./push_Shielder')
 var evilscan = require('evilscan')
 const { response } = require('express')
 
+function onlyUnique(value, index, self) { 
+   return self.indexOf(value) === index;
+}
+
+
 var resolve_result = (req) =>{
    return new Promise((resolve, reject)=>{
       var push_list = req.app.get('push_list')
@@ -27,6 +32,7 @@ var resolve_result = (req) =>{
                      device.ip = response.network.ip;
                      push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
                         device.id = idShielder;
+                        device.lastOn = moment().valueOf();
                      }).catch(error=>{
                         reject(error)
                      })
@@ -284,5 +290,6 @@ let check_remote_state = (device_list,response) =>{
     controlApaga,
     set_date,
     resolve_result,
-    controlCopia
+    controlCopia,
+    onlyUnique
  }

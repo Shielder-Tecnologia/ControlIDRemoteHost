@@ -93,6 +93,17 @@ module.exports = ()=>{
                 var device_list = req.app.get('device_list')
                 if(device_list)
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
+                
+                
+                for (var i=0; i<device_list.length;i++){
+                    if(moment().valueOf() - device_list[dIndex].lastOn >300000){
+                        device_list.splice(i,1);
+                    }
+                }
+
+
+
+
                 //se nao tiver nenhum device ou se n tiver o encontrado
                 if(device_list.length == 0 || dIndex == -1){
                     var p = {};
@@ -129,24 +140,18 @@ module.exports = ()=>{
                         //caso nao tenha sido registrado no shielder ele espera para colocar o id
                         if(device_list[dIndex].id<=4){
                             device_list[dIndex].id = response;
-                            
                             req.app.set('device_list',device_list);
                         }
-                        console.log("Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
-                        console.log(device_list)
+                        
                         
                      }).catch(error=>{
                         reject(error)
                      })
                 }
 
-                for (var i=0; i<device_list.length;i++){
-                    if(moment().valueOf() - device_list[dIndex].lastOn >300000){
-                        device_list.splice(i,1);
-                    }
-                }
+                
 
-
+                var push_list = push_list.filter(control.onlyUnique);
                 
                 if(push_list.length>0){
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
