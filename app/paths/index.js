@@ -261,7 +261,7 @@ module.exports = ()=>{
                     control.resolve_result(req).then(index=>{
                         var push_list = req.app.get('push_list');
                         console.log("Item computado:")
-                        console.log(push_list[i])
+                        console.log(push_list[index])
                         push_list.splice(index,1);
                         req.app.set('push_list', push_list);
                         
