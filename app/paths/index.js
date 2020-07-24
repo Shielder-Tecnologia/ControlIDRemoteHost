@@ -103,7 +103,7 @@ module.exports = ()=>{
                 }
 
 
-
+                
 
                 //se nao tiver nenhum device ou se n tiver o encontrado
                 if(device_list.length == 0 || dIndex == -1){
