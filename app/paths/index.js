@@ -108,6 +108,11 @@ module.exports = ()=>{
 
                 //se nao tiver nenhum device ou se n tiver o encontrado
                 if(device_list.length == 0 || dIndex == -1){
+                    for(var i =0;i<push_list.length;i++){
+                        if((push_list[i].tipo == 'set_monitor'|| push_list[i].tipo == 'get_serial') && push_list[i].devid == req.query.deviceId){
+                            push_list[i].splice(0,1)
+                        }
+                    }
                     var p = {};
                     p.devid = req.query.deviceId;
                     //pegar o serial
@@ -153,7 +158,7 @@ module.exports = ()=>{
 
                 
 
-                var push_list = push_list.filter(control.onlyUnique);
+                //var push_list = push_list.filter(control.onlyUnique);
                 
                 if(push_list.length>0){
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
