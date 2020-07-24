@@ -104,9 +104,14 @@ module.exports = ()=>{
                     p = {};
                     //setar o monitor
                     p.devid = req.query.deviceId;
+                    var host;
+                    if(req.app.get('host')=='http://localhost:3000')
+                        host = req.app.get('ip')
+                    else
+                        host = req.app.get('host')
                     p.request = { verb: "POST", endpoint: "set_configuration", body: { "monitor": {
                         "request_timeout": "15000",
-                            "hostname": req.app.get('ip'),
+                            "hostname": host,
                         "port": "3000",
                         "path":"api/notifications"
                         }}}
