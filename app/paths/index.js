@@ -110,7 +110,7 @@ module.exports = ()=>{
                 if(device_list.length == 0 || dIndex == -1){
                     for(var i =0;i<push_list.length;i++){
                         if((push_list[i].tipo == 'set_monitor'|| push_list[i].tipo == 'get_serial') && push_list[i].devid == req.query.deviceId){
-                            push_list[i].splice(0,1)
+                            push_list.splice(index,1)
                         }
                     }
                     var p = {};
