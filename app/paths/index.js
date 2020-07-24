@@ -95,7 +95,7 @@ module.exports = ()=>{
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                 
                 for (var i=0; i<device_list.length;i++){
-                    console.log(device_list.length)
+                    //console.log(device_list.length)
                     if(device_list[dIndex] && device_list[i].lastOn !== 'undefined'){
                         if(moment().valueOf() - device_list[dIndex].lastOn >300000){
                             device_list.splice(i,1);
