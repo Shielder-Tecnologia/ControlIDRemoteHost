@@ -95,7 +95,7 @@ module.exports = ()=>{
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                 
                 for (var i=0; i<device_list.length;i++){
-                    if(device_list[i].hasOwnProperty('lastOn')){
+                    if(device_list[dIndex].lastOn != undefined){
                         if(moment().valueOf() - device_list[dIndex].lastOn >300000){
                             device_list.splice(i,1);
                         }
@@ -103,7 +103,7 @@ module.exports = ()=>{
                 }
 
 
-                
+
 
                 //se nao tiver nenhum device ou se n tiver o encontrado
                 if(device_list.length == 0 || dIndex == -1){
