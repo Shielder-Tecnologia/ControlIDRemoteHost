@@ -171,9 +171,11 @@ module.exports = ()=>{
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
                     var index = push_list.findIndex(x => x.devid == req.query.deviceId);
                     if(index!= -1){
-                        console.log(push_list)
+                        
                         push_list[index].uuid = req.query.uuid;
                         req.app.set('push_list',push_list);
+                        console.log("Lista Push")
+                        console.log(push_list)
                         res.status(200).json(push_list[index].request)
                     }else
                         res.send();
@@ -258,8 +260,11 @@ module.exports = ()=>{
                     console.log(req.body)
                     control.resolve_result(req).then(index=>{
                         var push_list = req.app.get('push_list');
+                        console.log("Item computado:")
+                        console.log(push_list[i])
                         push_list.splice(index,1);
                         req.app.set('push_list', push_list);
+                        
                         res.send()
                     }).catch(error=>{
                         console.log("Erro " + error)
