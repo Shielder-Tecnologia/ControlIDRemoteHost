@@ -96,8 +96,10 @@ module.exports = ()=>{
                 
                 
                 for (var i=0; i<device_list.length;i++){
-                    if(moment().valueOf() - device_list[dIndex].lastOn >300000){
-                        device_list.splice(i,1);
+                    if(device_list[i].hasOwnProperty('lastOn')){
+                        if(moment().valueOf() - device_list[dIndex].lastOn >300000){
+                            device_list.splice(i,1);
+                        }
                     }
                 }
 
