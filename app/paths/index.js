@@ -94,18 +94,11 @@ module.exports = ()=>{
                 if(device_list)
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                 
-                
                 for (var i=0; i<device_list.length;i++){
-<<<<<<< HEAD
                     if(device_list[i].hasOwnProperty('lastOn')){
                         if(moment().valueOf() - device_list[dIndex].lastOn >300000){
                             device_list.splice(i,1);
                         }
-=======
-                    console.log(moment().valueOf() - device_list[dIndex].lastOn)
-                    if(moment().valueOf() - device_list[dIndex].lastOn >300000){
-                        device_list.splice(i,1);
->>>>>>> eaae1b1ef884eaeba0a2c1727977c613991229ce
                     }
                 }
 
