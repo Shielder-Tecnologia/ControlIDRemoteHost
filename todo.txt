@@ -2,8 +2,28 @@
 Enviar no response um objeto com informações, como url, e etc...
 
 **2**
-comandos serão passados pela requisição, como uma lista de comandos. 
+comandos serão passados pela requisição, como uma lista de comandos.
+
+essa LISTA deverá ter o device id tambem
+verificar se o device id bate com o que foi feito no pushzada
 Alt 1: Pode ter um switch case que vai verificar qual é o comando a ser feito e desempenha-los
 
 
 se o devicelist for nulo mandar comando para guardar o ip, devid, dar o autorizabox
+
+
+autorizabox vai ficar no /push, toda vez que der um push dar um autorizabox
+
+
+usar o moment para verificar ultima vez online se passar de 1 minuto tirar da lista de devices
+
+
+controlserver.resolve(req.body)=>
+    resolve todos o retorno, vendo o que fazer com cada tipo 
+
+
+push_list = {
+    devid = 12321321,
+    request = {verb:POST,body}
+
+}

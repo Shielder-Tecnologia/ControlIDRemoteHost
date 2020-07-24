@@ -1,121 +1,89 @@
 const device =require('./contact_device')
 const push_shielder =require('./push_Shielder')
 var evilscan = require('evilscan')
+const { response } = require('express')
 
-var get_serial = (item) =>{
-    return new Promise((resolve, reject)=>{
-       var url = 'http://'+item.ip+':'+item.port+'/system_information.fcgi?session='+ item.session;
-       device(url,'system_data','get_system_information')
-       .then(response=>{
-          //console.log(response)
-          resolve (response.serial)
-       })
-       .catch(response=>{
-          //console.log(response)
-          reject (response)
-       })
-    })
- }
-
-
- async function put_session(ip){
-    var devices
-    var device_list = []
-    var options_scan = {
-      target: '192.168.'+ip+'.0/24',
-      port:'8000,80',
-      status: 'O',
-      banner:true,
-      concurrency: '7000',
-      json:true
-   }
-    try{
-     devices = await get_ips(options_scan)
-     //console.log(devices)
-    }catch(e){
-       console.log("Não foi possível adquirir os IP'S " + e);
-    }
-    for (var i=0; i<devices.length;i++){
-
-       try{
-          session = await get_session(devices[i])
-          var d = {
-             ip : devices[i].ip,
-             port : devices[i].port,
-             session : ""
-          }
-          d.session = session;
-          if(d.session)
-             device_list.push(d)
-       }catch(e){
-          throw TypeError("Não foi possível adquirir a sessão " + e);
-       }
-    }
-    return device_list
- }
-
- 
-
-
- let get_ips = (options_scan)=>{return new Promise((resolve,reject)=>{
-    var scanner = new evilscan(options_scan);
-    var data_device = []
-    scanner.on('result',function(data) {
-       // fired when item is matching options
-       //console.log(data)
-       data_device.push(data)
-    });
- 
-    scanner.on('error',function(err) {
-       reject(data.toString());
-    });
- 
-    scanner.on('done',function() {
-       resolve (data_device)
-    });
- 
-    scanner.run();
- })
-}
-
- let get_session = (item) =>{
-    return new Promise((resolve, reject)=>{
-       var url = 'http://'+item.ip+':'+item.port+'/login.fcgi';
-       device(url,'system_data','login')
-       .then(response=>{
-          item.session = response.session
-          resolve (response.session)
-       })
-       .catch(response=>{
-          reject(response)
-       })
-    })
- };
-
- let set_monitor = (local_ip,item) =>{
+var resolve_result = (req) =>{
    return new Promise((resolve, reject)=>{
-      var url = 'http://'+item.ip+':'+item.port+'/set_configuration.fcgi?session='+ item.session;
-      var loadobj = {
-         "monitor": {
-            "request_timeout": "15000",
-		      "hostname": local_ip,
-            "port": "3000",
-            "path":"api/notifications"
+      var push_list = req.app.get('push_list')
+      var device_list = req.app.get('device_list')
+      if(device_list)
+         var d = device_list.find(x => x.devid == req.query.deviceId);
+
+      var response = JSON.parse(req.body.response)
+      //se push list n for nulo e tiver um endpoint valido
+      if(push_list && push_list.length>0 && req.query.endpoint){         
+         var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
+         //acha o request que foi mandado
+         if(pIndex!=-1){
+            //verifica o que que foi mandado para o dispositivo executar, copia/apaga/pegar serial
+            switch(push_list[pIndex].tipo){
+
+               case "get_serial":
+                  if(device_list.length == 0 || d == undefined){
+                     var device = {}
+                     device.devid = req.query.deviceId;
+                     device.serial = response.serial;
+                     device.ip = response.network.ip;
+                     push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
+                        device.id = idShielder;
+                     }).catch(error=>{
+                        reject(error)
+                     })
+                     console.log("device")
+                     console.log(device)
+                  }
+                  device_list.push(device)
+                  req.app.set('device_list',device_list)
+                  break;
+
+               case "set_monitor":
+                  console.log("monitor setado")
+                  break;
+               
+               case "create_user":
+                  console.log("Usuário criado ")
+                  break;
+
+               case "create_group":
+                  console.log("grupo inserido");
+                  break;
+               case "create_template":
+                  
+                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                     console.log("Usuario: "+push_list[pIndex].user_id+" criado")
+                  }).catch(error=>{
+                     reject(error)
+                  })
+                  break;
+               case "create_card":
+                  
+                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                     console.log("Usuario: "+push_list[pIndex].user_id+" criado")
+                  }).catch(error=>{
+                     reject(error)
+                  })
+                  break; 
+               case "delete_user":
+                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'SAIDA').then(res=>{
+                     console.log("Usuario: "+push_list[pIndex].user_id+" apagado")
+                  }).catch(error=>{
+                     reject(error)
+                  })
+
+                  break;
+               case "remote_digital":
+                  console.log("Template capturada")
+               
+
+            }
+            resolve(pIndex)
+         }else{
+            reject("Nenhum request foi encontrado")
          }
-         
-     }
-      device(url,'monitor_data','activate_monitor',null,loadobj)
-      .then(response=>{
-         //console.log(response)
-         resolve (response)
-      })
-      .catch(response=>{
-         //console.log(response)
-         reject (response)
-      })
+      }
    })
-   
-};
+}
 
 let set_date = (item) =>{
    return new Promise((resolve, reject)=>{
@@ -133,100 +101,159 @@ let set_date = (item) =>{
    
 };
 
-let get_devid = (item) =>{
-   return new Promise((resolve, reject)=>{
-      var url = 'http://'+item.ip+':'+item.port+'/load_objects.fcgi?session='+ item.session;
-      device(url,'objects_data','load_device')
-      .then(response=>{
-         //console.log(response)
-         if(response.devices[0].id ==-1)
-            resolve (response.devices[1].id)
-         else
-            resolve (response.devices[0].id)
-      })
-      .catch(response=>{
-         //console.log(response)
-         reject (response)
-      })
-   })
-}
 
-let remote_digital = (device_list,response) =>{
+
+let remote_digital = (response,device_list,push_list) =>{
    return new Promise((resolve, reject)=>{
       //console.log(device_list)
-      var d = device_list.find(x => x.id == response[0].id_terminal);
-      if(d==undefined)
-         return 
-        var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
-        var loadobj = {
-            "user_id": parseInt(response[0].id)
-        }
-        if(response){
-         
-             device(url,'objects_data','remote_enroll_async',null,loadobj).then(res=>{
-               resolve (res)
-             }).catch(error=>{
-               reject (error)
-             })         
-     }
-   })
+      var dIndex = device_list.findIndex(x => x.id == response[0].id_terminal);
+      if(dIndex==-1){
+         reject("Dispositivo não encontrado")
+         return;
+      }
+      if(push_list)
+         var p = push_list.find(x => x.user_id == response[0].id);
+      if(p!=undefined && p.user_id == response[0].id && p.devid ==device_list[dIndex].devid){
+         reject("Aguardando dispositivo para capturar a digital do usuário: "+response[0].id)
+         return;
+      }
 
-}
 
-let controlCopia = (device_list,response) =>{
-   return new Promise((resolve, reject)=>{
-      //console.log(device_list)
-      var d = device_list.find(x => x.id == response[0].id_terminal);
-        var url = 'http://'+d.ip+':'+d.port+'/remote_enroll.fcgi?session='+d.session;
-        var loadobj = {
-            "user_id": parseInt(response[0].id)
-        }
-        if(response){
-         
-             device(url,'objects_data','remote_enroll_async',null,loadobj).then(res=>{
-               resolve (res)
-             }).catch(error=>{
-               reject (error)
-             })         
-     }
+      var p = {}
+      //REMOTE DIGITAL
+      p.devid = device_list[dIndex].devid;
+      p.request = { 
+         verb: "POST", endpoint: "remote_enroll", body: 
+         { 
+            "user_id": parseInt(response[0].id),
+            "type": "biometry",
+            "save": false,
+            "sync": false,
+            "panic_finger": 0
+         } 
+      }
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'remote_digital'
+      push_list.push(p)
+      console.log("push remote")
+      resolve(push_list)
    })
 
 }
 
-let controlApaga = (device_list,response) =>{
+let controlCopia = (response,device_list,push_list) =>{
+   return new Promise((resolve, reject)=>{
+      var dIndex = device_list.findIndex(x => x.id == response[0].id_terminal);
+      if(dIndex==-1){
+         reject("Dispositivo não encontrado")
+         return;
+      }
+      if(push_list)
+         var p = push_list.find(x => x.user_id == response[0].id);
+      if(p!=undefined && p.user_id == response[0].id && p.devid ==device_list[dIndex].devid){
+         reject("Aguardando dispositivo para copiar o usuário: "+response[0].id)
+         return;
+      }
+
+
+      var p = {}
+      //CREATE USER
+      p.devid = device_list[dIndex].devid;
+      p.request = { verb: "POST", endpoint: "create_objects", body: { 
+         "object": "users",
+         "values": [
+         {
+            "id":parseInt(response[0].id),
+            "name": response[0].nome,
+            "registration": response[0].documento,
+         }
+      ]}}
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'create_user'
+      push_list.push(p)
+      p ={}
+      //USER GROUP
+      p.devid = device_list[dIndex].devid;
+      p.request = { verb: "POST", endpoint: "create_objects", body: { 
+         "object": "user_groups",
+         "values": [{"user_id": parseInt(response[0].id),"group_id": 1}]}}
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'create_group'
+      push_list.push(p)
+      p ={}
+
+
+      if(response[0].fp){
+         //CREATE TEMPLATE
+         p.devid = device_list[dIndex].devid;
+         p.request = { verb: "POST", endpoint: "create_objects", body: { 
+            "object": "templates",
+            "values": [
+               {
+                  "user_id":parseInt(response[0].id),
+                  "finger_type": 0,
+                  "template": response[0].fp
+               }
+         ]}}
+         p.user_id= parseInt(response[0].id);
+         p.tipo = 'create_template'
+         push_list.push(p)
+      }else{
+         //CREATE CARD
+         p.devid = device_list[dIndex].devid;
+         p.request = { verb: "POST", endpoint: "create_objects", body: { 
+            "object": "cards",
+            "values": [
+               {
+                   "value": parseInt(response[0].tag),
+                   "user_id": parseInt(response[0].id)
+               }
+           ]}}
+         p.user_id= parseInt(response[0].id);
+         p.tipo = 'create_card'
+         push_list.push(p)
+      }
+      console.log("push copia")
+      resolve(push_list)
+
+
+   })
+
+}
+
+let controlApaga = (response,device_list,push_list) =>{
    return new Promise((resolve, reject)=>{
       //console.log(device_list)
-      var resp;
-      var d = device_list.find(x => x.id == response[0].id_terminal);
-      if(d==undefined)
-         return
-    var url = 'http://'+d.ip+':'+d.port+'/destroy_objects.fcgi?session='+d.session;
-    var loadobj = {
-        "where": {
+      var dIndex = device_list.findIndex(x => x.id == response[0].id_terminal);
+      if(dIndex==-1){
+         reject("Dispositivo não encontrado: "+response[0].id_terminal)
+         return;
+      }
+      if(push_list)
+         var p = push_list.find(x => x.user_id == response[0].id);
+      if(p!=undefined && p.user_id == response[0].id && p.devid ==device_list[dIndex].devid){
+         reject("Aguardando dispositivo para apagar o usuário: "+response[0].id)
+         return;
+      }
+      var p = {}
+      //DELETE USER
+      p.devid = device_list[dIndex].devid;
+      p.request = { verb: "POST", endpoint: "destroy_objects", body: { 
+         "object": "users",
+         "where": {
             "users": {
                 "id": parseInt(response[0].id)
             }
-        }
-    }
-    
+        }}}
+
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'delete_user'
+      console.log("push delete")
+      push_list.push(p)
+
+      resolve(push_list)
    
       
-         device(url,'objects_data','delete_user',null,loadobj).then(res=>{
-            resp = res
-         }).catch(error=>{
-            reject (error)
-         })
-          
-      
-
-      try{
-         
-            console.log("Usuario: "+response[0].id+" apagado")
-            resolve (push_shielder.cadastraBio(response[0].id,0,d.serial,'SAIDA'))
-         
-      }catch(error){
-          reject(error)
-      }
   
    })
 
@@ -253,12 +280,9 @@ let check_remote_state = (device_list,response) =>{
 }
 
  module.exports = {
-    get_serial,
-    put_session,
-    get_session,
-    set_monitor,
-    get_devid,
     remote_digital,
     controlApaga,
-    set_date
+    set_date,
+    resolve_result,
+    controlCopia
  }
