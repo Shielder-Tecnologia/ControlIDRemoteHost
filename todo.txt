@@ -4,8 +4,5 @@ Enviar no response um objeto com informações, como url, e etc...
 **2**
 comandos serão passados pela requisição, como uma lista de comandos.
 
-essa LISTA deverá ter o device id tambem
-verificar se o device id bate com o que foi feito no pushzada
-Alt 1: Pode ter um switch case que vai verificar qual é o comando a ser feito e desempenha-los
-
-
+**3**
+COLOCAR PARA SETAR A DATA
