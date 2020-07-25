@@ -3,6 +3,7 @@ const util = require('../utils');
 const device = require('../Controller/contact_device');
 const push_Shielder = require('../Controller/push_Shielder');
 const control = require('../Controller/controlServer');
+const dtjson = require('../json_data');
 var moment = require('moment')
 
 module.exports = ()=>{
@@ -100,6 +101,8 @@ module.exports = ()=>{
                 if(device_list)
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                 
+                
+                /**Verifica se algum dispositivo foi desconectado */
                 for (var i=0; i<device_list.length;i++){
                     if(device_list[i] && device_list[i].lastOn !== 'undefined'){
                         console.log(device_list[i].id +" Last On ")
@@ -115,6 +118,7 @@ module.exports = ()=>{
 
                 //se nao tiver nenhum device ou se n tiver o encontrado
                 if(device_list.length == 0 || dIndex == -1){
+                    /**verifica se tem algum duplicado na lista de push */
                     for(var i =0;i<push_list.length;i++){
                         if((push_list[i].tipo == 'set_monitor'|| push_list[i].tipo == 'get_serial') && push_list[i].devid == req.query.deviceId){
                             push_list.splice(index,1)
@@ -142,6 +146,18 @@ module.exports = ()=>{
                         }}}
                     p.tipo = 'set_monitor';
                     push_list.push(p);
+
+                    //setar a data
+                    // var p = {};
+                    // p.devid = req.query.deviceId;
+                    
+                    // data = dtjson('system_data','set_date')
+                    // p.request = { verb: "POST", endpoint: "set_configuration", body: data}
+                    // p.tipo = 'get_serial';
+                    // push_list.push(p);
+                    // p = {};
+
+
                     // console.log("push_list")
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
@@ -198,7 +214,7 @@ module.exports = ()=>{
                             date.getFullYear(),
                             date.getMonth()+1,
                             date.getDate(),
-                            date.getHours(),
+                            date.getHours() +3,
                             date.getMinutes(),
                             date.getSeconds(),
                         ];
