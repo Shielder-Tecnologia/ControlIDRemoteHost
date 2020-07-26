@@ -148,14 +148,15 @@ module.exports = ()=>{
                     push_list.push(p);
 
                     //setar a data
-                    var p = {};
-                    p.devid = req.query.deviceId;
+                    //TODO TESTAR
+                    // var p = {};
+                    // p.devid = req.query.deviceId;
                     
-                    data = dtjson('system_data','set_date')
-                    p.request = { verb: "POST", endpoint: "set_configuration", body: data}
-                    p.tipo = 'get_serial';
-                    push_list.push(p);
-                    p = {};
+                    // data = dtjson('system_data','set_date')
+                    // p.request = { verb: "POST", endpoint: "set_configuration", body: data}
+                    // p.tipo = 'get_serial';
+                    // push_list.push(p);
+                    // p = {};
 
 
                     // console.log("push_list")
