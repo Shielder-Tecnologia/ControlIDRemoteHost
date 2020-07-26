@@ -283,7 +283,7 @@ module.exports = ()=>{
                         
                         res.send()
                     }).catch(error=>{
-                        console.log("Erro " + error)
+                        console.log("Erro no Resultado" + error)
 
                     });
                 }

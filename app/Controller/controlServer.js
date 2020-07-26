@@ -16,75 +16,84 @@ var resolve_result = (req) =>{
       if(device_list)
          var d = device_list.find(x => x.devid == req.query.deviceId);
 
-      var response = JSON.parse(req.body.response)
+
+      if(req.body.code == 1){
+
+      }
+      
+      
       //se push list n for nulo e tiver um endpoint valido
       if(push_list && push_list.length>0 && req.query.endpoint){         
          var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
          //acha o request que foi mandado
+        
          if(pIndex!=-1){
-            //verifica o que que foi mandado para o dispositivo executar, copia/apaga/pegar serial
-            switch(push_list[pIndex].tipo){
+            if(req.body.hasOwnProperty('response')){
+               var response = JSON.parse(req.body.response)
+               //verifica o que que foi mandado para o dispositivo executar, copia/apaga/pegar serial
+               switch(push_list[pIndex].tipo){
 
-               case "get_serial":
-                  if(device_list.length == 0 || d == undefined){
-                     var device = {}
-                     device.devid = req.query.deviceId;
-                     device.serial = response.serial;
-                     device.ip = response.network.ip;
-                     push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
-                        device.id = idShielder;
-                        device.lastOn = moment().valueOf();
+                  case "get_serial":
+                     if(device_list.length == 0 || d == undefined){
+                        var device = {}
+                        device.devid = req.query.deviceId;
+                        device.serial = response.serial;
+                        device.ip = response.network.ip;
+                        push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
+                           device.id = idShielder;
+                           device.lastOn = moment().valueOf();
+                        }).catch(error=>{
+                           reject(error)
+                        })
+                        console.log("device")
+                        console.log(device)
+                     }
+                     device_list.push(device)
+                     req.app.set('device_list',device_list)
+                     break;
+
+                  case "set_monitor":
+                     console.log("monitor setado")
+                     break;
+                  
+                  case "create_user":
+                     console.log("Usuário criado ")
+                     break;
+
+                  case "create_group":
+                     console.log("grupo inserido");
+                     break;
+                  case "create_template":
+                     
+                     push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                        console.log("Usuario: "+push_list[pIndex].user_id+" criado")
                      }).catch(error=>{
                         reject(error)
                      })
-                     console.log("device")
-                     console.log(device)
-                  }
-                  device_list.push(device)
-                  req.app.set('device_list',device_list)
-                  break;
+                     break;
+                  case "create_card":
+                     
+                     push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                        console.log("Usuario: "+push_list[pIndex].user_id+" criado")
+                     }).catch(error=>{
+                        reject(error)
+                     })
+                     break; 
+                  case "delete_user":
+                     push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'SAIDA').then(res=>{
+                        console.log("Usuario: "+push_list[pIndex].user_id+" apagado")
+                     }).catch(error=>{
+                        reject(error)
+                     })
 
-               case "set_monitor":
-                  console.log("monitor setado")
-                  break;
-               
-               case "create_user":
-                  console.log("Usuário criado ")
-                  break;
-
-               case "create_group":
-                  console.log("grupo inserido");
-                  break;
-               case "create_template":
+                     break;
+                  case "remote_digital":
+                     console.log("Template capturada")
+                     break;
+                  case "get_config":
+                     console.log("get config");          
                   
-                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
-                     console.log("Usuario: "+push_list[pIndex].user_id+" criado")
-                  }).catch(error=>{
-                     reject(error)
-                  })
-                  break;
-               case "create_card":
-                  
-                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
-                     console.log("Usuario: "+push_list[pIndex].user_id+" criado")
-                  }).catch(error=>{
-                     reject(error)
-                  })
-                  break; 
-               case "delete_user":
-                  push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'SAIDA').then(res=>{
-                     console.log("Usuario: "+push_list[pIndex].user_id+" apagado")
-                  }).catch(error=>{
-                     reject(error)
-                  })
-
-                  break;
-               case "remote_digital":
-                  console.log("Template capturada")
-                  break;
-               case "get_config":
-                  console.log("get config");          
-
+               }
             }
             resolve(pIndex)
          }else{
