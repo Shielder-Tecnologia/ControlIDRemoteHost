@@ -148,6 +148,7 @@ module.exports = ()=>{
                     push_list.push(p);
 
                     //setar a data
+                    //TODO TESTAR
                     // var p = {};
                     // p.devid = req.query.deviceId;
                     
@@ -283,7 +284,7 @@ module.exports = ()=>{
                         
                         res.send()
                     }).catch(error=>{
-                        console.log("Erro " + error)
+                        console.log("Erro no Resultado" + error)
 
                     });
                 }
