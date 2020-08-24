@@ -182,7 +182,7 @@ module.exports = ()=>{
 
                 
 
-                push_list = push_list.filter(control.onlyUnique);
+                push_list = push_list.filter(control.onlyUnique); // se tiver comandos duplicados ele filtra
                 
                 if(push_list.length>0){
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
@@ -275,7 +275,7 @@ module.exports = ()=>{
                 if(req.body!=null || req.body!=undefined){
                     console.log("RESULT:")
                     console.log(req.body)
-                    control.resolve_result(req).then(index=>{
+                    control.resolve_result(req).then(index=>{ //retorna o index para ser removido
                         var push_list = req.app.get('push_list');
                         console.log("Item computado:")
                         console.log(push_list[index])

@@ -57,6 +57,19 @@ apagaMoradores = (mac)=>{
 
 }
 
+lerRelay = (mac)=>{
+    return new Promise((resolve,reject)=>{
+        urlcopia = url + "getLerRelay.php?mac=" + mac;
+        sendJson.getAxios(urlcopia).then((response)=>{
+            resolve (response)
+            }).catch(error=>{
+            //console.log(response)
+            reject (error)
+            })
+    })
+
+}
+
 autorizaMorador = (id,datetime,serial)=>{
     return new Promise((resolve,reject)=>{
         
@@ -146,6 +159,7 @@ module.exports = {
     cadastraDigital,
     get_mac_address,
     lerDigital,
-    get_local_ip
+    get_local_ip,
+    lerRelay
 
 }
