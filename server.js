@@ -107,7 +107,7 @@ var push_list = []
                   console.log("Copia:")
                
                   if(response){
-                     console.log(response)
+                     //console.log(response)
                      var res = await controlServer.controlCopia(response,app.get('device_list'),app.get('push_list'));
                      push_list = res;
                      app.set('push_list',push_list);
@@ -158,6 +158,26 @@ var push_list = []
                console.log("Erro ao tentar ler digital"+error);
             }
          },5000)
+
+         setInterval(async function(){
+            //console.log(app.get('mutex_Ler'))
+            var response
+            try{
+               if(device_list && device_list.length>0){
+                  response = await pull_shielder.lerRelay(app.get('mac'))
+                  console.log("Ler Relay")
+                  console.log(response)
+                  if(response){
+                     var res = await control.ler_relay(response,app.get('device_list'),app.get('push_list'))
+                     push_list = res;
+                     app.set('push_list',push_list);
+                  }
+               }
+            }catch(error){
+               console.log("Erro ao abrir catraca"+error);
+            }
+         },3000)
+
       }catch(error){
          console.log("Erro ao entrar em contato com o Servidor")
       }

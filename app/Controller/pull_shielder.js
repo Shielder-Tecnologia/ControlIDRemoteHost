@@ -30,9 +30,19 @@ async function apagaMoradores(mac){
     }
 }
 
+async function lerRelay(mac){
+    
+    try{
+        return await shielderweb.lerRelay(mac)
+    }catch(error){
+        throw Error(error)
+    }
+}
+
 
 module.exports = {
     copiaMoradores,
     lerDigital,
-    apagaMoradores
+    apagaMoradores,
+    lerRelay
 }

@@ -91,7 +91,10 @@ var resolve_result = (req) =>{
                      console.log("Template capturada")
                      break;
                   case "get_config":
-                     console.log("get config");          
+                     console.log("get config");   
+                     
+                  case "ler_relay":
+                     console.log("Catraca " + push_list[pIndex].devid+ " aberta");
                   
                }
             }
@@ -158,6 +161,49 @@ let remote_digital = (response,device_list,push_list) =>{
    })
 
 }
+
+let ler_relay = (response,device_list,push_list) =>{
+   return new Promise((resolve, reject)=>{
+      for (var i=0; i<response.length;i++){
+         //console.log("device_list"+device_list)
+         //console.log(response[i].box_idbox)
+         var dIndex = device_list.findIndex(x => x.id == response[i].box_idbox);
+         if(dIndex==-1){
+            reject("Dispositivo não encontrado: " + response[i].box_idbox)
+            return;
+         }
+         if(push_list)
+            var p = push_list.find(x => x.tipo == "ler_relay");
+         if(p!=undefined &&  p.devid == device_list[dIndex].devid){
+            reject("Aguardando dispositivo para abrir a catraca: " + response[i].box_idbox)
+            return;
+         }
+         var p = {}
+         //LER RELAY
+         p.devid = device_list[dIndex].devid;
+         p.request = { verb: "POST", endpoint: "execute_actions", body: { 
+            "actions": [
+               {
+                  "action": "door",
+                  "parameters": "door=1"
+               }
+            ]}}
+
+         p.user_id = -1;
+         p.tipo = 'ler_relay'
+         console.log("push delete")
+         push_list.push(p)
+
+         resolve(push_list)
+      
+         
+      }
+   })
+
+}
+
+
+
 
 let controlCopia = (response,device_list,push_list) =>{
    return new Promise((resolve, reject)=>{
@@ -303,5 +349,6 @@ let check_remote_state = (device_list,response) =>{
     set_date,
     resolve_result,
     controlCopia,
-    onlyUnique
+    onlyUnique,
+    ler_relay
  }
