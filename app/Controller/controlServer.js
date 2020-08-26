@@ -98,6 +98,7 @@ var resolve_result = (req) =>{
                      break;
                   case "set_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " setada");
+<<<<<<< HEAD
                      break;
                   case "set_date":
                      console.log("Data " + push_list[pIndex].devid+ " setada");
@@ -106,6 +107,9 @@ var resolve_result = (req) =>{
                      console.log("PUSH " + push_list[pIndex].devid+ " setado");
                      break;
             }
+=======
+                     
+>>>>>>> 3f7432fdaff216412bf45a83542a6d4475e15cd2
             }
             resolve(pIndex)
          }else{
@@ -193,8 +197,8 @@ let ler_relay = (response,device_list,push_list) =>{
          p.request = { verb: "POST", endpoint: "execute_actions", body: { 
             "actions": [
                {
-                  "action": "sec_box",
-                  "parameters": "id=65793,reason=3"
+                  "action": "door",
+                  "parameters": "door=1"
                }
             ]}}
 
