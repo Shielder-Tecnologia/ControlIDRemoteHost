@@ -105,7 +105,7 @@ var resolve_result = (req) =>{
                   case "set_push":
                      console.log("PUSH " + push_list[pIndex].devid+ " setado");
                      break;
-            }
+               }
             }
             resolve(pIndex)
          }else{
