@@ -124,23 +124,7 @@ module.exports = ()=>{
                             push_list.splice(index,1)
                         }
                     }
-                    //ativar relay
-
                     var p = {};
-                    p.devid = req.query.deviceId;
-                    
-                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 
-                        "object": "sec_boxs",
-                        "values": {
-                            "enabled": 1,
-                            "door_sensor_enabled":1,
-                            "relay_timeout" : 3000,
-                        }
-                        }}
-                    p.tipo = 'set_relay';
-                    push_list.push(p);
-                    p = {};
-
                     p.devid = req.query.deviceId;
                     //pegar o serial
                     p.request = { verb: "POST", endpoint: "system_information" }
