@@ -99,8 +99,13 @@ var resolve_result = (req) =>{
                   case "set_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " setada");
                      break;
-                  
-               }
+                  case "set_date":
+                     console.log("Data " + push_list[pIndex].devid+ " setada");
+                     break;
+                  case "set_push":
+                     console.log("PUSH " + push_list[pIndex].devid+ " setado");
+                     break;
+            }
             }
             resolve(pIndex)
          }else{

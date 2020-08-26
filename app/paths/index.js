@@ -106,7 +106,7 @@ module.exports = ()=>{
                 for (var i=0; i<device_list.length;i++){
                     if(device_list[i] && device_list[i].lastOn !== 'undefined'){
                         console.log(device_list[i].id +" Last On ")
-                        console.log(moment().valueOf() - device_list[i].lastOn)
+                        console.log(device_list[i].id +" Tempo offline : "+ (moment().valueOf() - device_list[i].lastOn) / 1000+"s")
                         if(moment().valueOf() - device_list[i].lastOn >300000){
                             device_list.splice(i,device_list.length);
                         }
@@ -161,16 +161,30 @@ module.exports = ()=>{
                     p.tipo = 'set_relay';	
                     push_list.push(p);	
                     p = {};
+                    
+                    var p = {};
+                    p.devid = req.query.deviceId;
+
+                    p.request = { verb: "POST", endpoint: "set_configuration", body: { 	
+                        "push_server": {
+                            "push_request_timeout": "3000",
+                            "push_request_period": "1",
+                        }	
+                        }}	
+                    p.tipo = 'set_push';
+                    push_list.push(p);
+                    p = {};
+
                     //setar a data
                     //TODO TESTAR
-                    // var p = {};
-                    // p.devid = req.query.deviceId;
+                    var p = {};
+                    p.devid = req.query.deviceId;
                     
-                    // data = dtjson('system_data','set_date')
-                    // p.request = { verb: "POST", endpoint: "set_configuration", body: data}
-                    // p.tipo = 'get_serial';
-                    // push_list.push(p);
-                    // p = {};
+                    data = dtjson('system_data','set_date')
+                    p.request = { verb: "POST", endpoint: "set_system_time", body: data}
+                    p.tipo = 'set_date';
+                    push_list.push(p);
+                    p = {};
 
 
                     // console.log("push_list")
