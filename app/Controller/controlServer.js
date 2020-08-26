@@ -98,7 +98,13 @@ var resolve_result = (req) =>{
                      break;
                   case "set_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " setada");
-                     break;                  
+                     break;
+                  case "set_date":
+                     console.log("Data " + push_list[pIndex].devid+ " setada");
+                     break;
+                  case "set_push":
+                     console.log("PUSH " + push_list[pIndex].devid+ " setado");
+                     break;
                }
             }
             resolve(pIndex)
@@ -187,8 +193,8 @@ let ler_relay = (response,device_list,push_list) =>{
          p.request = { verb: "POST", endpoint: "execute_actions", body: { 
             "actions": [
                {
-                  "action": "door",
-                  "parameters": "door=1"
+                  "action": "sec_box",
+                  "parameters": "id=65793,reason=3"
                }
             ]}}
 
