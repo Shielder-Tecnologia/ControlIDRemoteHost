@@ -146,7 +146,21 @@ module.exports = ()=>{
                         }}}
                     p.tipo = 'set_monitor';
                     push_list.push(p);
+                    
+                    var p = {};
+                    p.devid = req.query.deviceId;	
 
+                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
+                        "object": "sec_boxs",	
+                        "values": {	
+                            "enabled": 1,	
+                            "door_sensor_enabled":1,	
+                            "relay_timeout" : 3000,	
+                        }	
+                        }}	
+                    p.tipo = 'set_relay';	
+                    push_list.push(p);	
+                    p = {};
                     //setar a data
                     //TODO TESTAR
                     // var p = {};

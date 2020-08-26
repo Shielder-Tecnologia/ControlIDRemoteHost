@@ -92,10 +92,13 @@ var resolve_result = (req) =>{
                      break;
                   case "get_config":
                      console.log("get config");   
-                     
+                     break;
                   case "ler_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " aberta");
-                  
+                     break;
+                  case "set_relay":
+                     console.log("Catraca " + push_list[pIndex].devid+ " setada");
+                     break;                  
                }
             }
             resolve(pIndex)
@@ -191,7 +194,7 @@ let ler_relay = (response,device_list,push_list) =>{
 
          p.user_id = -1;
          p.tipo = 'ler_relay'
-         console.log("push delete")
+         console.log("ler relay")
          push_list.push(p)
 
          resolve(push_list)
