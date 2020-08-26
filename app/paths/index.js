@@ -105,7 +105,7 @@ module.exports = ()=>{
                 /**Verifica se algum dispositivo foi desconectado */
                 for (var i=0; i<device_list.length;i++){
                     if(device_list[i] && device_list[i].lastOn !== 'undefined'){
-                        console.log(device_list[i].id +" Last On ")
+                        //console.log(device_list[i].id +" Last On ")
                         console.log(device_list[i].id +" Tempo offline : "+ (moment().valueOf() - device_list[i].lastOn) / 1000+"s")
                         if(moment().valueOf() - device_list[i].lastOn >300000){
                             device_list.splice(i,device_list.length);
