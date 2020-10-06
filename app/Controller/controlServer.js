@@ -24,8 +24,7 @@ var resolve_result = (req) =>{
       
       //se push list n for nulo e tiver um endpoint valido
       if(push_list && push_list.length>0 && req.query.endpoint){         
-         var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
-         //acha o request que foi mandado
+         var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);         //acha o request que foi mandado
         
          if(pIndex!=-1){
             if(req.body.hasOwnProperty('response')){
@@ -39,6 +38,7 @@ var resolve_result = (req) =>{
                         device.devid = req.query.deviceId;
                         device.serial = response.serial;
                         device.ip = response.network.ip;
+                        device.contBox = 0;
                         push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
                            device.id = idShielder;
                            device.lastOn = moment().valueOf();
@@ -104,6 +104,25 @@ var resolve_result = (req) =>{
                      break;
                   case "set_push":
                      console.log("PUSH " + push_list[pIndex].devid+ " setado");
+                     break;
+                  case "get_system_information":
+                     var date = new Date(response.time * 1000);
+                     // Hours part from the timestamp
+                     var hours = date.getHours();
+                     var dateNow = new Date();
+                     var hourNow = dateNow.getHours();
+                     if(hours!= hourNow){
+                        var p = {};
+                        p.devid = req.query.deviceId;
+                        
+                        data = dtjson('system_data','set_date')
+                        p.request = { verb: "POST", endpoint: "set_system_time", body: data}
+                        p.tipo = 'set_date';
+                        push_list.push(p);
+                        req.app.set('push_list',push_list);
+                        p = {};
+                     }
+                     
                      break;
                }
             }
