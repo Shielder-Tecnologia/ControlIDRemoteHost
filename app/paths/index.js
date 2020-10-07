@@ -202,7 +202,7 @@ module.exports = ()=>{
                     device_list[dIndex].contBox++;
 
                     //Verificar a data se esta certa
-                    if(dIndex != -1 && device_list[dIndex].contBox>=10){
+                    if(dIndex != -1 && device_list[dIndex].contBox>=720){
                         //TODO TESTAR
                         
                         var p = {};
