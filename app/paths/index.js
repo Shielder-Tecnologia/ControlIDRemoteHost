@@ -174,38 +174,50 @@ module.exports = ()=>{
                     p.tipo = 'set_push';
                     push_list.push(p);
                     p = {};
-
-                    //setar a data
-                    //TODO TESTAR
-                    var p = {};
-                    p.devid = req.query.deviceId;
+                    //console.log("DEINDEX"+dIndex)
                     
-                    data = dtjson('system_data','set_date')
-                    p.request = { verb: "POST", endpoint: "set_system_time", body: data}
-                    p.tipo = 'set_date';
-                    push_list.push(p);
-                    p = {};
 
-
+                    
                     // console.log("push_list")
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
                 }else{
+                    if(dIndex != -1 && device_list[dIndex].contBox%6==0){
                     //autorizabox para toda vez que um dispositivo der push
-                    push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
-                        console.log("Autoriza"+ response)
-                        device_list[dIndex].lastOn = moment().valueOf();
-                        //console.log(device_list[dIndex].lastOn)
-                        //caso nao tenha sido registrado no shielder ele espera para colocar o id
-                        if(device_list[dIndex].id<=4){
-                            device_list[dIndex].id = response;
-                            req.app.set('device_list',device_list);
-                        }
+                        push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
+                            console.log("Autoriza"+ response)
+                            device_list[dIndex].lastOn = moment().valueOf();
+                            //console.log(device_list[dIndex].lastOn)
+                            //caso nao tenha sido registrado no shielder ele espera para colocar o id
+                            if(device_list[dIndex].id<=4){
+                                device_list[dIndex].id = response;
+                                req.app.set('device_list',device_list);
+                            }
+                            
+                            
+                        }).catch(error=>{
+                            reject(error)
+                        })
+                    }
+                    device_list[dIndex].contBox++;
+
+                    //Verificar a data se esta certa
+                    if(dIndex != -1 && device_list[dIndex].contBox>=10){
+                        //TODO TESTAR
                         
+                        var p = {};
+                        p.devid = req.query.deviceId;
                         
-                     }).catch(error=>{
-                        reject(error)
-                     })
+                        data = dtjson('system_data','get_system_information')
+                        p.request = { verb: "POST", endpoint: "system_information", body: data}
+                        p.tipo = 'get_system_information';
+                        push_list.push(p);
+                        p = {};
+                        device_list[dIndex].contBox =0;
+                        //req.app.set('device_list',device_list);
+                    }
+                    req.app.set('device_list',device_list);
+
                 }
 
                 

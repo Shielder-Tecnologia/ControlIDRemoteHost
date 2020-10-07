@@ -24,7 +24,7 @@ var set_date = ()=>{
 
 
 system_data = {
-    get_system_information : 0, 
+    get_system_information : "", 
 	set_net_config : set_net_config,
 	session_is_valid : 0,
 	login : login,
