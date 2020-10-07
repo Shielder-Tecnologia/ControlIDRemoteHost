@@ -113,7 +113,7 @@ var resolve_result = (req) =>{
                      var hours = date.getHours();
                      var dateNow = new Date();
                      var hourNow = dateNow.getHours();
-                     if(hours!= hourNow){
+                     if(hours+3!= hourNow){
                         console.log(hours+"  " + hourNow)
                         var p = {};
                         p.devid = req.query.deviceId;
