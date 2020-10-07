@@ -174,29 +174,15 @@ module.exports = ()=>{
                     p.tipo = 'set_push';
                     push_list.push(p);
                     p = {};
-                    //console.log(typeof device_list[dIndex].contBox)
-                    //Verificar a data se esta certa
-                    if(typeof device_list[dIndex].contBox !='undefined' && device_list[dIndex].contBox>=2){
-                        //TODO TESTAR
-                        
-                        var p = {};
-                        p.devid = req.query.deviceId;
-                        
-                        data = dtjson('system_data','get_system_information')
-                        p.request = { verb: "POST", endpoint: "system_information", body: data}
-                        p.tipo = 'get_system_information';
-                        push_list.push(p);
-                        p = {};
-                        device_list[dIndex].contBox =0;
-                        req.app.set('device_list',device_list);
-                    }
+                    //console.log("DEINDEX"+dIndex)
+                    
 
                     
                     // console.log("push_list")
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
                 }else{
-                    if(typeof device_list[dIndex].contBox!=='undefined' && device_list[dIndex].contBox%6==0){
+                    if(dIndex != -1 && device_list[dIndex].contBox%6==0){
                     //autorizabox para toda vez que um dispositivo der push
                         push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
                             console.log("Autoriza"+ response)
@@ -214,6 +200,22 @@ module.exports = ()=>{
                         })
                     }
                     device_list[dIndex].contBox++;
+
+                    //Verificar a data se esta certa
+                    if(dIndex != -1 && device_list[dIndex].contBox>=10){
+                        //TODO TESTAR
+                        
+                        var p = {};
+                        p.devid = req.query.deviceId;
+                        
+                        data = dtjson('system_data','get_system_information')
+                        p.request = { verb: "POST", endpoint: "system_information", body: data}
+                        p.tipo = 'get_system_information';
+                        push_list.push(p);
+                        p = {};
+                        device_list[dIndex].contBox =0;
+                        //req.app.set('device_list',device_list);
+                    }
                     req.app.set('device_list',device_list);
 
                 }

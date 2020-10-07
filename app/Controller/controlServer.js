@@ -1,7 +1,8 @@
 const device =require('./contact_device')
 const push_shielder =require('./push_Shielder')
 var evilscan = require('evilscan')
-const { response } = require('express')
+//const { response } = require('express')
+
 var moment = require('moment')
 
 function onlyUnique(value, index, self) { 
@@ -38,7 +39,7 @@ var resolve_result = (req) =>{
                         device.devid = req.query.deviceId;
                         device.serial = response.serial;
                         device.ip = response.network.ip;
-                        device.contBox = 0;
+                        device.contBox = 1;
                         push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
                            device.id = idShielder;
                            device.lastOn = moment().valueOf();
@@ -106,16 +107,25 @@ var resolve_result = (req) =>{
                      console.log("PUSH " + push_list[pIndex].devid+ " setado");
                      break;
                   case "get_system_information":
+                     //var dtjson = 
                      var date = new Date(response.time * 1000);
                      // Hours part from the timestamp
                      var hours = date.getHours();
                      var dateNow = new Date();
                      var hourNow = dateNow.getHours();
                      if(hours!= hourNow){
+                        console.log(hours+"  " + hourNow)
                         var p = {};
                         p.devid = req.query.deviceId;
-                        
-                        data = dtjson('system_data','set_date')
+                        var date2 = new Date()
+                        data = {
+                           "day": date2.getDate(),
+                           "month": date2.getMonth()+1,
+                           "year": date2.getFullYear(),
+                           "hour": date2.getHours(),
+                           "minute": date2.getMinutes(),
+                           "second": date2.getSeconds()
+                        }
                         p.request = { verb: "POST", endpoint: "set_system_time", body: data}
                         p.tipo = 'set_date';
                         push_list.push(p);
