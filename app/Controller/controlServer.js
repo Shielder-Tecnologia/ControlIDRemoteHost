@@ -318,7 +318,7 @@ let controlCopia = (response,device_list,push_list) =>{
       push_list.push(p)
       p ={}
 
-      if(response[0].inicio != null){
+      if(response[0].inicio){
          //GROUP
          p.devid = device_list[dIndex].devid;
          p.request = { verb: "POST", endpoint: "create_objects", body: { 
