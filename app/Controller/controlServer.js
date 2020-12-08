@@ -72,6 +72,27 @@ var resolve_result = (req) =>{
                         reject(error)
                      })
                      break;
+                  
+                     case "hash_password":
+                        var p = {};
+                        p.devid = req.query.deviceId;
+                        p.request = { verb: "POST", endpoint: "create_objects", body: { 
+                           "object": "users",
+                           "values": [
+                           {
+                              "id":parseInt(push_list[pIndex].user_id),
+                              "name": push_list[pIndex].user_id,
+                              "registration": "",
+                              "password": response.password
+                           }
+                        ]}}
+                        p.tipo = 'create_user_pass';
+                        p.user_id= parseInt(push_list[pIndex].user_id);
+                        push_list.push(p);
+                        req.app.set('push_list',push_list);
+                        p = {};
+                        break;
+                     
                   case "create_user_pass":
                   
                      push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
@@ -290,19 +311,9 @@ let controlCopia = (response,device_list,push_list) =>{
 
       p.devid = device_list[dIndex].devid;
       if(response[0].descricao == "SENHA"){
-         p.request = { verb: "POST", endpoint: "create_objects", body: { 
-            "object": "users",
-            "values": [
-            {
-               "id":parseInt(response[0].id),
-               "name": response[0].nome,
-               "registration": response[0].documento,
-               "password": response[0].tag,
-               "begin_time": newdataInicio,
-               "end_time": newdataFim
-            }
-         ]}}
-         p.tipo = 'create_user_pass'
+         p.request = { verb: "POST", endpoint: "user_hash_password", body: { 
+           "password": response[0].tag}}
+         p.tipo = 'hash_password';
       }else{
          p.request = { verb: "POST", endpoint: "create_objects", body: { 
             "object": "users",
