@@ -277,17 +277,38 @@ let controlCopia = (response,device_list,push_list) =>{
          var newdataFim = 1921978800;
 
       p.devid = device_list[dIndex].devid;
-      p.request = { verb: "POST", endpoint: "create_objects", body: { 
-         "object": "users",
-         "values": [
-         {
-            "id":parseInt(response[0].id),
-            "name": response[0].nome,
-            "registration": response[0].documento,
-            "begin_time": newdataInicio,
-            "end_time": newdataFim
-         }
-      ]}}
+      if(response[0].descricao == "SENHA"){
+         p.request = { verb: "POST", endpoint: "create_objects", body: { 
+            "object": "users",
+            "values": [
+            {
+               "id":parseInt(response[0].id),
+               "name": response[0].nome,
+               "registration": response[0].documento,
+               "password": response[0].tag,
+               "begin_time": newdataInicio,
+               "end_time": newdataFim
+            }
+         ]}}
+            
+      }else{
+         p.request = { verb: "POST", endpoint: "create_objects", body: { 
+            "object": "users",
+            "values": [
+            {
+               "id":parseInt(response[0].id),
+               "name": response[0].nome,
+               "registration": response[0].documento,
+               "begin_time": newdataInicio,
+               "end_time": newdataFim
+            }
+         ]}}
+
+      }
+      
+
+
+
       console.log(p.request.body)
       p.user_id= parseInt(response[0].id);
       p.tipo = 'create_user'
@@ -489,7 +510,7 @@ let controlCopia = (response,device_list,push_list) =>{
          p.user_id= parseInt(response[0].id);
          p.tipo = 'create_template'
          push_list.push(p)
-      }else{
+      }else if(response[0].tag && response[0].descricao != "SENHA"){
          //CREATE CARD
          p.devid = device_list[dIndex].devid;
          p.request = { verb: "POST", endpoint: "create_objects", body: { 

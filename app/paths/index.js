@@ -61,11 +61,50 @@ module.exports = ()=>{
                  })
                  res.send()
             },
-            '/session-valid':(req,res,next) => {
-                //console.log(req.app.get('session_key'))
-                 
-                var url = 'http://'+req.app.get('ip_device')+':'+req.app.get('port_device')+'/session_is_valid.fcgi?session='+req.app.get('session_key');
-                device(url,'system_data','session_is_valid');
+            '/cadastrarSenha':(req,res,next) => {
+                var device_list = req.app.get('device_list')
+                var push_list = req.app.get('push_list')
+                for (var i=0; i<device_list.length;i++){
+                    var p = {};
+                    p.devid = device_list[i].devid;
+                    //pegar o serial
+                    p.request = { verb: "POST", endpoint: "create_objects", body: { 
+                        "object": "users",
+                        "values": [
+                        {
+                           "id":parseInt("987123"),
+                           "name": "TESTE SENHA",
+                           "registration": "123124",
+                           "password": "123456"
+                        }
+                     ]}}
+                     p.user_id= parseInt("987123");
+                     p.tipo = 'create_user';
+                     console.log(p.request.body);
+                    push_list.push(p);
+
+                    p.devid = device_list[i].devid;
+                    p.request = { verb: "POST", endpoint: "create_objects", body: { 
+                       "object": "groups",
+                       "values": [{"id": parseInt(987123),"name": "987123"}]}}
+                    p.user_id= parseInt(987123);
+                    p.tipo = 'create_group'
+                    push_list.push(p)
+                    p ={}
+
+                    p.devid = device_list[i].devid;
+                    p.request = { verb: "POST", endpoint: "create_objects", body: { 
+                       "object": "user_groups",
+                       "values": [{"user_id": parseInt(987123),"group_id": parseInt(987123)}]}}
+                    p.user_id= parseInt(987123);
+                    p.tipo = 'create_user_group'
+                    push_list.push(p)
+                    p ={}
+
+
+                }
+                req.app.set('push_list',push_list)
+                
                 res.send("1");
             },
             '/system-info':(req,res,next) => {
