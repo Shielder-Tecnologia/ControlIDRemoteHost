@@ -81,7 +81,7 @@ var resolve_result = (req) =>{
                            "values": [
                            {
                               "id":parseInt(push_list[pIndex].user_id),
-                              "name": push_list[pIndex].user_id,
+                              "name": push_list[pIndex].user_id.toString(),
                               "registration": "",
                               "password": response.password
                            }
