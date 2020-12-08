@@ -30,6 +30,17 @@ var resolve_result = (req) =>{
          if(pIndex!=-1){
             if(req.body.hasOwnProperty('response')){
                var response = JSON.parse(req.body.response)
+               if(response.error){
+                  if(response.error.indexOf('are not unique')>=0){
+                     if(push_list[pIndex].user_id){
+                        push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                           console.log("Usuario: "+push_list[pIndex].user_id+" ja existente")
+                        }).catch(error=>{
+                           reject(error)
+                        })
+                     }
+                  }
+               }
                //verifica o que que foi mandado para o dispositivo executar, copia/apaga/pegar serial
                switch(push_list[pIndex].tipo){
 
