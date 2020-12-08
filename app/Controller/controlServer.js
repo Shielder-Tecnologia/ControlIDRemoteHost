@@ -72,6 +72,15 @@ var resolve_result = (req) =>{
                         reject(error)
                      })
                      break;
+                  case "create_user_pass":
+                  
+                     push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                        console.log("Usuario: "+push_list[pIndex].user_id+" criado")
+                     }).catch(error=>{
+                        reject(error)
+                     })
+                     break;
+
                   case "create_card":
                      
                      push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
@@ -293,7 +302,7 @@ let controlCopia = (response,device_list,push_list) =>{
                "end_time": newdataFim
             }
          ]}}
-            
+         p.tipo = 'create_user_pass'
       }else{
          p.request = { verb: "POST", endpoint: "create_objects", body: { 
             "object": "users",
@@ -306,7 +315,7 @@ let controlCopia = (response,device_list,push_list) =>{
                "end_time": newdataFim
             }
          ]}}
-
+         p.tipo = 'create_user'
       }
       
 
@@ -314,7 +323,7 @@ let controlCopia = (response,device_list,push_list) =>{
 
       console.log(p.request.body)
       p.user_id= parseInt(response[0].id);
-      p.tipo = 'create_user'
+      //p.tipo = 'create_user'
       push_list.push(p)
       p ={}
 
