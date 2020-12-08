@@ -261,20 +261,23 @@ let controlCopia = (response,device_list,push_list) =>{
 
       var p = {}
       //CREATE USER
+      var newdataInicio = 0;
       if(response[0].inicio){
          var dataInicio = response[0].inicio.split("/");
          var dia = parseInt(dataInicio[0] -1 );
-         var newdataInicio = new Date( dataInicio[2], dataInicio[1] - 1, dia.toString(), "21", "01");
+         newdataInicio = new Date( dataInicio[2], dataInicio[1] - 1, dia.toString(), "21", "01");
          newdataInicio = parseInt(Math.round(newdataInicio.getTime())/1000);
       }else
-         var newdataInicio = 0;
+         newdataInicio = 0;
 
+      
+      var newdataFim = 1921978800;
       if(response[0].fim){
          var dataFim = response[0].fim.split("/");
-         var newdataFim = new Date( dataFim[2], dataFim[1] - 1, dataFim[0], "20", "59");
+         newdataFim = new Date( dataFim[2], dataFim[1] - 1, dataFim[0], "20", "59");
          newdataFim = parseInt(Math.round(newdataFim.getTime())/1000);
       }else
-         var newdataFim = 1921978800;
+         newdataFim = 1921978800;
 
       p.devid = device_list[dIndex].devid;
       if(response[0].descricao == "SENHA"){
