@@ -18,9 +18,7 @@ var resolve_result = (req) =>{
          var d = device_list.find(x => x.devid == req.query.deviceId);
 
 
-      if(req.body.code == 1){
-
-      }
+      
       
       
       //se push list n for nulo e tiver um endpoint valido
@@ -28,19 +26,25 @@ var resolve_result = (req) =>{
          var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);         //acha o request que foi mandado
         
          if(pIndex!=-1){
-            if(req.body.hasOwnProperty('response')){
-               var response = JSON.parse(req.body.response)
-               if(response.error){
-                  if(response.error.indexOf('are not unique')>=0){
-                     if(push_list[pIndex].user_id){
-                        push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
-                           console.log("Usuario: "+push_list[pIndex].user_id+" ja existente")
-                        }).catch(error=>{
-                           reject(error)
-                        })
-                     }
+
+            if(req.body.code == 1){
+               if(req.body.error.indexOf('unique')>=0){
+                  if(push_list[pIndex].user_id){
+                     push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
+                        console.log("Usuario: "+push_list[pIndex].user_id+" ja existente")
+                     }).catch(error=>{
+                        reject(error)
+                     })   
                   }
                }
+            }
+
+
+
+
+            if(req.body.hasOwnProperty('response')){
+               var response = JSON.parse(req.body.response)
+               
                //verifica o que que foi mandado para o dispositivo executar, copia/apaga/pegar serial
                switch(push_list[pIndex].tipo){
 
@@ -94,14 +98,26 @@ var resolve_result = (req) =>{
                               "id":parseInt(push_list[pIndex].user_id),
                               "name": push_list[pIndex].user_id.toString(),
                               "registration": "",
-                              "password": response.password
+                              "password": response.password,
+                              "salt": response.salt
                            }
                         ]}}
                         p.tipo = 'create_user_pass';
-                        p.user_id= parseInt(push_list[pIndex].user_id);
+                        console.log(p.request.body)
+                        p.user_id= push_list[pIndex].user_id;
                         push_list.push(p);
                         req.app.set('push_list',push_list);
                         p = {};
+
+
+                        //USER GROUP
+                        p.devid = req.query.deviceId;                        p.request = { verb: "POST", endpoint: "create_objects", body: { 
+                           "object": "user_groups",
+                           "values": [{"user_id": parseInt(push_list[pIndex].user_id),"group_id": 1}]}}
+                        p.user_id= parseInt(push_list[pIndex].user_id);
+                        p.tipo = 'create_user_group'
+                        push_list.push(p)
+                        p ={}
                         break;
                      
                   case "create_user_pass":
@@ -516,7 +532,7 @@ let controlCopia = (response,device_list,push_list) =>{
          // p.tipo = 'create_user_access_rule'
          // push_list.push(p)
          // p ={}
-      }else{
+      }else if(response[0].descricao != "SENHA"){
 
          //USER GROUP
          p.devid = device_list[dIndex].devid;
