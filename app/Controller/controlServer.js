@@ -280,7 +280,7 @@ let ler_relay = (response,device_list,push_list) =>{
             "actions": [
                {
                   "action": "sec_box",
-                  "parameters": "id=65793,reason=3"
+                  "parameters": "id=65793,reason=3,timeout=3000"
                }
             ]}}
 
