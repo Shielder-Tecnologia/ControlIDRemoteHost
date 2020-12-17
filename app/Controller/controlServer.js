@@ -160,6 +160,10 @@ var resolve_result = (req) =>{
                   case "set_date":
                      console.log("Data " + push_list[pIndex].devid+ " setada");
                      break;
+
+                  case "message_to_screen":
+                     console.log("Mensagem enviada!");
+                     break;
                   case "set_push":
                      console.log("PUSH " + push_list[pIndex].devid+ " setado");
                      break;

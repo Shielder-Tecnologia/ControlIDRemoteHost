@@ -70,10 +70,35 @@ lerRelay = (mac)=>{
 
 }
 
-autorizaMorador = (id,datetime,serial)=>{
+autorizaMorador = (id,datetime,serial,codigo)=>{
+    return new Promise((resolve,reject)=>{
+        if(id){
+            urlaut = url + "getAutorizaMorador.php?mac=" + serial + "&biometria=" + id + "&data="+datetime +"&codigo="+codigo;
+            //console.log("morador")
+            console.log(urlaut)
+            sendJson.getAxios(urlaut).then(response=>{                
+                resolve (response);
+            }).catch(response=>{
+                reject (response);
+            })
+        }
+        else{
+            urlaut = url + "getAutorizaMorador.php?mac=" + serial +"&data="+datetime +"&codigo="+codigo;
+            //console.log("morador")
+            console.log(urlaut)
+            sendJson.getAxios(urlaut).then(response=>{                
+                resolve (response);
+            }).catch(response=>{
+                reject (response);
+            })
+        }
+    })
+}
+
+controleAutorizaVisitante = (id,datetime,serial,codigo)=>{
     return new Promise((resolve,reject)=>{
         
-        urlaut = url + "getAutorizaMorador.php?mac=" + serial + "&biometria=" + id + "&data="+datetime;
+        urlaut = url + "controleAutorizaVisitante.php?mac=" + serial + "&data="+datetime +"&codigo="+codigo;
         //console.log("morador")
         console.log(urlaut)
         sendJson.getAxios(urlaut).then(response=>{                
@@ -84,6 +109,33 @@ autorizaMorador = (id,datetime,serial)=>{
     })
 }
 
+autorizaVisitante = (id,datetime,serial,codigo)=>{
+    return new Promise((resolve,reject)=>{
+        
+        urlaut = url + "getAutorizaVisitante.php?mac=" + serial + "&data="+datetime +"&codigo="+codigo;
+        //console.log("morador")
+        console.log(urlaut)
+        sendJson.getAxios(urlaut).then(response=>{                
+            resolve (response);
+        }).catch(response=>{
+            reject (response);
+        })
+    })
+}
+
+autorizaFuncionario = (id,datetime,serial,codigo)=>{
+    return new Promise((resolve,reject)=>{
+        
+        urlaut = url + "getAutorizaFuncionario.php?mac=" + serial + "&data="+datetime +"&codigo="+codigo;
+        //console.log("morador")
+        console.log(urlaut)
+        sendJson.getAxios(urlaut).then(response=>{                
+            resolve (response);
+        }).catch(response=>{
+            reject (response);
+        })
+    })
+}
 /**
  * @param {number}userid idusuario 
  * @param {number}id idusuario shielder
@@ -155,11 +207,15 @@ module.exports = {
     copiaMoradores,
     apagaMoradores,
     autorizaMorador,
+    controleAutorizaVisitante,
+    autorizaFuncionario,
+    autorizaVisitante,
     cadastraBio,
     cadastraDigital,
     get_mac_address,
     lerDigital,
     get_local_ip,
-    lerRelay
+    lerRelay,
+
 
 }

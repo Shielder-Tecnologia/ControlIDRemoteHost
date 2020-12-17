@@ -207,7 +207,7 @@ module.exports = ()=>{
                     p.request = { verb: "POST", endpoint: "set_configuration", body: { 	
                         "push_server": {
                             "push_request_timeout": "3000",
-                            "push_request_period": "1",
+                            "push_request_period": "0.1",
                         }	
                         }}	
                     p.tipo = 'set_push';
@@ -282,7 +282,8 @@ module.exports = ()=>{
         'post':{
             '/api/notifications/dao':(req,res,next) => {
                 console.log("Morador: ");
-                //console.log(req.body.object_changes[0].values);
+                console.log(req.body.object_changes[0].values);
+                var push_list = req.app.get('push_list')
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 if(d){
@@ -301,12 +302,274 @@ module.exports = ()=>{
                         //('0' + deg).slice(-2)
                         //('0' + datevalues[1]).slice(-2)
                         var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
-                        //console.log(data)
-                        push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial).then(response=>{
-                            console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
-                        }).catch(error=>{
-                            console.log(error)
-                        })
+                        
+                        if(req.body.object_changes[0].values.user_id){
+                            push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , "0").then(response=>{                                
+                                console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
+                            }).catch(error=>{
+                                console.log(error)
+                            })
+                        }else{
+                            //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
+                            if(req.body.object_changes[0].values.card_value.length >= 10 && req.body.object_changes[0].values.card_value.length <= 12){
+                                
+                                var codigo = req.body.object_changes[0].values.card_value;
+                                if(req.body.object_changes[0].values.card_value.length == 10)
+                                {
+                                    codigo = "00" + req.body.object_changes[0].values.card_value;
+                                }
+                                else if(req.body.object_changes[0].values.card_value.length == 11)
+                                {
+                                    codigo = "0"+ req.body.object_changes[0].values.card_value;
+                                }
+
+                                push_Shielder.autorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,codigo).then(response=>{
+                                    console.log("autorizaVisitante ticket" + response);
+                                    var stringRes = '' + response;
+                                    
+                                    var charZro = stringRes.charAt(0);
+                                    if(charZro > 0){
+                                        //mensagem
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "message_to_screen");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Não foi possível enviar mensagem: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
+                                                "message": "TICKET LIBERADO",
+                                                "timeout": 5000
+                                            }}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'message_to_screen'
+                                        //console.log("relay aberto")
+                                        
+                                        push_list.push(p)
+                                        //req.app.set('push_list',push_list);
+
+
+                                        //ler relay
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "ler_relay");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Aguardando dispositivo para abrir a catraca: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
+                                            "actions": [
+                                            {
+                                                "action": "sec_box",
+                                                "parameters": "id=65793,reason=3,timeout=3000"
+                                            }
+                                            ]}}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'ler_relay'
+                                        console.log("relay aberto")
+                                        push_list.push(p)
+                                        req.app.set('push_list',push_list);
+                                    }
+
+                                    
+                                    console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
+                                }).catch(error=>{
+                                    console.log(error)
+                                })
+                            }else if(req.body.object_changes[0].values.card_value.length == 13 || req.body.object_changes[0].values.card_value.length == 4){
+                                push_Shielder.autorizaFuncionario(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
+                                    console.log("autorizaFuncionario crachá" + response);
+                                    
+                                    var stringRes = '' + response;
+                                    var charZro = stringRes.charAt(0);
+                                    
+                                    if(charZro > 0){
+                                        //mensagem
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "message_to_screen");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Não foi possível enviar mensagem: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
+                                                "message": "CRACHÁ LIBERADO",
+                                                "timeout": 5000
+                                            }}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'message_to_screen'
+                                        //console.log("relay aberto")
+                                        
+                                        push_list.push(p)
+                                        //req.app.set('push_list',push_list);
+
+
+
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "ler_relay");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Aguardando dispositivo para abrir a catraca: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
+                                            "actions": [
+                                            {
+                                                "action": "sec_box",
+                                                "parameters": "id=65793,reason=3,timeout=3000"
+                                            }
+                                            ]}}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'ler_relay'
+                                        console.log("relay aberto")
+                                        push_list.push(p)
+                                        req.app.set('push_list',push_list);
+                                    }
+
+                                    
+                                    console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
+                                }).catch(error=>{
+                                    console.log(error)
+                                })
+                            }
+                            else if(req.body.object_changes[0].values.card_value.length == 15){
+                                push_Shielder.controleAutorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
+                                    console.log("controleAutorizaVisitante convite" + response);
+
+                                    var stringRes = '' + response;
+                                    var charZro = stringRes.charAt(0);
+                                    
+                                    if(charZro > 0){
+
+                                        //mensagem
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "message_to_screen");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Não foi possível enviar mensagem: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
+                                                "message": "CONVITE LIBERADO",
+                                                "timeout": 5000
+                                            }}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'message_to_screen'
+                                        //console.log("relay aberto")
+                                        
+                                        push_list.push(p)
+                                        //req.app.set('push_list',push_list);
+
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "ler_relay");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Aguardando dispositivo para abrir a catraca: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
+                                            "actions": [
+                                            {
+                                                "action": "sec_box",
+                                                "parameters": "id=65793,reason=3,timeout=3000"
+                                            }
+                                            ]}}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'ler_relay'
+                                        console.log("relay aberto")
+                                        push_list.push(p)
+                                        req.app.set('push_list',push_list);
+                                    }
+
+                                    
+                                    console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
+                                }).catch(error=>{
+                                    console.log(error)
+                                })
+                            }
+                            else if(req.body.object_changes[0].values.card_value.length == 17){
+                                var codigo = req.body.object_changes[0].values.card_value.slice(0,9);
+                                push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data ,d.serial, codigo).then(response=>{
+                                    
+                                    console.log("autorizaMorador QR code");
+                                    console.log(response)
+                                    
+                                    var stringRes = '' + response;
+                                    var charZro = stringRes.charAt(0);
+                                    
+                                    if(charZro > 0){
+                                        //mensagem
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "message_to_screen");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Não foi possível enviar mensagem: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
+                                                "message": "MORADOR LIBERADO",
+                                                "timeout": 5000
+                                            }}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'message_to_screen'
+                                        //console.log("relay aberto")
+                                        
+                                        push_list.push(p)
+                                        //req.app.set('push_list',push_list);
+
+
+                                        if(push_list)
+                                            var p = push_list.find(x => x.tipo == "ler_relay");
+                                        if(p!=undefined &&  p.devid == d.devid){
+                                            reject("Aguardando dispositivo para abrir a catraca: ")
+                                            return;
+                                        }
+                                        var p = {}
+                                        //LER RELAY
+                                        p.devid = d.devid;
+                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
+                                            "actions": [
+                                            {
+                                                "action": "sec_box",
+                                                "parameters": "id=65793,reason=3,timeout=3000"
+                                            }
+                                            ]}}
+
+                                        p.user_id = -1;
+                                        p.tipo = 'ler_relay'
+                                        console.log("relay aberto")
+                                        push_list.push(p)
+                                        req.app.set('push_list',push_list);
+                                    }
+
+                                    
+                                    console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
+                                }).catch(error=>{
+                                    console.log(error)
+                                })
+                            }
+                        }
                     }
                 }else
                     console.log('Não encontrado na lista de dispositivos')
