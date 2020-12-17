@@ -303,7 +303,7 @@ module.exports = ()=>{
                         //('0' + datevalues[1]).slice(-2)
                         var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
                         
-                        if(req.body.object_changes[0].values.user_id){
+                        if(req.body.object_changes[0].values.user_id && req.body.object_changes[0].values.user_id!= 0 ){
                             push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , "0").then(response=>{                                
                                 console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
                             }).catch(error=>{
