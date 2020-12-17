@@ -97,7 +97,7 @@ var push_list = []
       console.log(device_list)
       try{
          setInterval(async function(){
-            console.log("Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
+            console.log(app.get('device_list').length + " Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
             console.log(app.get('device_list'))
             
             var response
