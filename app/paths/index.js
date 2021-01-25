@@ -270,7 +270,7 @@ module.exports = ()=>{
 
                             }
 
-                            if(device_list[dIndex].id<=4){
+                            if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
                                 if(response.includes(";")){
                                     var id = response.split(";")
                                     device_list[dIndex].id = id[0];
