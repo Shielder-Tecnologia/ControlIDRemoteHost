@@ -56,6 +56,7 @@ var resolve_result = (req) =>{
                         device.ip = response.network.ip;
                         device.contBox = 1;
                         device.id = 0;
+                        device.timeout = 3000;
                         device.lastOn = moment().valueOf();
                         push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
                            device.id = idShielder;
