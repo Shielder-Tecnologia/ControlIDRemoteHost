@@ -99,8 +99,7 @@ var push_list = []
       console.log(device_list)
       try{
          setInterval(async function(){
-            console.log(app.get('device_list').length + " Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
-            console.log(app.get('device_list'));
+            
             var reqs = app.get('requisitions');
             var timerReq = app.get('timerReq');
             reqs++;
@@ -113,6 +112,10 @@ var push_list = []
             
             app.set('requisitions',reqs);
             app.set('timerReq',timerReq);
+
+            console.log(app.get('device_list').length + " Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
+            console.log(app.get('device_list'));
+            
             var response
             try{
                if(device_list && device_list.length>0){

@@ -228,6 +228,7 @@ module.exports = ()=>{
                             
                             // verifica se tem ; para mudar o timeout_relay
                             if(response.includes(";")){
+                                
                                 if(device_list[dIndex].timeout == 3000){
                                     var id = response.split(";")
                                     device_list[dIndex].timeout = 0;
