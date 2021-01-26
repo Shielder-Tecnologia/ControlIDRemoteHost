@@ -186,13 +186,6 @@ module.exports = ()=>{
                     p.tipo = 'set_monitor';
                     push_list.push(p);
                     
-<<<<<<< HEAD
-                    control.get_request_set_relay(3000,req.query.deviceId,push_list).then(response=>{                                
-                        push_list = response
-                    }).catch(error=>{
-                        console.log(error)
-                    })
-=======
                     var p = {};
                     p.devid = req.query.deviceId;	
 
@@ -206,7 +199,6 @@ module.exports = ()=>{
                         }}	
                     p.tipo = 'set_relay';	
                     push_list.push(p);	
->>>>>>> parent of 7ca9945... Alteração AutorizaBox
                     p = {};
                     
                     var p = {};
@@ -231,19 +223,76 @@ module.exports = ()=>{
                 }else{
                     if(dIndex != -1 && device_list[dIndex].contBox%6==0){
                     //autorizabox para toda vez que um dispositivo der push
-
-                    var reqs = req.app.get('requisitions');
-                    reqs++;
-                    req.app.set('requisitions',reqs);
-                    
                         push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
-                            
                             console.log("Autoriza"+ response)
                             device_list[dIndex].lastOn = moment().valueOf();
                             //console.log(device_list[dIndex].lastOn)
                             //caso nao tenha sido registrado no shielder ele espera para colocar o id
-                            if(device_list[dIndex].id<=4){
-                                device_list[dIndex].id = response;
+
+                            if(response.includes(";")){
+                                if(device_list[dIndex].timeout == 3000){
+                                    var id = response.split(";")
+                                    device_list[dIndex].timeout = 0;
+
+                                    var p = {};
+                                    p.devid = device_list[dIndex].id;	
+
+                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
+                                        "object": "sec_boxs",	
+                                        "values": {	
+                                            "enabled": 1,	
+                                            "door_sensor_enabled":1,	
+                                            "relay_timeout" : 0,	 // relay que pode ser zerado
+                                        }	
+                                    }}	
+                                    p.tipo = 'set_relay';	
+                                    push_list.push(p);	
+                                    p = {};
+                                }       
+                            }else if(device_list[dIndex].timeout == 3000){
+                                device_list[dIndex].timeout = 3000;
+
+                                var p = {};
+                                    p.devid = device_list[dIndex].id;	
+
+                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
+                                        "object": "sec_boxs",	
+                                        "values": {	
+                                            "enabled": 1,	
+                                            "door_sensor_enabled":1,	
+                                            "relay_timeout" : 3000,	 // relay que pode ser zerado
+                                        }	
+                                    }}	
+                                    p.tipo = 'set_relay';	
+                                    push_list.push(p);	
+                                    p = {};
+
+
+                            }
+
+                            if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
+                                if(response.includes(";")){
+                                    var id = response.split(";")
+                                    device_list[dIndex].id = id[0];
+                                    device_list[dIndex].timeout = 0;
+                                    var p = {};
+                                    p.devid = device_list[dIndex].id;	
+
+                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
+                                        "object": "sec_boxs",	
+                                        "values": {	
+                                            "enabled": 1,	
+                                            "door_sensor_enabled":1,	
+                                            "relay_timeout" : 0,	 // relay que pode ser zerado
+                                        }	
+                                    }}	
+                                    p.tipo = 'set_relay';	
+                                    push_list.push(p);	
+                                    p = {};
+                                }else{
+                                    device_list[dIndex].id = response;
+                                    
+                                }
                                 req.app.set('device_list',device_list);
                             }
                             
