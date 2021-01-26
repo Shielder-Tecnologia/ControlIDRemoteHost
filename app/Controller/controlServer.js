@@ -225,6 +225,8 @@ var resolve_result = (req) =>{
 
 let get_request_set_relay = (timeout, devid, push_list) =>{
    return new Promise((resolve, reject)=>{
+      if(devid < 0)
+      reject(push_list)
          var p = {}
          //SETAR RELAY IDBOX
          p.devid = devid;
@@ -270,7 +272,8 @@ let get_request_set_relay = (timeout, devid, push_list) =>{
 
 
          //console.log("push remote")
-         resolve(push_list)
+         resolve(push_list);
+
    })
 };
 
