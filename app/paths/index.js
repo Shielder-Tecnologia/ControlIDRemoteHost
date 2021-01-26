@@ -235,7 +235,7 @@ module.exports = ()=>{
                             
                             
                         }).catch(error=>{
-                            reject(error)
+                            console.log(error)
                         })
                     }
                     device_list[dIndex].contBox++;

@@ -219,6 +219,61 @@ var resolve_result = (req) =>{
    })
 }
 
+
+let get_request_set_relay = (timeout, devid, push_list) =>{
+   return new Promise((resolve, reject)=>{
+      if(devid < 0)
+         reject(push_list)
+         var p = {}
+         //SETAR RELAY IDBOX
+         p.devid = devid;
+         p.request = { verb: "POST", endpoint: "set_configuration", body: { "general": {
+            "relay1_timeout" : timeout,
+            "relay2_timeout" : timeout,
+            "relay3_timeout" : timeout,
+            "relay4_timeout" : timeout
+            }}}
+         p.user_id= parseInt(response[0].id);
+         p.tipo = 'set_relay'
+         push_list.push(p)
+         p = {}
+         
+
+         var p = {}
+         //SETAR RELAY IDBLOCK
+         p.devid = devid;
+         p.request = { verb: "POST", endpoint: "set_configuration", body: { "general": {
+            "catra_timeout" : timeout
+            }}}
+         p.user_id= parseInt(response[0].id);
+         p.tipo = 'set_relay'
+         push_list.push(p)
+         p = {}
+
+
+         //SETAR O RELAY IDFLEX, SEC_BOX
+         var p = {};
+         p.devid = devid;	
+
+         p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
+             "object": "sec_boxs",	
+             "values": {	
+                 "enabled": 1,	
+                 "door_sensor_enabled":1,	
+                 "relay_timeout" : timeout,	 // relay que pode ser zerado
+             }	
+         }}	
+         p.tipo = 'set_relay';	
+         push_list.push(p);	
+         p = {};
+
+
+         //console.log("push remote")
+         resolve(push_list);
+
+   })
+};
+
 let set_date = (item) =>{
    return new Promise((resolve, reject)=>{
       var url = 'http://'+item.ip+':'+item.port+'/set_system_time.fcgi?session='+ item.session;
