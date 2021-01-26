@@ -50,7 +50,7 @@ var resolve_result = (req) =>{
                
                //verifica o que que foi mandado para o dispositivo executar, copia/apaga/pegar serial
                switch(push_list[pIndex].tipo){
-
+                  //Seta a device_list
                   case "get_serial":
                      if(device_list.length == 0 || d == undefined){
                         var device = {}
@@ -59,7 +59,11 @@ var resolve_result = (req) =>{
                         device.ip = response.network.ip;
                         device.contBox = 1;
                         device.id = 0;
+                        device.timeout = 3000;
                         device.lastOn = moment().valueOf();
+                        var reqs = req.app.get('requisitions');
+                        reqs++;
+                        req.app.set('requisitions',reqs);
                         push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
                            device.id = idShielder;
                            device.lastOn = moment().valueOf();
@@ -219,7 +223,6 @@ var resolve_result = (req) =>{
    })
 }
 
-
 let get_request_set_relay = (timeout, devid, push_list) =>{
    return new Promise((resolve, reject)=>{
       if(devid < 0)
@@ -340,9 +343,12 @@ let ler_relay = (response,device_list,push_list) =>{
             reject("Dispositivo não encontrado: " + response[i].box_idbox)
             return;
          }
+
          if(push_list)
             var p = push_list.find(x => x.tipo == "ler_relay");
-         if(p!=undefined &&  p.devid == device_list[dIndex].devid){
+         
+         if(p!=undefined &&  p.devid == device_list[dIndex].devid)
+         {
             reject("Aguardando dispositivo para abrir a catraca: " + response[i].box_idbox)
             return;
          }
@@ -721,5 +727,6 @@ let check_remote_state = (device_list,response) =>{
     resolve_result,
     controlCopia,
     onlyUnique,
-    ler_relay
+    ler_relay,
+    get_request_set_relay
  }
