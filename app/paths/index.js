@@ -225,6 +225,32 @@ module.exports = ()=>{
                             console.log("Autoriza"+ response)
                             device_list[dIndex].lastOn = moment().valueOf();
                             //console.log(device_list[dIndex].lastOn)
+                            
+                            // verifica se tem ; para mudar o timeout_relay
+                            if(response.indexOf(";")>=0){
+                                
+                                if(device_list[dIndex].timeout == 3000){
+                                    var id = response.split(";")
+                                    device_list[dIndex].timeout = 0;
+
+                                    control.get_request_set_relay(0,device_list[dIndex].id,push_list).then(response=>{                                
+                                        push_list = response
+                                    }).catch(error=>{
+                                        console.log(error)
+                                    })
+                                }       
+                            }else if(device_list[dIndex].timeout == 0){
+                                device_list[dIndex].timeout = 3000;
+
+                                control.get_request_set_relay(3000,device_list[dIndex].id,push_list).then(response=>{                                
+                                    push_list = response
+                                }).catch(error=>{
+                                    console.log(error)
+                                })
+                            }
+
+
+
                             //caso nao tenha sido registrado no shielder ele espera para colocar o id
                             if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
                                 if(response.indexOf(";")>=0){
