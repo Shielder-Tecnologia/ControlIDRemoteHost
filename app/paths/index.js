@@ -265,7 +265,8 @@ module.exports = ()=>{
                                         console.log(error)
                                     })
                                 }else{
-                                    device_list[dIndex].id = response;
+                                    if(Number.isInteger(response))
+                                        device_list[dIndex].id = response;
                                     
                                 }
                                 req.app.set('device_list',device_list);
