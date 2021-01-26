@@ -224,71 +224,46 @@ module.exports = ()=>{
                     if(dIndex != -1 && device_list[dIndex].contBox % 6 ==0){
                     //autorizabox para toda vez que um dispositivo der push
                         push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
+
                             console.log("Autoriza"+ response)
                             device_list[dIndex].lastOn = moment().valueOf();
                             //console.log(device_list[dIndex].lastOn)
-                            //caso nao tenha sido registrado no shielder ele espera para colocar o id
-
+                            
+                            // verifica se tem ; para mudar o timeout_relay
                             if(response.includes(";")){
                                 if(device_list[dIndex].timeout == 3000){
                                     var id = response.split(";")
                                     device_list[dIndex].timeout = 0;
 
-                                    var p = {};
-                                    p.devid = device_list[dIndex].id;	
-
-                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
-                                        "object": "sec_boxs",	
-                                        "values": {	
-                                            "enabled": 1,	
-                                            "door_sensor_enabled":1,	
-                                            "relay_timeout" : 0,	 // relay que pode ser zerado
-                                        }	
-                                    }}	
-                                    p.tipo = 'set_relay';	
-                                    push_list.push(p);	
-                                    p = {};
+                                    control.get_request_set_relay(0,device_list[dIndex].id,push_list).then(response=>{                                
+                                        push_list = response
+                                    }).catch(error=>{
+                                        console.log(error)
+                                    })
                                 }       
                             }else if(device_list[dIndex].timeout == 3000){
                                 device_list[dIndex].timeout = 3000;
 
-                                var p = {};
-                                    p.devid = device_list[dIndex].id;	
-
-                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
-                                        "object": "sec_boxs",	
-                                        "values": {	
-                                            "enabled": 1,	
-                                            "door_sensor_enabled":1,	
-                                            "relay_timeout" : 3000,	 // relay que pode ser zerado
-                                        }	
-                                    }}	
-                                    p.tipo = 'set_relay';	
-                                    push_list.push(p);	
-                                    p = {};
-
-
+                                control.get_request_set_relay(3000,device_list[dIndex].id,push_list).then(response=>{                                
+                                    push_list = response
+                                }).catch(error=>{
+                                    console.log(error)
+                                })
                             }
 
+
+
+                            //caso nao tenha sido registrado no shielder ele espera para colocar o id
                             if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
                                 if(response.includes(";")){
                                     var id = response.split(";")
                                     device_list[dIndex].id = id[0];
                                     device_list[dIndex].timeout = 0;
-                                    var p = {};
-                                    p.devid = device_list[dIndex].id;	
-
-                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
-                                        "object": "sec_boxs",	
-                                        "values": {	
-                                            "enabled": 1,	
-                                            "door_sensor_enabled":1,	
-                                            "relay_timeout" : 0,	 // relay que pode ser zerado
-                                        }	
-                                    }}	
-                                    p.tipo = 'set_relay';	
-                                    push_list.push(p);	
-                                    p = {};
+                                    control.get_request_set_relay(0,device_list[dIndex].id,push_list).then(response=>{                                
+                                        push_list = response
+                                    }).catch(error=>{
+                                        console.log(error)
+                                    })
                                 }else{
                                     device_list[dIndex].id = response;
                                     
