@@ -236,7 +236,7 @@ let get_request_set_relay = (timeout, devid, push_list) =>{
             "relay3_timeout" : timeout,
             "relay4_timeout" : timeout
             }}}
-         p.user_id= parseInt(response[0].id);
+         p.user_id= -1;
          p.tipo = 'set_relay'
          push_list.push(p)
          p = {}
@@ -248,7 +248,7 @@ let get_request_set_relay = (timeout, devid, push_list) =>{
          p.request = { verb: "POST", endpoint: "set_configuration", body: { "general": {
             "catra_timeout" : timeout
             }}}
-         p.user_id= parseInt(response[0].id);
+         p.user_id= -1;
          p.tipo = 'set_relay'
          push_list.push(p)
          p = {}
