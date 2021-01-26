@@ -186,19 +186,11 @@ module.exports = ()=>{
                     p.tipo = 'set_monitor';
                     push_list.push(p);
                     
-                    var p = {};
-                    p.devid = req.query.deviceId;	
-
-                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
-                        "object": "sec_boxs",	
-                        "values": {	
-                            "enabled": 1,	
-                            "door_sensor_enabled":1,	
-                            "relay_timeout" : 3000,	 // relay que pode ser zerado
-                        }	
-                    }}	
-                    p.tipo = 'set_relay';	
-                    push_list.push(p);	
+                    control.get_request_set_relay(3000,req.query.deviceId,push_list).then(response=>{                                
+                        push_list = response
+                    }).catch(error=>{
+                        console.log(error)
+                    })
                     p = {};
                     
                     var p = {};
@@ -223,8 +215,13 @@ module.exports = ()=>{
                 }else{
                     if(dIndex != -1 && device_list[dIndex].contBox % 6 ==0){
                     //autorizabox para toda vez que um dispositivo der push
-                        push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
 
+                    var reqs = req.app.get('requisitions');
+                    reqs++;
+                    req.app.set('requisitions',reqs);
+                    
+                        push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
+                            
                             console.log("Autoriza"+ response)
                             device_list[dIndex].lastOn = moment().valueOf();
                             //console.log(device_list[dIndex].lastOn)
@@ -265,6 +262,7 @@ module.exports = ()=>{
                                         console.log(error)
                                     })
                                 }else{
+
                                     if(Number.isInteger(response))
                                         device_list[dIndex].id = response;
                                     
@@ -344,7 +342,13 @@ module.exports = ()=>{
                         var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
                         
                         if(req.body.object_changes[0].values.user_id && req.body.object_changes[0].values.user_id!= 0 ){
+                            
+                            var reqs = req.app.get('requisitions');
+                            reqs++;
+                            req.app.set('requisitions',reqs);
+
                             push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial, "0").then(response=>{                                
+                                
                                 console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
                             }).catch(error=>{
                                 console.log(error)
@@ -363,6 +367,9 @@ module.exports = ()=>{
                                     codigo = "0"+ req.body.object_changes[0].values.card_value;
                                 }
 
+                                var reqs = req.app.get('requisitions');
+                                reqs++;
+                                req.app.set('requisitions',reqs);
                                 push_Shielder.autorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,codigo).then(response=>{
                                     console.log("autorizaVisitante ticket" + response);
                                     var stringRes = '' + response;
@@ -423,7 +430,12 @@ module.exports = ()=>{
                                     console.log(error)
                                 })
                             }else if(req.body.object_changes[0].values.card_value.length == 13 || req.body.object_changes[0].values.card_value.length == 4){
+                                var reqs = req.app.get('requisitions');
+                                reqs++;
+                                req.app.set('requisitions',reqs);
+
                                 push_Shielder.autorizaFuncionario(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
+                                    
                                     console.log("autorizaFuncionario crachá" + response);
                                     
                                     var stringRes = '' + response;
@@ -485,6 +497,9 @@ module.exports = ()=>{
                                 })
                             }
                             else if(req.body.object_changes[0].values.card_value.length == 15){
+                                var reqs = req.app.get('requisitions');
+                                reqs++;
+                                req.app.set('requisitions',reqs);
                                 push_Shielder.controleAutorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
                                     console.log("controleAutorizaVisitante convite" + response);
 
@@ -547,6 +562,9 @@ module.exports = ()=>{
                             }
                             else if(req.body.object_changes[0].values.card_value.length == 17){
                                 var codigo = req.body.object_changes[0].values.card_value.slice(0,9);
+                                var reqs = req.app.get('requisitions');
+                                reqs++;
+                                req.app.set('requisitions',reqs);
                                 push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data ,d.serial, codigo).then(response=>{
                                     
                                     console.log("autorizaMorador QR code");

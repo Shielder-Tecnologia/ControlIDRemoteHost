@@ -12,6 +12,8 @@ const control = require('./app/Controller/controlServer.js');
 const controlServer = require('./app/Controller/controlServer.js');
 
 app.set('host',config.host);
+app.set('requisitions',0);
+app.set('timerReq',0);
 app.set('port',process.env.PORT || 3000);
 process.on('warning', e => console.warn(e.stack));
 
@@ -98,8 +100,19 @@ var push_list = []
       try{
          setInterval(async function(){
             console.log(app.get('device_list').length + " Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
-            console.log(app.get('device_list'))
+            console.log(app.get('device_list'));
+            var reqs = app.get('requisitions');
+            var timerReq = app.get('timerReq');
+            reqs++;
+            timerReq++;
+            if(timerReq >=6){
+               console.log("Número de requisições por minuto " +reqs/60);
+               timerReq = 0;
+               reqs = 0;
+            }
             
+            app.set('requisitions',reqs);
+            app.set('timerReq',timerReq);
             var response
             try{
                if(device_list && device_list.length>0){
@@ -122,6 +135,9 @@ var push_list = []
             var response
             try{
                if(device_list && device_list.length>0){
+                  var reqs = app.get('requisitions');
+                  reqs++;
+                  app.set('requisitions',reqs);
                   response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
                   console.log("Apaga: ")
                   
@@ -145,6 +161,9 @@ var push_list = []
             var response
             try{
                if(device_list && device_list.length>0){
+                  var reqs = app.get('requisitions');
+                  reqs++;
+                  app.set('requisitions',reqs);
                   response = await pull_shielder.lerDigital(app.get('mac'))
                   console.log("Ler digital")
                   console.log(response)
@@ -164,7 +183,10 @@ var push_list = []
             var response
             try{
                if(device_list && device_list.length>0){
-                  response = await pull_shielder.lerRelay(app.get('mac'))
+                  response = await pull_shielder.lerRelay(app.get('mac'));
+                  var reqs = app.get('requisitions');
+                  reqs++;
+                  app.set('requisitions',reqs);
                   console.log("Ler Relay")
                   console.log(response)
                   if(response){
