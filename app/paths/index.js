@@ -274,7 +274,7 @@ module.exports = ()=>{
                             
                             req.app.set('push_list',push_list);
                         }).catch(error=>{
-                            reject(error)
+                            console.log(error)
                         })
                     }
                     device_list[dIndex].contBox++;
