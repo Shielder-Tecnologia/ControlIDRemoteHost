@@ -238,7 +238,7 @@ module.exports = ()=>{
                                         console.log(error)
                                     })
                                 }       
-                            }else if(device_list[dIndex].timeout == 3000){
+                            }else if(device_list[dIndex].timeout == 0){
                                 device_list[dIndex].timeout = 3000;
 
                                 control.get_request_set_relay(3000,device_list[dIndex].id,push_list).then(response=>{                                
