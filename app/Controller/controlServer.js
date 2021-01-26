@@ -58,6 +58,8 @@ var resolve_result = (req) =>{
                         device.serial = response.serial;
                         device.ip = response.network.ip;
                         device.contBox = 1;
+                        device.id = 0;
+                        device.lastOn = moment().valueOf();
                         push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
                            device.id = idShielder;
                            device.lastOn = moment().valueOf();
