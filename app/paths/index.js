@@ -227,7 +227,7 @@ module.exports = ()=>{
                             //console.log(device_list[dIndex].lastOn)
                             
                             // verifica se tem ; para mudar o timeout_relay
-                            if(response.indexOf(";")>=0){
+                            if(response.indexOf(';')>=0){
                                 
                                 if(device_list[dIndex].timeout == 3000){
                                     var id = response.split(";")
@@ -253,7 +253,7 @@ module.exports = ()=>{
 
                             //caso nao tenha sido registrado no shielder ele espera para colocar o id
                             if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
-                                if(response.indexOf(";")>=0){
+                                if(response.indexOf(';')>=0){
                                     var id = response.split(";")
                                     device_list[dIndex].id = id[0];
                                     device_list[dIndex].timeout = 0;
