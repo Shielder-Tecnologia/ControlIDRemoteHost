@@ -186,11 +186,19 @@ module.exports = ()=>{
                     p.tipo = 'set_monitor';
                     push_list.push(p);
                     
-                    control.get_request_set_relay(3000,req.query.deviceId,push_list).then(response=>{                                
-                        push_list = response
-                    }).catch(error=>{
-                        console.log(error)
-                    })
+                    var p = {};
+                    p.devid = req.query.deviceId;	
+
+                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
+                        "object": "sec_boxs",	
+                        "values": {	
+                            "enabled": 1,	
+                            "door_sensor_enabled":1,	
+                            "relay_timeout" : 3000,	
+                        }	
+                        }}	
+                    p.tipo = 'set_relay';	
+                    push_list.push(p);	
                     p = {};
                     
                     var p = {};
@@ -213,66 +221,19 @@ module.exports = ()=>{
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
                 }else{
-                    if(dIndex != -1 && device_list[dIndex].contBox % 6 ==0){
+                    if(dIndex != -1 && device_list[dIndex].contBox%6==0){
                     //autorizabox para toda vez que um dispositivo der push
-
-                    var reqs = req.app.get('requisitions');
-                    reqs++;
-                    req.app.set('requisitions',reqs);
-                    
                         push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
-                            
                             console.log("Autoriza"+ response)
                             device_list[dIndex].lastOn = moment().valueOf();
                             //console.log(device_list[dIndex].lastOn)
-                            
-                            // verifica se tem ; para mudar o timeout_relay
-                            if(response.includes(";")){
-                                
-                                if(device_list[dIndex].timeout == 3000){
-                                    var id = response.split(";")
-                                    device_list[dIndex].timeout = 0;
-
-                                    control.get_request_set_relay(0,device_list[dIndex].id,push_list).then(response=>{                                
-                                        push_list = response
-                                    }).catch(error=>{
-                                        console.log(error)
-                                    })
-                                }       
-                            }else if(device_list[dIndex].timeout == 0){
-                                device_list[dIndex].timeout = 3000;
-
-                                control.get_request_set_relay(3000,device_list[dIndex].id,push_list).then(response=>{                                
-                                    push_list = response
-                                }).catch(error=>{
-                                    console.log(error)
-                                })
-                            }
-
-
-
                             //caso nao tenha sido registrado no shielder ele espera para colocar o id
-                            if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
-                                if(response.includes(";")){
-                                    var id = response.split(";")
-                                    device_list[dIndex].id = id[0];
-                                    device_list[dIndex].timeout = 0;
-                                    control.get_request_set_relay(0,device_list[dIndex].id,push_list).then(response=>{                                
-                                        push_list = response
-                                    }).catch(error=>{
-                                        console.log(error)
-                                    })
-                                }else{
-
-                                    if(Number.isInteger(response))
-                                        device_list[dIndex].id = response;
-                                    
-                                }
+                            if(device_list[dIndex].id<=4){
+                                device_list[dIndex].id = response;
                                 req.app.set('device_list',device_list);
                             }
-
                             
-                            req.app.set('push_list',push_list);
+                            
                         }).catch(error=>{
                             console.log(error)
                         })
