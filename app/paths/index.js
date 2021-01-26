@@ -228,71 +228,8 @@ module.exports = ()=>{
                             device_list[dIndex].lastOn = moment().valueOf();
                             //console.log(device_list[dIndex].lastOn)
                             //caso nao tenha sido registrado no shielder ele espera para colocar o id
-
-                            if(response.includes(";")){
-                                if(device_list[dIndex].timeout == 3000){
-                                    var id = response.split(";")
-                                    device_list[dIndex].timeout = 0;
-
-                                    var p = {};
-                                    p.devid = device_list[dIndex].id;	
-
-                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
-                                        "object": "sec_boxs",	
-                                        "values": {	
-                                            "enabled": 1,	
-                                            "door_sensor_enabled":1,	
-                                            "relay_timeout" : 0,	 // relay que pode ser zerado
-                                        }	
-                                    }}	
-                                    p.tipo = 'set_relay';	
-                                    push_list.push(p);	
-                                    p = {};
-                                }       
-                            }else if(device_list[dIndex].timeout == 3000){
-                                device_list[dIndex].timeout = 3000;
-
-                                var p = {};
-                                    p.devid = device_list[dIndex].id;	
-
-                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
-                                        "object": "sec_boxs",	
-                                        "values": {	
-                                            "enabled": 1,	
-                                            "door_sensor_enabled":1,	
-                                            "relay_timeout" : 3000,	 // relay que pode ser zerado
-                                        }	
-                                    }}	
-                                    p.tipo = 'set_relay';	
-                                    push_list.push(p);	
-                                    p = {};
-
-
-                            }
-
-                            if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
-                                if(response.includes(";")){
-                                    var id = response.split(";")
-                                    device_list[dIndex].id = id[0];
-                                    device_list[dIndex].timeout = 0;
-                                    var p = {};
-                                    p.devid = device_list[dIndex].id;	
-
-                                    p.request = { verb: "POST", endpoint: "modify_objects", body: { 	
-                                        "object": "sec_boxs",	
-                                        "values": {	
-                                            "enabled": 1,	
-                                            "door_sensor_enabled":1,	
-                                            "relay_timeout" : 0,	 // relay que pode ser zerado
-                                        }	
-                                    }}	
-                                    p.tipo = 'set_relay';	
-                                    push_list.push(p);	
-                                    p = {};
-                                }else{
-                                    device_list[dIndex].id = response;
-                                    
-                                }
+                            if(device_list[dIndex].id<=4){
+                                device_list[dIndex].id = response;
                                 req.app.set('device_list',device_list);
                             }
                             
