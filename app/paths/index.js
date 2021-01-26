@@ -222,12 +222,12 @@ module.exports = ()=>{
                     
                         push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
                             
-                            console.log("Autoriza"+ response)
+                            console.log("Autoriza "+ response)
                             device_list[dIndex].lastOn = moment().valueOf();
                             //console.log(device_list[dIndex].lastOn)
                             
                             // verifica se tem ; para mudar o timeout_relay
-                            if(response.indexOf(';')>=0){
+                            if(!Number.isInteger(device_list[dIndex].id) && response.indexOf(';')>=0){
                                 
                                 if(device_list[dIndex].timeout == 3000){
                                     var id = response.split(";")
