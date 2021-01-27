@@ -213,7 +213,7 @@ module.exports = ()=>{
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
                 }else{
-                    if(dIndex != -1 && device_list[dIndex].contBox % 6 ==0){
+                    if(dIndex != -1 && device_list[dIndex].contBox % 14 == 0){
                     //autorizabox para toda vez que um dispositivo der push
 
                     var reqs = req.app.get('requisitions');
