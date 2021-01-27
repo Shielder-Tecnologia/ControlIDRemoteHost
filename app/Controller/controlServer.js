@@ -223,7 +223,7 @@ var resolve_result = (req) =>{
    })
 }
 
-let post_request_set_relay = (devid, push_list, door) =>{
+let post_request_open_relay = (devid, push_list, door, message) =>{
    return new Promise((resolve, reject)=>{
       //TIRAR SO ISSO E VER SE FUNCIONA
       if(devid < 0)
@@ -240,7 +240,7 @@ let post_request_set_relay = (devid, push_list, door) =>{
          //MOSTRAR MENSAGEM
          p.devid = devid;
          p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
-               "message": "ACESSO LIBERADO",
+               "message": message,
                "timeout": 5000
             }}
 
@@ -330,12 +330,12 @@ let post_request_set_relay = (devid, push_list, door) =>{
       push_list.push(p)
 
 
-         resolve(push_list);
+      resolve(push_list);
 
    })
 };
 
-let post_request_open_relay = (timeout, devid, push_list) =>{
+let post_request_set_relay = (timeout, devid, push_list) =>{
    return new Promise((resolve, reject)=>{
       if(devid < 0)
          reject(push_list)
