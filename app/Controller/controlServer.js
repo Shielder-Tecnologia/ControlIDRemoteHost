@@ -223,7 +223,119 @@ var resolve_result = (req) =>{
    })
 }
 
-let get_request_set_relay = (timeout, devid, push_list) =>{
+let post_request_set_relay = (devid, push_list, door) =>{
+   return new Promise((resolve, reject)=>{
+      //TIRAR SO ISSO E VER SE FUNCIONA
+      if(devid < 0)
+         reject(push_list)
+
+         if(push_list)
+            var p = push_list.find(x => x.tipo == "message_to_screen");
+
+         if(p!=undefined &&  p.devid == devid){
+               reject("Não foi possível enviar mensagem: ")
+               return;
+         }
+         var p = {}
+         //MOSTRAR MENSAGEM
+         p.devid = devid;
+         p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
+               "message": "ACESSO LIBERADO",
+               "timeout": 5000
+            }}
+
+         p.user_id = -1;
+         p.tipo = 'message_to_screen'
+         //console.log("relay aberto")
+         
+         push_list.push(p)
+         //req.app.set('push_list',push_list);
+
+
+      //ACIONAR RELAY SECBOX
+      if(push_list)
+          var p = push_list.find(x => x.tipo == "ler_relay_sec_box");
+      if(p!=undefined &&  p.devid == devid){
+          reject("Aguardando dispositivo para abrir a catraca: ")
+          return;
+      }
+      var p = {}
+      //LER RELAY
+      p.devid = devid;
+      p.request = { verb: "POST", endpoint: "execute_actions", body: { 
+          "actions": [
+          {
+              "action": "sec_box",
+              "parameters": "id=65793,reason=3,timeout=3000"
+          }
+          ]}}
+
+      p.user_id = -1;
+      p.tipo = 'ler_relay_sec_box'
+      console.log("relay aberto")
+      push_list.push(p)
+
+      
+
+
+      //ACIONAR RELAY DOOR 
+      if(push_list)
+          var p = push_list.find(x => x.tipo == "ler_relay_door");
+      if(p!=undefined &&  p.devid == devid){
+          reject("Aguardando dispositivo para abrir a catraca: ")
+          return;
+      }
+      var p = {}
+      //LER RELAY
+      p.devid = devid;
+      p.request = { verb: "POST", endpoint: "execute_actions", body: {
+         "actions": [
+            {
+               "action": "door",
+               "parameters": "door="+ (door + 1) +",timeout=3000"
+            }
+         ]
+      }}
+
+      p.user_id = -1;
+      p.tipo = 'ler_relay_door'
+      console.log("relay aberto")
+      push_list.push(p)
+
+
+
+      
+      //ACIONAR RELAY CATRA 
+      if(push_list)
+          var p = push_list.find(x => x.tipo == "ler_relay_catra");
+      if(p!=undefined &&  p.devid == devid){
+          reject("Aguardando dispositivo para abrir a catraca: ")
+          return;
+      }
+      var p = {}
+      //LER RELAY
+      p.devid = devid;
+      p.request = { verb: "POST", endpoint: "execute_actions", body: {
+         "actions": [
+               {
+                  "action": "catra",
+                  "parameters": "allow=anticlockwise"
+               }
+            ]
+      }}
+
+      p.user_id = -1;
+      p.tipo = 'ler_relay_catra'
+      console.log("relay aberto")
+      push_list.push(p)
+
+
+         resolve(push_list);
+
+   })
+};
+
+let post_request_open_relay = (timeout, devid, push_list) =>{
    return new Promise((resolve, reject)=>{
       if(devid < 0)
          reject(push_list)
@@ -276,6 +388,8 @@ let get_request_set_relay = (timeout, devid, push_list) =>{
 
    })
 };
+
+
 
 let set_date = (item) =>{
    return new Promise((resolve, reject)=>{
@@ -728,5 +842,6 @@ let check_remote_state = (device_list,response) =>{
     controlCopia,
     onlyUnique,
     ler_relay,
-    get_request_set_relay
+    post_request_set_relay,
+    post_request_open_relay
  }
