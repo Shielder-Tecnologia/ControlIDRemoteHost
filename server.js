@@ -105,7 +105,7 @@ var push_list = []
             reqs++;
             timerReq++;
             if(timerReq >=6){
-               console.log("Número Total de requisições: " + reqs + "   Requisições por minuto: " +reqs/60);
+               console.log("Número de requisições por minuto " +reqs/60);
                timerReq = 0;
                reqs = 0;
             }
