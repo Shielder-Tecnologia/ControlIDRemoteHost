@@ -367,8 +367,8 @@ module.exports = ()=>{
 
                                         control.post_request_open_relay(d.devid,push_list,porta,"ACESSO LIBERADO").then(response=>{                                
                                             console.log("OPEN relay "+ response)
-                                            //push_list = response;
-                                            //req.app.set('push_list',push_list);
+                                            push_list = response;
+                                            req.app.set('push_list',push_list);
                                         }).catch(error=>{
                                             console.log(error)
                                         })
