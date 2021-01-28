@@ -175,15 +175,6 @@ var resolve_result = (req) =>{
                   case "set_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " setada");
                      break;
-                  case "ler_relay_sec_box":
-                     console.log("SecBox " + push_list[pIndex].devid+ " liberada");
-                     break;
-                  case "ler_relay_door":
-                     console.log("Porta " + push_list[pIndex].devid+ " liberada");
-                     break;
-                  case "ler_relay_catra":
-                     console.log("Catraca " + push_list[pIndex].devid+ " liberada");
-                     break;
                   case "set_date":
                      console.log("Data " + push_list[pIndex].devid+ " setada");
                      break;
