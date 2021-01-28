@@ -233,7 +233,7 @@ module.exports = ()=>{
                                     var id = response.split(";")
                                     device_list[dIndex].timeout = 0;
 
-                                    control.get_request_set_relay(0,device_list[dIndex].id,push_list).then(response=>{                                
+                                    control.get_request_set_relay(0,device_list[dIndex].devid,push_list).then(response=>{                                
                                         push_list = response
                                     }).catch(error=>{
                                         console.log(error)
@@ -242,7 +242,7 @@ module.exports = ()=>{
                             }else if(device_list[dIndex].timeout == 0){
                                 device_list[dIndex].timeout = 3000;
 
-                                control.get_request_set_relay(3000,device_list[dIndex].id,push_list).then(response=>{                                
+                                control.get_request_set_relay(3000,device_list[dIndex].devid,push_list).then(response=>{                                
                                     push_list = response
                                 }).catch(error=>{
                                     console.log(error)
@@ -257,7 +257,7 @@ module.exports = ()=>{
                                     var id = response.split(";")
                                     device_list[dIndex].id = id[0];
                                     device_list[dIndex].timeout = 0;
-                                    control.get_request_set_relay(0,device_list[dIndex].id,push_list).then(response=>{                                
+                                    control.get_request_set_relay(0,device_list[dIndex].devid,push_list).then(response=>{                                
                                         push_list = response
                                     }).catch(error=>{
                                         console.log(error)
