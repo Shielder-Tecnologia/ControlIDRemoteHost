@@ -175,6 +175,15 @@ var resolve_result = (req) =>{
                   case "set_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " setada");
                      break;
+                  case "set_relay_idflex":
+                     console.log("iDFlex " + push_list[pIndex].devid+ " setada");
+                     break;
+                  case "set_relay_idblock":
+                     console.log("iDBlock " + push_list[pIndex].devid+ " setada");
+                     break;
+                  case "set_relay_idbox":
+                     console.log("iDBox " + push_list[pIndex].devid+ " setada");
+                     break;
                   case "ler_relay_sec_box":
                      console.log("SecBox " + push_list[pIndex].devid+ " liberada");
                      break;
@@ -416,22 +425,6 @@ let get_request_set_relay = (timeout, devid, push_list) =>{
          resolve(push_list);
 
    })
-};
-
-let set_date = (item) =>{
-   return new Promise((resolve, reject)=>{
-      var url = 'http://'+item.ip+':'+item.port+'/set_system_time.fcgi?session='+ item.session;
-      device(url,'system_data','set_date')
-      .then(response=>{
-         //console.log(response)
-         resolve (response)
-      })
-      .catch(response=>{
-         //console.log(response)
-         reject (response)
-      })
-   })
-   
 };
 
 
