@@ -104,7 +104,7 @@ var push_list = []
             var timerReq = app.get('timerReq');
             reqs++;
             timerReq++;
-            if(timerReq >=12){
+            if(timerReq >=8){
                console.log("Número Total de requisições: " + reqs + "   Requisições por minuto: " +reqs/60);
                timerReq = 0;
                reqs = 0;
