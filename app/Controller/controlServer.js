@@ -172,9 +172,16 @@ var resolve_result = (req) =>{
                   case "ler_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " aberta");
                      break;
-                  case "set_relay":
-                     console.log("Catraca " + push_list[pIndex].devid+ " setada");
+                  case "set_relay_idflex":
+                     console.log("iDFlex " + push_list[pIndex].devid+ " setada");
                      break;
+                  case "set_relay_idblock":
+                     console.log("iDBlock " + push_list[pIndex].devid+ " setada");
+                     break;
+                  case "set_relay_idbox":
+                     console.log("iDBox " + push_list[pIndex].devid+ " setada");
+                     break;
+                           
                   case "set_date":
                      console.log("Data " + push_list[pIndex].devid+ " setada");
                      break;
@@ -339,6 +346,15 @@ let post_request_set_relay = (timeout, devid, push_list) =>{
    return new Promise((resolve, reject)=>{
       if(devid < 0)
          reject(push_list)
+
+
+         //ACIONAR RELAY CATRA 
+      if(push_list)
+         var p = push_list.find(x => x.tipo == "set_relay_idbox");
+      if(p!=undefined &&  p.devid == devid){
+         reject("Aguardando dispositivo para abrir a porta: ")
+         return;
+      }
          var p = {}
          //SETAR RELAY IDBOX
          p.devid = devid;
@@ -349,11 +365,16 @@ let post_request_set_relay = (timeout, devid, push_list) =>{
             "relay4_timeout" : timeout
             }}}
          p.user_id= -1;
-         p.tipo = 'set_relay'
+         p.tipo = 'set_relay_idbox'
          push_list.push(p)
          p = {}
          
-
+         if(push_list)
+         var p = push_list.find(x => x.tipo == "set_relay_idblock");
+         if(p!=undefined &&  p.devid == devid){
+            reject("Aguardando dispositivo para abrir a catraca: ")
+            return;
+         }
          var p = {}
          //SETAR RELAY IDBLOCK
          p.devid = devid;
@@ -361,12 +382,19 @@ let post_request_set_relay = (timeout, devid, push_list) =>{
             "catra_timeout" : timeout
             }}}
          p.user_id= -1;
-         p.tipo = 'set_relay'
+         p.tipo = 'set_relay_idblock'
          push_list.push(p)
          p = {}
 
 
          //SETAR O RELAY IDFLEX, SEC_BOX
+         if(push_list)
+            var p = push_list.find(x => x.tipo == "set_relay_idflex");
+         if(p!=undefined &&  p.devid == devid){
+            reject("Aguardando dispositivo para abrir a secBox: ")
+            return;
+         }
+
          var p = {};
          p.devid = devid;	
 
@@ -378,7 +406,7 @@ let post_request_set_relay = (timeout, devid, push_list) =>{
                  "relay_timeout" : timeout,	 // relay que pode ser zerado
              }	
          }}	
-         p.tipo = 'set_relay';	
+         p.tipo = 'set_relay_idflex';	
          push_list.push(p);	
          p = {};
 
