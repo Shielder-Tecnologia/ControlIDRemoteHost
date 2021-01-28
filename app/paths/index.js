@@ -350,6 +350,28 @@ module.exports = ()=>{
 
                             push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial, "0").then(response=>{                                
                                 
+                                //funcionalidade controle de vaga
+                                if(d.timeout == 0)
+                                {
+                                    var stringRes = '' + response;
+                                    var charZro = stringRes.charAt(0);
+                                    if(charZro > 0)
+                                    {
+                                        hexString = req.body.object_changes[0].values.identifier_id.toString(16);
+                                        var last2 = hexString.slice(-2);
+                                        porta = parseInt(last2, 16);
+
+                                        control.post_request_open_relay(d.devid,push_list,porta,"ACESSO LIBERADO").then(response=>{                                
+                                            console.log("OPEN relay "+ response)
+                                            //push_list = response;
+                                            //req.app.set('push_list',push_list);
+                                        }).catch(error=>{
+                                            console.log(error)
+                                        })
+                                    }
+                                }
+
+                                
                                 console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
                             }).catch(error=>{
                                 console.log(error)
