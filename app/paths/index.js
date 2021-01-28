@@ -249,7 +249,6 @@ module.exports = ()=>{
 
                                 control.get_request_set_relay(3000,device_list[dIndex].devid,push_list).then(response=>{                                
                                     push_list = response
-                                    
                                 }).catch(error=>{
                                     console.log(error)
                                 })
@@ -265,7 +264,7 @@ module.exports = ()=>{
                                         device_list[dIndex].id = id[0];
                                         device_list[dIndex].timeout = 0;
                                         control.get_request_set_relay(0,device_list[dIndex].devid,push_list).then(response=>{                                
-                                            push_list = response;
+                                            push_list = response
                                         }).catch(error=>{
                                             console.log(error)
                                         })
@@ -381,8 +380,6 @@ module.exports = ()=>{
                             }).catch(error=>{
                                 console.log(error)
                             })
-
-                        // caso nao tenha usuario signifca que é para testar se é prestador/funcionario e etc...
                         }else{
                             //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
                             if(req.body.object_changes[0].values.card_value.length >= 10 && req.body.object_changes[0].values.card_value.length <= 12){
