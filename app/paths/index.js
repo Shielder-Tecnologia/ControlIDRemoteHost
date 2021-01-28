@@ -137,6 +137,11 @@ module.exports = ()=>{
                 console.log("PUSH:")
                 var push_list = req.app.get('push_list')
                 var device_list = req.app.get('device_list')
+
+                data = device_list.filter(function( element ) {
+                    return element !== undefined;
+                 });
+                 
                 if(device_list)
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                 
