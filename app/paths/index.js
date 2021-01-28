@@ -380,6 +380,7 @@ module.exports = ()=>{
                             }).catch(error=>{
                                 console.log(error)
                             })
+                       // caso nao tenha usuario signifca que é para testar se é prestador/funcionario e etc...
                         }else{
                             //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
                             if(req.body.object_changes[0].values.card_value.length >= 10 && req.body.object_changes[0].values.card_value.length <= 12){
@@ -403,52 +404,12 @@ module.exports = ()=>{
                                     
                                     var charZro = stringRes.charAt(0);
                                     if(charZro > 0){
-                                        //mensagem
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "message_to_screen");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Não foi possível enviar mensagem: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
-                                                "message": "TICKET LIBERADO",
-                                                "timeout": 5000
-                                            }}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'message_to_screen'
-                                        //console.log("relay aberto")
-                                        
-                                        push_list.push(p)
-                                        //req.app.set('push_list',push_list);
-
-
-                                        //ler relay
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "ler_relay");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Aguardando dispositivo para abrir a catraca: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
-                                            "actions": [
-                                            {
-                                                "action": "sec_box",
-                                                "parameters": "id=65793,reason=3,timeout=3000"
-                                            }
-                                            ]}}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'ler_relay'
-                                        console.log("relay aberto")
-                                        push_list.push(p)
-                                        req.app.set('push_list',push_list);
+                                        control.post_request_open_relay(d.devid,push_list,porta,"TICKET LIBERADO").then(response=>{                                
+                                            push_list = response;
+                                            req.app.set('push_list',push_list);
+                                        }).catch(error=>{
+                                            console.log(error)
+                                        })
                                     }
 
                                     
@@ -469,52 +430,12 @@ module.exports = ()=>{
                                     var charZro = stringRes.charAt(0);
                                     
                                     if(charZro > 0){
-                                        //mensagem
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "message_to_screen");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Não foi possível enviar mensagem: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
-                                                "message": "CRACHÁ LIBERADO",
-                                                "timeout": 5000
-                                            }}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'message_to_screen'
-                                        //console.log("relay aberto")
-                                        
-                                        push_list.push(p)
-                                        //req.app.set('push_list',push_list);
-
-
-
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "ler_relay");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Aguardando dispositivo para abrir a catraca: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
-                                            "actions": [
-                                            {
-                                                "action": "sec_box",
-                                                "parameters": "id=65793,reason=3,timeout=3000"
-                                            }
-                                            ]}}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'ler_relay'
-                                        console.log("relay aberto")
-                                        push_list.push(p)
-                                        req.app.set('push_list',push_list);
+                                        control.post_request_open_relay(d.devid,push_list,porta,"CRACHÁ LIBERADO").then(response=>{                                
+                                            push_list = response;
+                                            req.app.set('push_list',push_list);
+                                        }).catch(error=>{
+                                            console.log(error)
+                                        })
                                     }
 
                                     
@@ -535,50 +456,12 @@ module.exports = ()=>{
                                     
                                     if(charZro > 0){
 
-                                        //mensagem
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "message_to_screen");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Não foi possível enviar mensagem: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
-                                                "message": "CONVITE LIBERADO",
-                                                "timeout": 5000
-                                            }}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'message_to_screen'
-                                        //console.log("relay aberto")
-                                        
-                                        push_list.push(p)
-                                        //req.app.set('push_list',push_list);
-
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "ler_relay");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Aguardando dispositivo para abrir a catraca: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
-                                            "actions": [
-                                            {
-                                                "action": "sec_box",
-                                                "parameters": "id=65793,reason=3,timeout=3000"
-                                            }
-                                            ]}}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'ler_relay'
-                                        console.log("relay aberto")
-                                        push_list.push(p)
-                                        req.app.set('push_list',push_list);
+                                        control.post_request_open_relay(d.devid,push_list,porta,"CONVITE LIBERADO").then(response=>{                                
+                                            push_list = response;
+                                            req.app.set('push_list',push_list);
+                                        }).catch(error=>{
+                                            console.log(error)
+                                        })
                                     }
 
                                     
@@ -601,51 +484,12 @@ module.exports = ()=>{
                                     var charZro = stringRes.charAt(0);
                                     
                                     if(charZro > 0){
-                                        //mensagem
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "message_to_screen");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Não foi possível enviar mensagem: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "message_to_screen", body: { 
-                                                "message": "MORADOR LIBERADO",
-                                                "timeout": 5000
-                                            }}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'message_to_screen'
-                                        //console.log("relay aberto")
-                                        
-                                        push_list.push(p)
-                                        //req.app.set('push_list',push_list);
-
-
-                                        if(push_list)
-                                            var p = push_list.find(x => x.tipo == "ler_relay");
-                                        if(p!=undefined &&  p.devid == d.devid){
-                                            reject("Aguardando dispositivo para abrir a catraca: ")
-                                            return;
-                                        }
-                                        var p = {}
-                                        //LER RELAY
-                                        p.devid = d.devid;
-                                        p.request = { verb: "POST", endpoint: "execute_actions", body: { 
-                                            "actions": [
-                                            {
-                                                "action": "sec_box",
-                                                "parameters": "id=65793,reason=3,timeout=3000"
-                                            }
-                                            ]}}
-
-                                        p.user_id = -1;
-                                        p.tipo = 'ler_relay'
-                                        console.log("relay aberto")
-                                        push_list.push(p)
-                                        req.app.set('push_list',push_list);
+                                        control.post_request_open_relay(d.devid,push_list,porta,"MORADOR LIBERADO").then(response=>{                                
+                                            push_list = response;
+                                            req.app.set('push_list',push_list);
+                                        }).catch(error=>{
+                                            console.log(error)
+                                        })
                                     }
 
                                     
