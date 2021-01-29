@@ -5,7 +5,7 @@ config = require('./config/config.js');
 const routes = require('./app');
 var moment = require('moment')
 
-const push_shielder =require('./app/Controller/push_shielder')
+const push_shielder =require('./app/Controller/push_Shielder')
 const shielderweb =require('./app/Controller/shielder_web');
 const pull_shielder = require('./app/Controller/pull_shielder.js');
 const control = require('./app/Controller/controlServer.js');
@@ -172,7 +172,7 @@ var push_list = []
                      reqs++;
                      app.set('requisitions',reqs);
                      
-                     push_shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
+                     push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
                               
                         console.log("Autoriza "+ response)
                         device_list[dIndex].lastOn = moment().valueOf();
