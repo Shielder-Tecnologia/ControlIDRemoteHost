@@ -162,10 +162,12 @@ var push_list = []
          setInterval(async function(){
             
             try{
+               console.log("Log 1")
                if(device_list && device_list.length>0){
                   
                   //autorizabox para toda vez que um dispositivo der push
                   for(var dIndex = 0; dIndex<device_list.length; dIndex++){
+                     console.log("Log")
                      var reqs = req.app.get('requisitions');
                      reqs++;
                      req.app.set('requisitions',reqs);
