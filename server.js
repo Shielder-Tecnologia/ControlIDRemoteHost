@@ -160,12 +160,14 @@ var push_list = []
          },5000)
          //AUTORIZABOX
          setInterval(async function(){
-            var response
+            
             try{
+               console.log("Log 1")
                if(device_list && device_list.length>0){
                   
                   //autorizabox para toda vez que um dispositivo der push
-                  for(var dIndex; dIndex<device_list.length; dIndex++){
+                  for(var dIndex = 0; dIndex<device_list.length; dIndex++){
+                     console.log("Log")
                      var reqs = req.app.get('requisitions');
                      reqs++;
                      req.app.set('requisitions',reqs);
@@ -233,7 +235,7 @@ var push_list = []
             }
             
          },60000)
-         
+
          setInterval(async function(){
             //console.log(app.get('mutex_Ler'))
             var response
