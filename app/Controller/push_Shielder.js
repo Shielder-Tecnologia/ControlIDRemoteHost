@@ -13,6 +13,7 @@ autorizaBox = function(ip,serialnumber){
 autorizaMorador = function(id,datetime,serial,codigo){
     return new Promise((resolve,reject)=>{
         shielderweb.autorizaMorador(id,datetime,serial,codigo).then(response=>{
+            console.log("teste 4")
             resolve(response)
         }).catch(response=>{
             reject(response)
