@@ -168,9 +168,9 @@ var push_list = []
                   //autorizabox para toda vez que um dispositivo der push
                   for(var dIndex = 0; dIndex<device_list.length; dIndex++){
                      console.log("Log")
-                     var reqs = req.app.get('requisitions');
+                     var reqs = app.get('requisitions');
                      reqs++;
-                     req.app.set('requisitions',reqs);
+                     app.set('requisitions',reqs);
                      
                      push_Shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
                               
@@ -219,11 +219,11 @@ var push_list = []
                                     device_list[dIndex].id = response;
                               }
                            }
-                           req.app.set('device_list',device_list);
+                           app.set('device_list',device_list);
                         }
 
                            
-                        req.app.set('push_list',push_list);
+                        app.set('push_list',push_list);
                      }).catch(error=>{
                         console.log(error)
                      })
