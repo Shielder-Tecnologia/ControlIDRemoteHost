@@ -160,7 +160,7 @@ var push_list = []
          },5000)
          //AUTORIZABOX
          setInterval(async function(){
-            var response
+            
             try{
                console.log("Log 1")
                if(device_list && device_list.length>0){
