@@ -789,13 +789,17 @@ let controlCopia = (response,device_list,push_list) =>{
       }else if(response[0].tag && response[0].descricao != "SENHA"){
          //CREATE CARD
          var responseArray = response[0].tag.split(",")
-         var tag = (Math.pow(2,32) * responseArray[0]) + responseArray[1]
+         
+         var tag = 0 
+         if(responseArray[0] && responseArray[1])
+            tag = (Math.pow(2,32) * parseInt(responseArray[0])) + parseInt(responseArray[1])
+         console.log(tag)
          p.devid = device_list[dIndex].devid;
          p.request = { verb: "POST", endpoint: "create_objects", body: { 
             "object": "cards",
             "values": [
                {
-                   "value": tag,
+                   "value": parseInt(tag),
                    "user_id": parseInt(response[0].id)
                }
            ]}}
