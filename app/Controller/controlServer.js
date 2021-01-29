@@ -172,9 +172,6 @@ var resolve_result = (req) =>{
                   case "ler_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " aberta");
                      break;
-                  case "set_relay":
-                     console.log("Catraca " + push_list[pIndex].devid+ " setada");
-                     break;
                   case "set_relay_idflex":
                      console.log("iDFlex " + push_list[pIndex].devid+ " setada");
                      break;
