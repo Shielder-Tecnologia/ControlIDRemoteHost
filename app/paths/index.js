@@ -137,6 +137,11 @@ module.exports = ()=>{
                 console.log("PUSH:")
                 var push_list = req.app.get('push_list')
                 var device_list = req.app.get('device_list')
+
+                data = device_list.filter(function( element ) {
+                    return element !== undefined;
+                 });
+
                 if(device_list)
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                 
@@ -186,7 +191,7 @@ module.exports = ()=>{
                     p.tipo = 'set_monitor';
                     push_list.push(p);
                     
-                    control.post_request_set_relay(3000,req.query.deviceId,push_list).then(response=>{                                
+                    control.get_request_set_relay(3000,req.query.deviceId,push_list).then(response=>{                                
                         push_list = response
                     }).catch(error=>{
                         console.log(error)
@@ -213,7 +218,7 @@ module.exports = ()=>{
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
                 }else{
-                    if(dIndex != -1 && device_list[dIndex].contBox % 6 ==0){
+                    if(dIndex != -1 && device_list[dIndex].contBox % 14 == 0){
                     //autorizabox para toda vez que um dispositivo der push
 
                     var reqs = req.app.get('requisitions');
@@ -233,7 +238,7 @@ module.exports = ()=>{
                                     var id = response.split(";")
                                     device_list[dIndex].timeout = 0;
 
-                                    control.post_request_set_relay(0,device_list[dIndex].devid,push_list).then(response=>{                                
+                                    control.get_request_set_relay(0,device_list[dIndex].devid,push_list).then(response=>{                                
                                         push_list = response
                                     }).catch(error=>{
                                         console.log(error)
@@ -242,7 +247,7 @@ module.exports = ()=>{
                             }else if(device_list[dIndex].timeout == 0){
                                 device_list[dIndex].timeout = 3000;
 
-                                control.post_request_set_relay(3000,device_list[dIndex].devid,push_list).then(response=>{                                
+                                control.get_request_set_relay(3000,device_list[dIndex].devid,push_list).then(response=>{                                
                                     push_list = response
                                 }).catch(error=>{
                                     console.log(error)
@@ -253,20 +258,19 @@ module.exports = ()=>{
 
                             //caso nao tenha sido registrado no shielder ele espera para colocar o id
                             if(!Number.isInteger(device_list[dIndex].id) || device_list[dIndex].id<=4){
-                                if(response.indexOf(';')>=0){
-                                    var id = response.split(";")
-                                    device_list[dIndex].id = id[0];
-                                    device_list[dIndex].timeout = 0;
-                                    control.post_request_set_relay(0,device_list[dIndex].devid,push_list).then(response=>{                                
-                                        push_list = response
-                                    }).catch(error=>{
-                                        console.log(error)
-                                    })
+                                if(!Number.isInteger(response)){
+                                    if(response.indexOf(';')>=0){
+                                        var id = response.split(";")
+                                        device_list[dIndex].id = id[0];
+                                        device_list[dIndex].timeout = 0;
+                                        control.get_request_set_relay(0,device_list[dIndex].devid,push_list).then(response=>{                                
+                                            push_list = response
+                                        }).catch(error=>{
+                                            console.log(error)
+                                        })
+                                    }
                                 }else{
-
-                                    if(Number.isInteger(response))
-                                        device_list[dIndex].id = response;
-                                    
+                                    device_list[dIndex].id = response;
                                 }
                                 req.app.set('device_list',device_list);
                             }
@@ -326,8 +330,8 @@ module.exports = ()=>{
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
                 if(d){
-                    if(req.body.object_changes[0].object == 'templates' || req.body.object_changes[0].object == 'cards')
-                    {}else{
+                    if(req.body.object_changes[0].object == 'templates' || req.body.object_changes[0].object == 'cards'){
+                    }else{
                         
                         var date = new Date(req.body.object_changes[0].values.time*1000);
                         var datevalues = [
@@ -347,7 +351,7 @@ module.exports = ()=>{
                             var reqs = req.app.get('requisitions');
                             reqs++;
                             req.app.set('requisitions',reqs);
-                            
+
                             push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial, "0").then(response=>{                                
                                 
                                 //funcionalidade controle de vaga
@@ -362,6 +366,7 @@ module.exports = ()=>{
                                         porta = parseInt(last2, 16);
 
                                         control.post_request_open_relay(d.devid,push_list,porta,"ACESSO LIBERADO").then(response=>{                                
+                                            console.log("OPEN relay "+ response)
                                             push_list = response;
                                             req.app.set('push_list',push_list);
                                         }).catch(error=>{
@@ -369,13 +374,13 @@ module.exports = ()=>{
                                         })
                                     }
                                 }
+
+                                
                                 console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
                             }).catch(error=>{
                                 console.log(error)
                             })
-
-
-                        // caso nao tenha usuario signifca que é para testar se é prestador/funcionario e etc...
+                       // caso nao tenha usuario signifca que é para testar se é prestador/funcionario e etc...
                         }else{
                             //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
                             if(req.body.object_changes[0].values.card_value.length >= 10 && req.body.object_changes[0].values.card_value.length <= 12){

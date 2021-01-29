@@ -181,7 +181,15 @@ var resolve_result = (req) =>{
                   case "set_relay_idbox":
                      console.log("iDBox " + push_list[pIndex].devid+ " setada");
                      break;
-                           
+                  case "ler_relay_sec_box":
+                     console.log("SecBox " + push_list[pIndex].devid+ " liberada");
+                     break;
+                  case "ler_relay_door":
+                     console.log("Porta " + push_list[pIndex].devid+ " liberada");
+                     break;
+                  case "ler_relay_catra":
+                     console.log("Catraca " + push_list[pIndex].devid+ " liberada");
+                     break;
                   case "set_date":
                      console.log("Data " + push_list[pIndex].devid+ " setada");
                      break;
@@ -229,7 +237,6 @@ var resolve_result = (req) =>{
       }
    })
 }
-
 let post_request_open_relay = (devid, push_list, door, message) =>{
    return new Promise((resolve, reject)=>{
       //TIRAR SO ISSO E VER SE FUNCIONA
@@ -342,7 +349,7 @@ let post_request_open_relay = (devid, push_list, door, message) =>{
    })
 };
 
-let post_request_set_relay = (timeout, devid, push_list) =>{
+let get_request_set_relay = (timeout, devid, push_list) =>{
    return new Promise((resolve, reject)=>{
       if(devid < 0)
          reject(push_list)
@@ -416,8 +423,6 @@ let post_request_set_relay = (timeout, devid, push_list) =>{
 
    })
 };
-
-
 
 let set_date = (item) =>{
    return new Promise((resolve, reject)=>{
@@ -870,6 +875,6 @@ let check_remote_state = (device_list,response) =>{
     controlCopia,
     onlyUnique,
     ler_relay,
-    post_request_set_relay,
+    get_request_set_relay,
     post_request_open_relay
  }
