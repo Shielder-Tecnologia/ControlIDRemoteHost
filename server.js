@@ -162,6 +162,7 @@ var push_list = []
          setInterval(async function(){
             var response
             try{
+               device_list = app.get('device_list')
                console.log("Log 1")
                if(device_list && device_list.length>0){
                   
@@ -174,7 +175,8 @@ var push_list = []
                      
                      push_shielder.autorizaBox(device_list[dIndex].ip,device_list[dIndex].serial).then(response=>{
                               
-                        console.log("Autoriza "+ response)
+                        console.log("Autoriza "+device_list[dIndex].id + "   Resposta "+ response)
+                        console.log("moment"+moment().valueOf());
                         device_list[dIndex].lastOn = moment().valueOf();
                         //console.log(device_list[dIndex].lastOn)
                         
