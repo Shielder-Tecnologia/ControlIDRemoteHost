@@ -345,15 +345,12 @@ module.exports = ()=>{
                         //('0' + deg).slice(-2)
                         //('0' + datevalues[1]).slice(-2)
                         var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
-                        console.log("teste 1");
                         if(req.body.object_changes[0].values.user_id && req.body.object_changes[0].values.user_id!= 0 ){
-                            console.log("teste 2");
                             var reqs = req.app.get('requisitions');
                             reqs++;
                             req.app.set('requisitions',reqs);
 
                             push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial, "0").then(response=>{                                
-                                console.log("teste 3");
                                 //funcionalidade controle de vaga
                                 if(d.timeout == 0)
                                 {
@@ -504,15 +501,6 @@ module.exports = ()=>{
                     console.log('Não encontrado na lista de dispositivos')
                 //console.log(req.body.object_changes[0].values);
                 
-                res.send();
-            },
-            '/api/notifications/catra_event':(req,res,next) => {
-                //console.log(req.app.get('session_key'))
-                console.log("Catra event: ");
-                var date = new Date((req.body.event.time+3*60*60) * 1000);
-                console.log("Time: " + dateFormat(date, '[HH:MM:ss.l]'));
-                
-                console.log(req.body);
                 res.send();
             },
             '/api/notifications/operation_mode':(req,res,next) => {
