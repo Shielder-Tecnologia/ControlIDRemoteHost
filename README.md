@@ -19,4 +19,12 @@ forever faz com que a aplicação sempre esteja rodando, além de providenciar u
 
 ## Erro Jenkins #1
 Versão do java 
+Solução 1:
 In this xml file saw execution line how our service starts. In my case was wrong java version. Need to check if java have the same version in C:\Program Files\Java\ . Also in task manager can running Java Update Manager, that can update java version. I had java version jre1.8.0_191not jre1.8.0_171. I manually changed version in jenkins-slave.xml file and saved it. After that just restart service. Now should works fine
+
+Solução 2: Trocar o nome da pasta
+## Erro Jenkins #2
+Erro Git
+ERROR: Workspace has a .git repository, but it appears to be corrupt.
+
+Solução: Reiniciar o Servidor.
