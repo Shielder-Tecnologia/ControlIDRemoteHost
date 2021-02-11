@@ -30,7 +30,7 @@ var resolve_result = (req) =>{
             if(req.body.code == 1){
                if(req.body.error.indexOf('unique')>=0){
                   if(push_list[pIndex].user_id){
-                     var reqs = req.app.get('requisitions');
+                     let reqs = req.app.get('requisitions');
                      reqs++;
                      req.app.set('requisitions',reqs);
                      push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
@@ -61,7 +61,7 @@ var resolve_result = (req) =>{
                         device.id = 0;
                         device.timeout = 3000;
                         device.lastOn = moment().valueOf();
-                        var reqs = req.app.get('requisitions');
+                        let reqs = req.app.get('requisitions');
                         reqs++;
                         req.app.set('requisitions',reqs);
                         push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
@@ -89,7 +89,7 @@ var resolve_result = (req) =>{
                      console.log("grupo inserido");
                      break;
                   case "create_template":
-                     var reqs = req.app.get('requisitions');
+                     let reqs = req.app.get('requisitions');
                      reqs++;
                      req.app.set('requisitions',reqs);
                      push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
@@ -132,7 +132,7 @@ var resolve_result = (req) =>{
                         break;
                      
                   case "create_user_pass":
-                     var reqs = req.app.get('requisitions');
+                     let reqs = req.app.get('requisitions');
                      reqs++;
                      req.app.set('requisitions',reqs);
                      push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
@@ -143,7 +143,7 @@ var resolve_result = (req) =>{
                      break;
 
                   case "create_card":
-                     var reqs = req.app.get('requisitions');
+                     let reqs = req.app.get('requisitions');
                      reqs++;
                      req.app.set('requisitions',reqs);
                      push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'ENTRADA').then(res=>{
@@ -153,7 +153,7 @@ var resolve_result = (req) =>{
                      })
                      break; 
                   case "delete_user":
-                     var reqs = req.app.get('requisitions');
+                     let reqs = req.app.get('requisitions');
                      reqs++;
                      req.app.set('requisitions',reqs);
                      push_shielder.cadastraBio(push_list[pIndex].user_id,0,d.serial,'SAIDA').then(res=>{
