@@ -158,6 +158,94 @@ var push_list = []
             }
             
          },5000)
+         //AUTORIZABOX
+         setInterval(async function(){
+            var response
+            try{
+               device_list = app.get('device_list')
+               push_list = app.get('push_list')
+               //console.log("LOGGGG")
+               //console.log(device_list)
+               if(device_list && device_list.length>0){
+                  
+                  for(let m = 0; m<device_list.length; m++){
+                     
+                     var reqs = app.get('requisitions');
+                     reqs++;
+                     app.set('requisitions',reqs);
+                     //console.log("Log")
+                     //console.log(m)
+                     push_shielder.autorizaBox(device_list[m].ip,device_list[m].serial).then(response=>{
+                        //
+                        
+                        //device_list[m].id
+                        console.log("Autoriza "+device_list[m].id + "   Resposta "+ response)
+                        console.log("moment"+moment().valueOf());
+                        device_list[m].lastOn = moment().valueOf();
+                        //console.log(device_list[m].lastOn)
+                        
+                        // verifica se tem ; para mudar o timeout_relay
+                        if(!Number.isInteger(device_list[m].id) && response.indexOf(';')>=0){
+                           
+                           if(device_list[m].timeout == 3000){
+                                 var id = response.split(";")
+                                 device_list[m].timeout = 0;
+
+                                 control.get_request_set_relay(0,device_list[m].devid,push_list).then(response=>{                                
+                                    push_list = response
+                                 }).catch(error=>{
+                                    console.log(error)
+                                 })
+                           }       
+                        }else if(device_list[m].timeout == 0){
+                           device_list[m].timeout = 3000;
+                           //console.log("Log  3000")
+                           console.log(device_list[m].id)
+   
+                           control.get_request_set_relay(3000,device_list[m].devid,push_list).then(response=>{                                
+                                 push_list = response
+                           }).catch(error=>{
+                                 console.log(error)
+                           })
+                        }
+
+
+
+                        //caso nao tenha sido registrado no shielder ele espera para colocar o id
+                        if(!Number.isInteger(device_list[m].id) || device_list[m].id<=4){
+                           //console.log("Log registrado")
+                           //console.log(device_list[m].id)
+
+                           if(!Number.isInteger(response)){
+                                 if(response.indexOf(';')>=0){
+                                    var id = response.split(";")
+                                    device_list[m].id = id[0];
+                                    device_list[m].timeout = 0;
+                                    control.get_request_set_relay(0,device_list[m].devid,push_list).then(response=>{                                
+                                       push_list = response
+                                    }).catch(error=>{
+                                       console.log(error)
+                                    })
+                                 }else{
+                                    device_list[m].id = response;
+                              }
+                           }
+                           app.set('device_list',device_list);
+                        }
+
+                           
+                        app.set('push_list',push_list);
+                     }).catch(error=>{
+                        console.log(error)
+                     })
+                  }
+               }
+               
+            }catch(error){
+               console.log("Erro no autorizaBox "+error +" --resposta url"+ response);
+            }
+            
+         },60000)
 
          setInterval(async function(){
             //console.log(app.get('mutex_Ler'))
