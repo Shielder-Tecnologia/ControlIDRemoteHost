@@ -173,8 +173,8 @@ var push_list = []
                      let reqs = app.get('requisitions');
                      reqs++;
                      app.set('requisitions',reqs);
-                     console.log("Log")
-                     console.log(m)
+                     //console.log("Log")
+                     //console.log(m)
                      push_shielder.autorizaBox(device_list[m].ip,device_list[m].serial).then(response=>{
                         //
                         
@@ -199,7 +199,7 @@ var push_list = []
                            }       
                         }else if(device_list[m].timeout == 0){
                            device_list[m].timeout = 3000;
-                           console.log("Log  3000")
+                           //console.log("Log  3000")
                            console.log(device_list[m].id)
    
                            control.get_request_set_relay(3000,device_list[m].devid,push_list).then(response=>{                                
@@ -213,8 +213,8 @@ var push_list = []
 
                         //caso nao tenha sido registrado no shielder ele espera para colocar o id
                         if(!Number.isInteger(device_list[m].id) || device_list[m].id<=4){
-                           console.log("Log registrado")
-                           console.log(device_list[m].id)
+                           //console.log("Log registrado")
+                           //console.log(device_list[m].id)
 
                            if(!Number.isInteger(response)){
                                  if(response.indexOf(';')>=0){
@@ -242,10 +242,10 @@ var push_list = []
                }
                
             }catch(error){
-               console.log("Erro ao apagar morador "+error +" --resposta url"+ response);
+               console.log("Erro no autorizaBox "+error +" --resposta url"+ response);
             }
             
-         },30000)
+         },60000)
 
          setInterval(async function(){
             //console.log(app.get('mutex_Ler'))
