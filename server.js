@@ -100,7 +100,7 @@ var push_list = []
       try{
          setInterval(async function(){
             
-            let reqs = app.get('requisitions');
+            var reqs = app.get('requisitions');
             var timerReq = app.get('timerReq');
             reqs++;
             timerReq++;
@@ -138,7 +138,7 @@ var push_list = []
             var response
             try{
                if(device_list && device_list.length>0){
-                  let reqs = app.get('requisitions');
+                  var reqs = app.get('requisitions');
                   reqs++;
                   app.set('requisitions',reqs);
                   response = await pull_shielder.apagaMoradores(app.get('mac'),app.get('device_list'))
@@ -170,7 +170,7 @@ var push_list = []
                   
                   for(let m = 0; m<device_list.length; m++){
                      
-                     let reqs = app.get('requisitions');
+                     var reqs = app.get('requisitions');
                      reqs++;
                      app.set('requisitions',reqs);
                      //console.log("Log")
@@ -252,7 +252,7 @@ var push_list = []
             var response
             try{
                if(device_list && device_list.length>0){
-                  let reqs = app.get('requisitions');
+                  var reqs = app.get('requisitions');
                   reqs++;
                   app.set('requisitions',reqs);
                   response = await pull_shielder.lerDigital(app.get('mac'))
@@ -275,7 +275,7 @@ var push_list = []
             try{
                if(device_list && device_list.length>0){
                   response = await pull_shielder.lerRelay(app.get('mac'));
-                  let reqs = app.get('requisitions');
+                  var reqs = app.get('requisitions');
                   reqs++;
                   app.set('requisitions',reqs);
                   console.log("Ler Relay")

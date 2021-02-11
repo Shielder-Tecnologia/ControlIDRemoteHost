@@ -289,7 +289,7 @@ module.exports = ()=>{
                         //('0' + datevalues[1]).slice(-2)
                         var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
                         if(req.body.object_changes[0].values.user_id && req.body.object_changes[0].values.user_id!= 0 ){
-                            let reqs = req.app.get('requisitions');
+                            var reqs = req.app.get('requisitions');
                             reqs++;
                             req.app.set('requisitions',reqs);
 
@@ -335,7 +335,7 @@ module.exports = ()=>{
                                     codigo = "0"+ req.body.object_changes[0].values.card_value;
                                 }
 
-                                let reqs = req.app.get('requisitions');
+                                var reqs = req.app.get('requisitions');
                                 reqs++;
                                 req.app.set('requisitions',reqs);
                                 push_Shielder.autorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,codigo).then(response=>{
@@ -358,7 +358,7 @@ module.exports = ()=>{
                                     console.log(error)
                                 })
                             }else if(req.body.object_changes[0].values.card_value.length == 13 || req.body.object_changes[0].values.card_value.length == 4){
-                                let reqs = req.app.get('requisitions');
+                                var reqs = req.app.get('requisitions');
                                 reqs++;
                                 req.app.set('requisitions',reqs);
 
@@ -385,7 +385,7 @@ module.exports = ()=>{
                                 })
                             }
                             else if(req.body.object_changes[0].values.card_value.length == 15){
-                                let reqs = req.app.get('requisitions');
+                                var reqs = req.app.get('requisitions');
                                 reqs++;
                                 req.app.set('requisitions',reqs);
                                 push_Shielder.controleAutorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
@@ -412,7 +412,7 @@ module.exports = ()=>{
                             }
                             else if(req.body.object_changes[0].values.card_value.length == 17){
                                 var codigo = req.body.object_changes[0].values.card_value.slice(0,9);
-                                let reqs = req.app.get('requisitions');
+                                var reqs = req.app.get('requisitions');
                                 reqs++;
                                 req.app.set('requisitions',reqs);
                                 push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data ,d.serial, codigo).then(response=>{
