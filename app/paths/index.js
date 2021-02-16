@@ -244,7 +244,14 @@ module.exports = ()=>{
                     req.app.set('device_list',device_list);
 
                 }
+                
+                let unique = [];
 
+                push_list.map(x => unique.filter(a => a.devid == x.devid && a.user_id == x.user_id && a.tipo == x.tipo).length > 0 ? null : unique.push(x));
+
+                
+                //console.log(unique)
+                
                 
 
                 //push_list = push_list.filter(control.onlyUnique); // se tiver comandos duplicados ele filtra
