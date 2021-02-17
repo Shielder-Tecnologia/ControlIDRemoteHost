@@ -144,9 +144,11 @@ module.exports = ()=>{
 
                 device_list = data
                 
-                if(device_list)
+                if(device_list){
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
-                
+                    //console.log("moment"+moment().valueOf());
+                    device_list[dIndex].lastOn = moment().valueOf();
+                }
                 
                 /**Verifica se algum dispositivo foi desconectado */
                 for (var i=0; i<device_list.length;i++){
