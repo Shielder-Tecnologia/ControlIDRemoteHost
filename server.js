@@ -180,7 +180,8 @@ var push_list = []
                         
                         //device_list[m].id
                         console.log("Autoriza "+device_list[m].id + "   Resposta "+ response)
-                        
+                        console.log("moment"+moment().valueOf());
+                        device_list[m].lastOn = moment().valueOf();
                         //console.log(device_list[m].lastOn)
                         
                         // verifica se tem ; para mudar o timeout_relay

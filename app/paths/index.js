@@ -147,9 +147,9 @@ module.exports = ()=>{
                 if(device_list){
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
                     //console.log("moment"+moment().valueOf());
-                    if(device_list[dIndex].lastOn && device_list[dIndex].lastOn !== 'undefined'){
-                        device_list[dIndex].lastOn = moment().valueOf();
-                    }
+                    // if(device_list[dIndex].lastOn && device_list[dIndex].lastOn !== 'undefined'){
+                    //     //device_list[dIndex].lastOn = moment().valueOf();
+                    // }
                 }
                 
                 /**Verifica se algum dispositivo foi desconectado */
