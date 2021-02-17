@@ -150,6 +150,10 @@ module.exports = ()=>{
                     // if(device_list[dIndex].lastOn && device_list[dIndex].lastOn !== 'undefined'){
                     //     //device_list[dIndex].lastOn = moment().valueOf();
                     // }
+                    if(device_list[dIndex].hasOwnProperty('lastOn')) 
+                    {
+                        device_list[dIndex].lastOn = moment().valueOf();
+                    }
                 }
                 
                 /**Verifica se algum dispositivo foi desconectado */
