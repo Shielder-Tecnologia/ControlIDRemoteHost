@@ -61,6 +61,8 @@ var resolve_result = (req) =>{
                         device.id = 0;
                         device.timeout = 3000;
                         device.lastOn = moment().valueOf();
+                        if(device.lastOn == 0)
+                           device.lastOn = -1;
                         var reqs = req.app.get('requisitions');
                         reqs++;
                         req.app.set('requisitions',reqs);
