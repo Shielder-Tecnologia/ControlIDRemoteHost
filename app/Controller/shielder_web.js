@@ -10,7 +10,7 @@ var url = "http://box.shielder.com.br/controle/"
 
 autorizaBox = (ip,serialnumber, ipremoto)=>{
     return new Promise((resolve,reject)=>{
-        urlaut = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip + "&ipremoto" + ipremoto;
+        urlaut = url + "getAutorizaBox.php?mac=" + serialnumber + "&ip=" + ip + "&ipremoto=" + ipremoto;
         sendJson.getAxios(urlaut).then(response=>{                
             resolve (response);
         }).catch(response=>{
