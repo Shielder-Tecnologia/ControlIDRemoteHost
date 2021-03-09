@@ -1,7 +1,6 @@
 var sendJson = require('./send_json');
 var macaddress = require('macaddress');
 var ip = require('ip');
-var qs = require('qs');
 
 
 var url = "http://box.shielder.com.br/controle/"

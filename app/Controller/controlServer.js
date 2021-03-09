@@ -1,7 +1,7 @@
 const device =require('./contact_device')
 const push_shielder =require('./push_Shielder')
-var evilscan = require('evilscan')
-//const { response } = require('express')
+//var sendJson = require('./send_json');
+//var axios = require('axios');//const { response } = require('express')
 
 var moment = require('moment')
 
@@ -47,7 +47,6 @@ var resolve_result = (req) =>{
 
             if(req.body.hasOwnProperty('response')){
                var response = JSON.parse(req.body.response)
-               
                //verifica o que que foi mandado para o dispositivo executar, copia/apaga/pegar serial
                switch(push_list[pIndex].tipo){
                   //Seta a device_list
@@ -56,7 +55,7 @@ var resolve_result = (req) =>{
                         var device = {}
                         device.devid = req.query.deviceId;
                         device.serial = response.serial;
-                        device.ip = response.network.ip;
+                        device.ip = req.connection.remoteAddress;
                         device.contBox = 1;
                         device.id = 0;
                         device.timeout = 3000;
@@ -86,7 +85,9 @@ var resolve_result = (req) =>{
                   case "create_user":
                      console.log("Usuário criado ")
                      break;
-
+                  case "set_image":
+                     console.log("Imagem setada")
+                     break;
                   case "create_user_group":
                      console.log("grupo inserido");
                      break;
@@ -598,13 +599,75 @@ let controlCopia = (response,device_list,push_list) =>{
          }
          
 
-
-
          console.log(p.request.body)
          p.user_id= parseInt(response[0].id);
          //p.tipo = 'create_user'
          push_list.push(p)
          p ={}
+
+         // var image = new Image();
+         // image.src = "http://shielder.com.br/"+response[0].foto;
+         // image.onload = function () {
+            // var base64str = base64_encode("http://shielder.com.br/"+response[0].foto);
+            // console.log("imagem");
+            // console.log(base64str)
+         // }
+
+         // axios.get("http://shielder.com.br/"+response[0].foto, {responseType: 'arraybuffer'}).then(image =>{
+         //    let returnedB64 = Buffer.from(image.data)
+         //    let arraybuffer = Uint8Array.from(returnedB64).buffer;
+         //    //console.log(returnedB64)
+         //    var base64 = Buffer.from(image.data.toString(), 'binary').toString("base64")
+         //    console.log("imagem");
+         //    var decoded = (base64.toString(),"binary")
+         //    //var inteiro = new UInt8(decoded) 
+         //    //var hexdata =  Buffer.from(arraybuffer, '').toString('hex');
+         //    // var teste = returnedB64.toString('hex',0,4)
+         //    // var type = ""
+         //    // if(teste.includes("ffd8ffe0")){
+         //    //    console.log("JPEG")
+         //    //    type = "image/jpeg" 
+         //    // }else if (teste.includes("89504e47")){
+         //    //    type = "image/png" 
+         //    // }
+         //    var btFoto = new Uint8Array(returnedB64.length);
+
+         //    for (var i = 0; i < returnedB64.length; i++) {
+         //       btFoto[i] = returnedB64.charCodeAt(i);
+         //    }
+
+         //    // var img = "data:"+type+";base64," +base64
+            
+         //    //var img = atob(img.split(",")[1]);
+         //    //var buf = Buffer.from(returnedB64, 'base64');
+         //    //var s = image.data.toString().replace(/[\n\r\t]/g,' ');
+         //    //var teste = base64url_decode(base64)
+         //    console.log(btFoto)
+         //    //SET IMAGE
+         //    //let byteCharacters = window.atob(returnedB64);
+         //    var p = {}
+         //    p.devid = device_list[dIndex].devid;
+         //    p.user_id= parseInt(response[0].id);
+         //    p.tipo = 'set_image'
+         //    p.request = { verb: "POST", endpoint: "user_set_image", contentType: "application/octet-stream", queryString: "user_id="+response[0].id, body: { 
+         //       data: btFoto
+         //    }}
+
+         //    push_list.push(p)
+         //    p ={}
+         // }).catch(coco=>{
+         //    console.log("Erro" + coco)
+         // });
+         
+      //    sendJson.getAxios("http://shielder.com.br/"+response[0].foto).then(image=>{                
+      //       imageData = Buffer.from(image).toString('base64');
+      //       console.log("imagem");
+      //       console.log(imageData)
+      //   }).catch(response=>{
+      //       console.log("Erro ao pegar imagem"+ response)
+      //   })
+         
+
 
          if(response[0].inicio){
             //GROUP
@@ -867,6 +930,7 @@ let controlApaga = (response,device_list,push_list) =>{
    })
 
 }
+
 
 let check_remote_state = (device_list,response) =>{
    return new Promise((resolve, reject)=>{
