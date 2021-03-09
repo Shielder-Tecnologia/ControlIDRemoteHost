@@ -55,7 +55,7 @@ var resolve_result = (req) =>{
                         var device = {}
                         device.devid = req.query.deviceId;
                         device.serial = response.serial;
-                        device.ip = req.connection.remoteAddress;
+                        device.ip = req.connection.remoteAddress.split(":ffff:")[1];
                         device.contBox = 1;
                         device.id = 0;
                         device.timeout = 3000;
