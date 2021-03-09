@@ -57,7 +57,8 @@ var resolve_result = (req) =>{
                         device.devid = req.query.deviceId;
                         device.serial = response.serial;
                         
-                        device.ip = req.connection.remoteAddress.split(":ffff:")[1];
+                        device.ip = response.network.ip;
+                        device.ipremoto = req.connection.remoteAddress.split(":ffff:")[1];
                         device.contBox = 1;
                         device.id = 0;
                         device.timeout = 3000;
@@ -67,7 +68,7 @@ var resolve_result = (req) =>{
                         var reqs = req.app.get('requisitions');
                         reqs++;
                         req.app.set('requisitions',reqs);
-                        push_shielder.autorizaBox(device.ip,device.serial).then(idShielder=>{
+                        push_shielder.autorizaBox(device.ip, device.serial, device.ipremoto).then(idShielder=>{
                            device.id = idShielder;
                            device.lastOn = moment().valueOf();
                         }).catch(error=>{

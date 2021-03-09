@@ -1,7 +1,7 @@
 var shielderweb = require('./shielder_web');
-autorizaBox = function(ip,serialnumber){
+autorizaBox = function(ip,serialnumber, ipremoto){
     return new Promise((resolve,reject)=>{
-        shielderweb.autorizaBox(ip,serialnumber).then(response=>{
+        shielderweb.autorizaBox(ip,serialnumber, ipremoto).then(response=>{
             resolve(response)
         }).catch(response=>{
             reject(response)
