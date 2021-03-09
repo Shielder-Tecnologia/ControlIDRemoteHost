@@ -57,7 +57,7 @@ var resolve_result = (req) =>{
                         device.devid = req.query.deviceId;
                         device.serial = response.serial;
 
-                        ip = req.connection.remoteAddress.split(":ffff:")[1]
+                        ip = req.connection.remoteAddress
                         device.ip = ip ;
                         device.ip = response.network.ip;
 
