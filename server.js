@@ -175,7 +175,7 @@ var push_list = []
                      app.set('requisitions',reqs);
                      //console.log("Log")
                      //console.log(m)
-                     push_shielder.autorizaBox(device_list[m].ip,device_list[m].serial).then(response=>{
+                     push_shielder.autorizaBox(device_list[m].ip,device_list[m].serial,device_list[m].ipremoto).then(response=>{
                         //
                         
                         //device_list[m].id
