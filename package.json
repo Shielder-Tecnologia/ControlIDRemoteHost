@@ -10,18 +10,18 @@
     "forever_install": "npm list forever || npm install -g --force forever"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.0.2",
     "console-stamp": "^0.2.6",
     "dateformat": "^3.0.3",
-    "evilscan": "^1.7.5",
+    "evilscan": "^1.8.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "forever": "^3.0.0",
+    "forever": "^3.0.4",
     "ip": "^1.1.5",
     "macaddress": "^0.5.1",
     "moment": "^2.27.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "nodemon": "^2.0.4",
     "qs": "^6.9.4",
     "request": "^2.88.2"
