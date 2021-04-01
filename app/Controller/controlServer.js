@@ -810,7 +810,7 @@ let controlCopia = (response,device_list,push_list) =>{
             var tag = 0 
             if(responseArray[0] && responseArray[1])
                tag = (Math.pow(2,32) * parseInt(responseArray[0])) + parseInt(responseArray[1])
-            console.log(tag)
+            console.log("tag"+tag)
             p.devid = device_list[dIndex].devid;
             p.request = { verb: "POST", endpoint: "create_objects", body: { 
                "object": "cards",

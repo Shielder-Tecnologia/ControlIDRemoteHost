@@ -104,10 +104,16 @@ var push_list = []
             var timerReq = app.get('timerReq');
             reqs++;
             timerReq++;
-            if(timerReq >=12){
+            if(timerReq >=2){
                console.log("Número Total de requisições: " + reqs + "   Requisições por minuto: " +reqs/60);
                timerReq = 0;
                reqs = 0;
+               const used = process.memoryUsage();
+               for (let key in used) {
+               console.log(`Memory: ${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+               }
+               //console.log(process.memoryUsage());
+              
             }
             
             app.set('requisitions',reqs);
