@@ -338,6 +338,9 @@ module.exports = ()=>{
                             })
                        // caso nao tenha usuario signifca que é para testar se é prestador/funcionario e etc...
                         }else{
+                            hexString = req.body.object_changes[0].values.identifier_id.toString(16);
+                            var last2 = hexString.slice(-2);
+                            porta = parseInt(last2, 16);
                             //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
                             if(req.body.object_changes[0].values.card_value.length >= 10 && req.body.object_changes[0].values.card_value.length <= 12){
                                 
@@ -354,6 +357,9 @@ module.exports = ()=>{
                                 var reqs = req.app.get('requisitions');
                                 reqs++;
                                 req.app.set('requisitions',reqs);
+
+                                
+
                                 push_Shielder.autorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,codigo).then(response=>{
                                     console.log("autorizaVisitante ticket" + response);
                                     var stringRes = '' + response;
@@ -405,23 +411,23 @@ module.exports = ()=>{
                                 reqs++;
                                 req.app.set('requisitions',reqs);
                                 push_Shielder.controleAutorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
-                                    console.log("controleAutorizaVisitante convite" + response);
+                                console.log("controleAutorizaVisitante convite " + response);
 
-                                    var stringRes = '' + response;
-                                    var charZro = stringRes.charAt(0);
-                                    
-                                    if(charZro > 0){
+                                var stringRes = '' + response;
+                                var charZro = stringRes.charAt(0);
+                                
+                                if(charZro > 0){
 
-                                        control.post_request_open_relay(d.devid,push_list,porta,"CONVITE LIBERADO").then(response=>{                                
-                                            push_list = response;
-                                            req.app.set('push_list',push_list);
-                                        }).catch(error=>{
-                                            console.log(error)
-                                        })
-                                    }
+                                    control.post_request_open_relay(d.devid,push_list,porta,"CONVITE LIBERADO").then(response=>{                                
+                                        push_list = response;
+                                        req.app.set('push_list',push_list);
+                                    }).catch(error=>{
+                                        console.log(error)
+                                    })
+                                }
 
-                                    
-                                    console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
+                                
+                                console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
                                 }).catch(error=>{
                                     console.log(error)
                                 })
