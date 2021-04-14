@@ -134,7 +134,7 @@ module.exports = ()=>{
                 res.send("1");
             },
             '/push':(req,res,next) => {
-                console.log("PUSH:")
+                //console.log("PUSH:")
                 var push_list = req.app.get('push_list')
                 var device_list = req.app.get('device_list')
 
