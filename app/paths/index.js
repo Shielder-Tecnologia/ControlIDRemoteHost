@@ -358,7 +358,7 @@ module.exports = ()=>{
                                 reqs++;
                                 req.app.set('requisitions',reqs);
 
-                                
+                                console.log("autorizaVisitante ticket log 1" + porta);
 
                                 push_Shielder.autorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,codigo).then(response=>{
                                     console.log("autorizaVisitante ticket" + response);
@@ -386,7 +386,7 @@ module.exports = ()=>{
                                 var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
                                 var last2 = hexString.slice(-2);
                                 var porta = parseInt(last2, 16);
-
+                                console.log("autorizaFuncionario crachá log 1" + porta);
                                 push_Shielder.autorizaFuncionario(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
                                     
                                     console.log("autorizaFuncionario crachá" + response);
@@ -413,6 +413,7 @@ module.exports = ()=>{
                                 var reqs = req.app.get('requisitions');
                                 reqs++;
                                 req.app.set('requisitions',reqs);
+                                console.log("controleAutorizaVisitante convite log1 " + porta);
                                 push_Shielder.controleAutorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
                                 console.log("controleAutorizaVisitante convite " + response);
 
@@ -448,6 +449,7 @@ module.exports = ()=>{
                                 var porta = parseInt(last2, 16);
 
                                 req.app.set('requisitions',reqs);
+                                console.log("autorizaMorador QR code log 1 " + porta);
                                 push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data ,d.serial, codigo).then(response=>{
                                     
                                     console.log("autorizaMorador QR code");
