@@ -340,7 +340,7 @@ module.exports = ()=>{
                         }else{
                             var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
                             var last2 = hexString.slice(-2);
-                            porta = parseInt(last2, 16);
+                            var porta = parseInt(last2, 16);
                             //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
                             if(req.body.object_changes[0].values.card_value.length >= 10 && req.body.object_changes[0].values.card_value.length <= 12){
                                 
@@ -383,6 +383,9 @@ module.exports = ()=>{
                                 var reqs = req.app.get('requisitions');
                                 reqs++;
                                 req.app.set('requisitions',reqs);
+                                var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
+                                var last2 = hexString.slice(-2);
+                                var porta = parseInt(last2, 16);
 
                                 push_Shielder.autorizaFuncionario(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
                                     
@@ -413,6 +416,9 @@ module.exports = ()=>{
                                 push_Shielder.controleAutorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
                                 console.log("controleAutorizaVisitante convite " + response);
 
+                                var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
+                                var last2 = hexString.slice(-2);
+                                var porta = parseInt(last2, 16);
                                 var stringRes = '' + response;
                                 var charZro = stringRes.charAt(0);
                                 
@@ -436,6 +442,11 @@ module.exports = ()=>{
                                 var codigo = req.body.object_changes[0].values.card_value.slice(0,9);
                                 var reqs = req.app.get('requisitions');
                                 reqs++;
+                                
+                                var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
+                                var last2 = hexString.slice(-2);
+                                var porta = parseInt(last2, 16);
+
                                 req.app.set('requisitions',reqs);
                                 push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data ,d.serial, codigo).then(response=>{
                                     
