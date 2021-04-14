@@ -338,7 +338,7 @@ module.exports = ()=>{
                             })
                        // caso nao tenha usuario signifca que é para testar se é prestador/funcionario e etc...
                         }else{
-                            hexString = req.body.object_changes[0].values.identifier_id.toString(16);
+                            var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
                             var last2 = hexString.slice(-2);
                             porta = parseInt(last2, 16);
                             //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
