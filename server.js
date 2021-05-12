@@ -189,19 +189,20 @@ var push_list = []
                         // console.log("moment"+moment().valueOf());
                         // device_list[m].lastOn = moment().valueOf();
                         //console.log(device_list[m].lastOn)
-                        
+                        if(device_list[m].id == "1" || device_list[m].id == "2")
+                           device_list[m].timeout = response
                         // verifica se tem ; para mudar o timeout_relay
                         if(!Number.isInteger(device_list[m].id) && response.indexOf(';')>=0){
                            
                            if(device_list[m].timeout == 3000){
-                                 var id = response.split(";")
-                                 device_list[m].timeout = 0;
+                              var id = response.split(";")
+                              device_list[m].timeout = 0;
 
-                                 control.get_request_set_relay(0,device_list[m].devid,push_list).then(response=>{                                
-                                    push_list = response
-                                 }).catch(error=>{
-                                    console.log(error)
-                                 })
+                              control.get_request_set_relay(0,device_list[m].devid,push_list).then(response=>{                                
+                                 push_list = response
+                              }).catch(error=>{
+                                 console.log(error)
+                              })
                            }       
                         }else if(device_list[m].timeout == 0){
                            device_list[m].timeout = 3000;
