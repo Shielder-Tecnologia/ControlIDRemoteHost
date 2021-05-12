@@ -341,7 +341,7 @@ module.exports = ()=>{
                             var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
                             var last2 = hexString.slice(-2);
                             var porta = parseInt(last2, 16);
-                            //console.log("Tamanho cardvalue"+ req.body.object_changes[0].values.card_value.length)
+                            //console.log("Hex String{1}, last2{2}, porta {3} ", hexString, last2,porta)
                             if(req.body.object_changes[0].values.card_value.length >= 10 && req.body.object_changes[0].values.card_value.length <= 12){
                                 
                                 var codigo = req.body.object_changes[0].values.card_value;
