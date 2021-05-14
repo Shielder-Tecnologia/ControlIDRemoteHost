@@ -170,6 +170,9 @@ var resolve_result = (req) =>{
                   case "remote_digital":
                      console.log("Template capturada")
                      break;
+                  case "remote_cartao":
+                  console.log("Template capturada")
+                  break;
                   case "get_config":
                      console.log("get config");   
                      break;
@@ -483,6 +486,45 @@ let remote_digital = (response,device_list,push_list) =>{
    })
 
 }
+
+let remote_cartao = (response,device_list,push_list) =>{
+   return new Promise((resolve, reject)=>{
+      //console.log(device_list)
+      var dIndex = device_list.findIndex(x => x.id == response[0].id_terminal);
+      if(dIndex==-1){
+         reject("Dispositivo não encontrado")
+         return;
+      }
+      if(push_list)
+         var p = push_list.find(x => x.user_id == response[0].id);
+      if(p!=undefined && p.user_id == response[0].id && p.devid ==device_list[dIndex].devid){
+         reject("Aguardando dispositivo para capturar o cartao do usuário: "+response[0].id)
+         return;
+      }
+
+
+      var p = {}
+      //REMOTE DIGITAL
+      p.devid = device_list[dIndex].devid;
+      p.request = { 
+         verb: "POST", endpoint: "remote_enroll", body: 
+         { 
+            "user_id": parseInt(response[0].id),
+            "type": "card",
+            "save": false,
+            "sync": false,
+            "panic_finger": 0
+         } 
+      }
+      p.user_id= parseInt(response[0].id);
+      p.tipo = 'remote_cartao'
+      push_list.push(p)
+      console.log("push remote")
+      resolve(push_list)
+   })
+
+}
+
 
 let ler_relay = (response,device_list,push_list) =>{
    return new Promise((resolve, reject)=>{
@@ -899,5 +941,6 @@ let check_remote_state = (device_list,response) =>{
     onlyUnique,
     ler_relay,
     get_request_set_relay,
-    post_request_open_relay
+    post_request_open_relay,
+    remote_cartao
  }

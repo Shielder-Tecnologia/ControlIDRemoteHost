@@ -503,9 +503,18 @@ module.exports = ()=>{
                 res.send();
             },
             '/api/notifications/card':(req,res,next) => {
-                console.log(": ");
-                console.log("Length: " + req.body.length);
-                console.log(req.body);
+                var device_list = req.app.get('device_list')
+                var d = device_list.find(x => x.devid == req.body.device_id);
+                push_Shielder.cadastraDigital(0,req.body.user_id, d.serial,'ENTRADA',req.body.card_value).then(response=>{
+                    req.app.set('mutex_Ler',true)
+                    console.log("Cartão Cadastrado")
+                    console.log(response)
+                }).catch(error=>{
+                    console.log(error)
+                })
+                // console.log("Length: " + req.body.length);
+                // console.log(req.body);
+                
                 res.send();
             },
             '/api/notifications/catra_event':(req,res,next) => {
