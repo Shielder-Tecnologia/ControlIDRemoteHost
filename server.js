@@ -266,9 +266,15 @@ var push_list = []
                   console.log("Ler digital")
                   console.log(response)
                   if(response){
+                     if(response[0].cadastra_tipo == "1"){
                      var res = await control.remote_digital(response,app.get('device_list'),app.get('push_list'))
                      push_list = res;
                      app.set('push_list',push_list);
+                     }else{
+                        var res = await control.remote_cartao(response,app.get('device_list'),app.get('push_list'))
+                        push_list = res;
+                        app.set('push_list',push_list);
+                     }
                   }
                }
             }catch(error){
