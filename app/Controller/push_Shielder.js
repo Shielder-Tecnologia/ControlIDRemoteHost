@@ -21,9 +21,9 @@ autorizaMorador = function(id,datetime,serial,codigo){
     })
 }
 
-cadastraBio = function(userid,id,serialnumber,tipo){
+cadastraBio = function(userid,id,serialnumber,tipo,descricao){
     return new Promise((resolve,reject)=>{
-        shielderweb.cadastraBio(userid,id,serialnumber,tipo).then(response=>{
+        shielderweb.cadastraBio(userid,id,serialnumber,tipo,descricao).then(response=>{
             resolve(response)
         }).catch(response=>{
             reject(response)
