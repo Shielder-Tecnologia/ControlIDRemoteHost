@@ -508,8 +508,8 @@ module.exports = ()=>{
                 let cardid = req.body.value;
                 //conversao cartao
                 let bfvirgula= (cardid - 45678) / 4294967296;
-                bvirgula = Math.round(bvirgula);
-                let num1 = bvirgula * 4294967296;
+                bfvirgula = Math.round(bvirgula);
+                let num1 = bfvirgula * 4294967296;
                 let afvirgula =  cardid - num1;
 
                 
