@@ -513,7 +513,7 @@ module.exports = ()=>{
                 let afvirgula =  cardid - num1;
 
                 
-                push_Shielder.cadastraBio((bfvirgula + "," + afvirgula),req.body.user_id, d.serial,'TAG').then(response=>{
+                push_Shielder.cadastraBio((bfvirgula + "," + afvirgula),req.body.user_id, d.serial,'ENTRADA','TAG').then(response=>{
                     req.app.set('mutex_Ler',true)
                     console.log("Cartão Cadastrado")
                     console.log(response)
