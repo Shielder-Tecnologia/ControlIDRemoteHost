@@ -145,7 +145,7 @@ autorizaFuncionario = (id,datetime,serial,codigo)=>{
 cadastraBio = (userid,id,serial,tipo, descricao)=>{
     return new Promise((resolve,reject)=>{
         urlaut = url + "getCadastraBio.php?usuario=" + userid + "&id=" + id + "&mac="+serial +"&tipo="+tipo +"&descricao="+descricao;
-        console.log(url);
+        console.log(urlaut);
         sendJson.getAxios(urlaut).then(response=>{                
             resolve (response);
         }).catch(response=>{
