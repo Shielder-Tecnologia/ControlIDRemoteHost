@@ -505,7 +505,7 @@ module.exports = ()=>{
             '/api/notifications/card':(req,res,next) => {
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
-                push_Shielder.cadastraDigital(0,req.body.user_id, d.serial,'ENTRADA',req.body.card_value).then(response=>{
+                push_Shielder.cadastraDigital(req.body.card_value,req.body.user_id, d.serial,'ENTRADA',"").then(response=>{
                     req.app.set('mutex_Ler',true)
                     console.log("Cartão Cadastrado")
                     console.log(response)
