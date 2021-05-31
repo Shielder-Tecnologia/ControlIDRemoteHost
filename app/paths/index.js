@@ -285,6 +285,8 @@ module.exports = ()=>{
             '/api/notifications/dao':(req,res,next) => {
                 console.log("Morador: ");
                 console.log(req.body.object_changes[0].values);
+                console.log("Teste");
+                console.log(req.body);
                 var push_list = req.app.get('push_list')
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
