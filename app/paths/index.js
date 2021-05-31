@@ -309,7 +309,7 @@ module.exports = ()=>{
                             reqs++;
                             req.app.set('requisitions',reqs);
 
-                            push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial, "0").then(response=>{                                
+                            push_Shielder.autorizaMorador(req.body.object_changes[0].values.user_id, data , d.serial, "0",req.body.object_changes[0].values.portal_id).then(response=>{                                
                                 //funcionalidade controle de vaga
                                 if(d.timeout == 0)
                                 {

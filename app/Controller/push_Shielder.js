@@ -10,9 +10,9 @@ autorizaBox = function(ip,serialnumber, ipremoto){
     })
 }
 
-autorizaMorador = function(id,datetime,serial,codigo){
+autorizaMorador = function(id,datetime,serial,codigo,tipo){
     return new Promise((resolve,reject)=>{
-        shielderweb.autorizaMorador(id,datetime,serial,codigo).then(response=>{
+        shielderweb.autorizaMorador(id,datetime,serial,codigo, tipo).then(response=>{
             resolve(response)
         }).catch(response=>{
             reject(response)
