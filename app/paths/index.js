@@ -528,7 +528,7 @@ module.exports = ()=>{
             '/api/notifications/catra_event':(req,res,next) => {
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
-
+                console.log(req.body)
                 push_Shielder.autorizaGiro( d.serial,req.body.event.name).then(response=>{
                     //req.app.set('mutex_Ler',true)
                     console.log("Catraca liberada")
