@@ -529,8 +529,6 @@ module.exports = ()=>{
                 var device_list = req.app.get('device_list')
                 var d = device_list.find(x => x.devid == req.body.device_id);
 
-                ca
-
                 push_Shielder.cadastraDigital(0,req.body.user_id, d.serial,'ENTRADA',req.body.template).then(response=>{
                     req.app.set('mutex_Ler',true)
                     console.log("Digital Cadastrada")
