@@ -155,6 +155,17 @@ cadastraBio = (userid,id,serial,tipo, descricao)=>{
 
 }
 
+autorizaGiro = (serial,tipo)=>{
+    return new Promise((resolve,reject)=>{
+        urlaut = url + "getAutorizaGiro.php?mac=" + serial +"&tipo="+tipo;
+        sendJson.getAxios(urlaut).then(response=>{                
+            resolve (response);
+        }).catch(response=>{
+            reject (response);
+        })
+    })
+
+}
 cadastraDigital = (userid,id,serial,tipo,fp)=>{
     return new Promise((resolve,reject)=>{
         urlaut = url + "getCadastraBio.php?usuario=" + userid + "&id=" + id + "&mac="+serial +"&tipo="+tipo;
@@ -217,6 +228,6 @@ module.exports = {
     lerDigital,
     get_local_ip,
     lerRelay,
-
+    autorizaGiro
 
 }

@@ -41,6 +41,17 @@ cadastraDigital = function(userid,id,serial,tipo,fp){
         
     })
 }
+autorizaGiro = function(serial,tipo){
+    return new Promise((resolve,reject)=>{
+        shielderweb.autorizaGiro(serial,tipo).then(response=>{
+            resolve(response)
+        }).catch(response=>{
+            reject(response)
+        });
+        
+    })
+}
+
 controleAutorizaVisitante = function(id,datetime,serial,codigo){
     return new Promise((resolve,reject)=>{
         shielderweb.controleAutorizaVisitante(id,datetime,serial,codigo).then(response=>{
@@ -80,5 +91,6 @@ module.exports = {
     cadastraBio,
     controleAutorizaVisitante,
     autorizaFuncionario,
-    autorizaVisitante
+    autorizaVisitante,
+    autorizaGiro
 }
