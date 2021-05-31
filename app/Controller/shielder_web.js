@@ -158,6 +158,7 @@ cadastraBio = (userid,id,serial,tipo, descricao)=>{
 autorizaGiro = (serial,tipo)=>{
     return new Promise((resolve,reject)=>{
         urlaut = url + "getAutorizaGiro.php?mac=" + serial +"&tipo="+tipo;
+        console.log(urlaut)
         sendJson.getAxios(urlaut).then(response=>{                
             resolve (response);
         }).catch(response=>{
