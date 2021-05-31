@@ -70,10 +70,10 @@ lerRelay = (mac)=>{
 
 }
 
-autorizaMorador = (id,datetime,serial,codigo)=>{
+autorizaMorador = (id,datetime,serial,codigo,tipo)=>{
     return new Promise((resolve,reject)=>{
         if(id){
-            urlaut = url + "getAutorizaMorador.php?mac=" + serial + "&biometria=" + id + "&data="+datetime +"&codigo="+codigo;
+            urlaut = url + "getAutorizaMorador.php?mac=" + serial + "&biometria=" + id + "&data="+datetime +"&codigo="+codigo + "&tipo="+ tipo;
             //console.log("morador")
             console.log(urlaut)
             sendJson.getAxios(urlaut).then(response=>{                
