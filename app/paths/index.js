@@ -285,7 +285,7 @@ module.exports = ()=>{
             '/api/notifications/dao':(req,res,next) => {
                 console.log("Morador: ");
                 console.log(req.body.object_changes[0].values);
-                console.log("Teste");
+                //console.log("Teste");
                 console.log(req.body);
                 var push_list = req.app.get('push_list')
                 var device_list = req.app.get('device_list')
@@ -293,7 +293,10 @@ module.exports = ()=>{
                 if(d){
                     if(req.body.object_changes[0].object == 'templates' || req.body.object_changes[0].object == 'cards'){
                     }else{
-                        
+                        if(req.body.object_changes[0].type == "updated"){
+                            res.send();
+                        }
+                        //if(req.body.object_changes[0].values.hasOwnProperty('time'))
                         var date = new Date(req.body.object_changes[0].values.time*1000);
                         var datevalues = [
                             date.getFullYear(),
