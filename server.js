@@ -189,7 +189,7 @@ var push_list = []
                         // console.log("moment"+moment().valueOf());
                         // device_list[m].lastOn = moment().valueOf();
                         //console.log(device_list[m].lastOn)
-                        if( (device_list[m].id == "1" ||device_list[m].id == "2") && deviceparseInt(response) > 100 )
+                        if( (device_list[m].id == "1" ||device_list[m].id == "2") && parseInt(response) > 100 )
                            device_list[m].id = response
                         // verifica se tem ; para mudar o timeout_relay
                         if(!Number.isInteger(device_list[m].id) && response.indexOf(';')>=0){
