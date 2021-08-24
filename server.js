@@ -60,7 +60,7 @@ try{
          res = await push_shielder.autorizaBox(app.get('ip'),app.get('mac'))
       }else{
          clearInterval(refreshIntervalId);
-         startServer()
+         startServer();
       }
       console.log(res)
    }, 2000);
