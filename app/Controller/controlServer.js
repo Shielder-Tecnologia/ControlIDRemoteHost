@@ -174,7 +174,8 @@ var resolve_result = (req) =>{
                   console.log("Template capturada")
                   break;
                   case "get_config":
-                     console.log("get config");   
+                     console.log("get config");
+                     req.app.set('all-config',req.body);
                      break;
                   case "ler_relay":
                      console.log("Catraca " + push_list[pIndex].devid+ " aberta");

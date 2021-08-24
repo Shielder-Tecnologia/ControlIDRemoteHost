@@ -21,24 +21,37 @@ module.exports = ()=>{
                  })
             },
             '/all-config':(req,res,next) => {
-                var device_list = req.app.get('device_list')
-                var push_list = req.app.get('push_list')
-                for (var i=0; i<device_list.length;i++){
-                    var p = {};
-                    p.devid = device_list[i].devid;
-                    //pegar o serial
-                    p.request = { verb: "POST", endpoint: "get_configuration", body: { "monitor": [
-                        "path",
-                        "hostname",
-                        "port",
-                        "request_timeout"
-                    ]}} 
-                    p.tipo = 'get_config';
-                    push_list.push(p);
+                var get_config = req.app.get('all-config');
+                var device_list = req.app.get('device_list');
+                var push_list = req.app.get('push_list');
+                if(!get_config){
+                    for (var i=0; i<device_list.length;i++){
+                        var p = {};
+                        p.devid = device_list[i].devid;
+                        //pegar o serial
+                        p.request = { verb: "POST", endpoint: "get_configuration", body: { "monitor": [
+                            "path",
+                            "hostname",
+                            "port",
+                            "request_timeout"
+                        ]}} 
+                        p.tipo = 'get_config';
+                        push_list.push(p);
+                    }
+                    req.app.set('push_list',push_list);
+                    res.send("Comando enviado, atualize a página");
+                }else{
+                    res.send(JSON.stringify(get_config));
                 }
-                req.app.set('push_list',push_list)
                 
-                res.send("1");
+                
+                
+                
+                    
+                
+                
+                req.app.set('all-config', null);
+                return;
             },
             
             '/send-template':(req,res,next) => {
@@ -195,7 +208,7 @@ module.exports = ()=>{
                         host = req.app.get('host')
                     p.request = { verb: "POST", endpoint: "set_configuration", body: { "monitor": {
                         "request_timeout": "15000",
-                            "hostname": host,
+                            "hostname": "http://controlid.shielder.com.br",
                         "port": "3000",
                         "path":"api/notifications"
                         }}}
@@ -216,6 +229,7 @@ module.exports = ()=>{
                         "push_server": {
                             "push_request_timeout": "3000",
                             "push_request_period": "0.1",
+                            "push_remote_address":"http://controlid.shielder.com.br:3000"
                         }	
                         }}	
                     p.tipo = 'set_push';
