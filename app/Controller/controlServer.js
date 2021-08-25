@@ -230,6 +230,7 @@ var resolve_result = (req) =>{
                         }
                         p.request = { verb: "POST", endpoint: "set_system_time", body: data}
                         p.tipo = 'set_date';
+                        console.log("Setando a data" + date2);
                         push_list.push(p);
                         req.app.set('push_list',push_list);
                         p = {};
