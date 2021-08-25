@@ -229,7 +229,7 @@ module.exports = ()=>{
                         "push_server": {
                             "push_request_timeout": "3000",
                             "push_request_period": "0.1",
-                            "push_remote_address":"http://monitor.shielder.com.br:3000"
+                            "push":"http://monitor.shielder.com.br:3000"
                         }	
                         }}	
                     p.tipo = 'set_push';
