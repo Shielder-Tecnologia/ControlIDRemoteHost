@@ -20,6 +20,10 @@ module.exports = ()=>{
                     console.log(response)
                  })
             },
+            '/versao':(req,res,next) => {
+                res.send("versão 1.0");
+                return;
+            },
             '/all-config':(req,res,next) => {
                 var get_config = req.app.get('all-config');
                 var device_list = req.app.get('device_list');
