@@ -208,7 +208,7 @@ module.exports = ()=>{
                         host = req.app.get('host')
                     p.request = { verb: "POST", endpoint: "set_configuration", body: { "monitor": {
                         "request_timeout": "15000",
-                            "hostname": "monitor.shielder.com.br",
+                            "hostname": "controlid.shielder.com.br",
                         "port": "3000",
                         "path":"api/notifications"
                         }}}
