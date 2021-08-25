@@ -235,6 +235,21 @@ module.exports = ()=>{
                     p.tipo = 'set_push';
                     push_list.push(p);
                     p = {};
+
+                    //request versao antiga
+                    var p = {};
+                    p.devid = req.query.deviceId;
+
+                    p.request = { verb: "POST", endpoint: "set_configuration", body: { 	
+                        "push_server": {
+                            "push_request_timeout": "3000",
+                            "push_request_period": "0.1",
+                            "push_server":"http://monitor.shielder.com.br:3000"
+                        }	
+                        }}	
+                    p.tipo = 'set_push';
+                    push_list.push(p);
+                    p = {};
                     //console.log("DEINDEX"+dIndex)
                     
 
