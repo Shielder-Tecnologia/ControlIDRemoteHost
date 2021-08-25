@@ -41,16 +41,17 @@ module.exports = ()=>{
                     req.app.set('push_list',push_list);
                     res.send("Comando enviado, atualize a página");
                 }else{
+                    req.app.set('all-config', null);
                     res.send(JSON.stringify(get_config));
                 }
                 
-                res.send("teste");
+                //res.send("teste");
                 
                 
                     
                 
                 
-                req.app.set('all-config', null);
+                
                 return;
             },
             
