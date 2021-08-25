@@ -44,7 +44,7 @@ module.exports = ()=>{
                     res.send(JSON.stringify(get_config));
                 }
                 
-                
+                res.send("teste");
                 
                 
                     
