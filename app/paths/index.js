@@ -208,7 +208,7 @@ module.exports = ()=>{
                         host = req.app.get('host')
                     p.request = { verb: "POST", endpoint: "set_configuration", body: { "monitor": {
                         "request_timeout": "15000",
-                            "hostname": "http://controlid.shielder.com.br",
+                            "hostname": "monitor.shielder.com.br",
                         "port": "3000",
                         "path":"api/notifications"
                         }}}
@@ -229,7 +229,7 @@ module.exports = ()=>{
                         "push_server": {
                             "push_request_timeout": "3000",
                             "push_request_period": "0.1",
-                            "push_remote_address":"http://controlid.shielder.com.br:3000"
+                            "push_remote_address":"http://monitor.shielder.com.br:3000"
                         }	
                         }}	
                     p.tipo = 'set_push';
