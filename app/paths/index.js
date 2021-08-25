@@ -21,7 +21,7 @@ module.exports = ()=>{
                  })
             },
             '/versao':(req,res,next) => {
-                res.send("versão 1.0");
+                res.send("versão 1.1");
                 return;
             },
             '/all-config':(req,res,next) => {
