@@ -98,33 +98,33 @@ var push_list = []
       app.set('push_list', push_list)
       app.set('device_list', device_list)
       console.log("device_list");
-      console.log(device_list)
+      console.log(device_list);
       try{
          setInterval(async function(){
             
             var reqs = app.get('requisitions');
-            var timerReq = app.get('timerReq');
-            reqs++;
-            timerReq++;
-            if(timerReq >=2){
-               console.log("Número Total de requisições: " + reqs + "   Requisições por minuto: " +reqs/60);
-               timerReq = 0;
-               reqs = 0;
-               const used = process.memoryUsage();
-               for (let key in used) {
-               console.log(`Memory: ${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
-               }
-               //console.log(process.memoryUsage());
+            // var timerReq = app.get('timerReq');
+            // reqs++;
+            // timerReq++;
+            // if(timerReq >=2){
+            //    //console.log("Número Total de requisições: " + reqs + "   Requisições por minuto: " +reqs/60);
+            //    timerReq = 0;
+            //    reqs = 0;
+            //    const used = process.memoryUsage();
+            //    //for (let key in used) {
+            //    //console.log(`Memory: ${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+            //    //}
+            //    //console.log(process.memoryUsage());
               
-            }
+            // }
             
             app.set('requisitions',reqs);
-            app.set('timerReq',timerReq);
+            //app.set('timerReq',timerReq);
 
-            console.log(app.get('device_list').length + " Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
-            console.log(app.get('device_list'));
+            //console.log(app.get('device_list').length + " Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
+            //console.log(app.get('device_list'));
             
-            var response
+            var response;
             try{
                if(device_list && device_list.length>0){
                   response = await pull_shielder.copiaMoradores(app.get('mac'),app.get('device_list'));
