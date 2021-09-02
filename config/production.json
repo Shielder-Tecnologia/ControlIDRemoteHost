@@ -1,3 +1,5 @@
 {
-    "host": "http://18.229.10.68"
+    "host": "http://18.229.10.68",
+    "monitor":"monitor.shielder.com.br",
+    "push_server":"http://monitor.shielder.com.br:3000"
 }
