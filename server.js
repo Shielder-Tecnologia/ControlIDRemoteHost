@@ -12,6 +12,8 @@ const control = require('./app/Controller/controlServer.js');
 const controlServer = require('./app/Controller/controlServer.js');
 
 app.set('host',config.host);
+app.set('monitor',config.monitor);
+app.set('push_server',config.push_server);
 app.set('requisitions',0);
 app.set('timerReq',0);
 app.set('port',process.env.PORT || 3000);

@@ -1,5 +1,6 @@
 'use strict';
 const util = require('../utils');
+const url = require('url');
 const device = require('../Controller/contact_device');
 const push_Shielder = require('../Controller/push_Shielder');
 const control = require('../Controller/controlServer');
@@ -19,6 +20,38 @@ module.exports = ()=>{
                  }).catch(response=>{
                     console.log(response)
                  })
+            },
+            '/dispositivos':(req,res,next) => {
+                var device_list = req.app.get('device_list');
+                var used = process.memoryUsage();
+                
+                var str_enviar = device_list.length + "<br> <br>";
+                for (let key in used) {
+                    str_enviar = str_enviar + (`Memory: ${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+                }
+                str_enviar += "<br><br>" + JSON.stringify(device_list);
+                res.send(str_enviar);
+                return;
+            },
+            '/sistema':(req,res,next) => {
+                var device_list = req.app.get('device_list');
+                var system_info = req.app.get('system_info');
+                if(req.query.serial){
+                    var dIndex = system_info.findIndex(x => x.serial == req.query.serial);
+                    if(dIndex != -1)
+                        res.send(JSON.stringify(system_info[dIndex]));
+                    else
+                        res.send("Dispositivo não encontrado");
+                }
+                else
+                    res.send(JSON.stringify(system_info));
+                return;
+                
+                
+            },
+            '/versao':(req,res,next) => {
+                res.send("versão 1.2");
+                return;
             },
             '/all-config':(req,res,next) => {
                 var get_config = req.app.get('all-config');
@@ -41,16 +74,17 @@ module.exports = ()=>{
                     req.app.set('push_list',push_list);
                     res.send("Comando enviado, atualize a página");
                 }else{
+                    req.app.set('all-config', null);
                     res.send(JSON.stringify(get_config));
                 }
                 
-                
+                //res.send("teste");
                 
                 
                     
                 
                 
-                req.app.set('all-config', null);
+                
                 return;
             },
             
@@ -208,7 +242,7 @@ module.exports = ()=>{
                         host = req.app.get('host')
                     p.request = { verb: "POST", endpoint: "set_configuration", body: { "monitor": {
                         "request_timeout": "15000",
-                            "hostname": "controlid.shielder.com.br",
+                            "hostname": req.app.get('monitor'),
                         "port": "3000",
                         "path":"api/notifications"
                         }}}
@@ -229,22 +263,7 @@ module.exports = ()=>{
                         "push_server": {
                             "push_request_timeout": "3000",
                             "push_request_period": "0.1",
-                            "push":"http://monitor.shielder.com.br:3000"
-                        }	
-                        }}	
-                    p.tipo = 'set_push';
-                    push_list.push(p);
-                    p = {};
-
-                    //request versao antiga
-                    var p = {};
-                    p.devid = req.query.deviceId;
-
-                    p.request = { verb: "POST", endpoint: "set_configuration", body: { 	
-                        "push_server": {
-                            "push_request_timeout": "3000",
-                            "push_request_period": "0.1",
-                            "push_server":"http://monitor.shielder.com.br:3000"
+                            "push_remote_address": req.app.get('push_server')
                         }	
                         }}	
                     p.tipo = 'set_push';
@@ -295,15 +314,21 @@ module.exports = ()=>{
                 //push_list = push_list.filter(control.onlyUnique); // se tiver comandos duplicados ele filtra
                 
                 if(push_list.length>0){
+                    if(push_list.length > 200){
+                        push_list = [];
+                        req.app.set('push_list',push_list);
+                        res.send();
+                        return;
+                    }
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
                     var index = push_list.findIndex(x => x.devid == req.query.deviceId);
                     if(index!= -1){
                         
                         push_list[index].uuid = req.query.uuid;
                         req.app.set('push_list',push_list);
-                        console.log("Lista Push")
-                        console.log(push_list)
-                        res.status(200).json(push_list[index].request)
+                        console.log("Lista Push");
+                        console.log(push_list);
+                        res.status(200).json(push_list[index].request);
                     }else
                         res.send();
                 }
@@ -578,18 +603,24 @@ module.exports = ()=>{
             '/result':(req,res,next) => {
                 if(req.body!=null || req.body!=undefined){
                     console.log("RESULT:")
-                    console.log(req.body)
+                    console.log(req.body);
+                    var push_list = req.app.get('push_list');
                     control.resolve_result(req).then(index=>{ //retorna o index para ser removido
-                        var push_list = req.app.get('push_list');
+                        
                         console.log("Item computado:")
                         console.log(push_list[index])
                         push_list.splice(index,1);
                         req.app.set('push_list', push_list);
                         
-                        res.send()
+                        res.send();
                     }).catch(error=>{
-                        console.log("Erro no Resultado" + error)
+                        console.log("Erro no Resultado" + error);
+                        var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
+                        if(pIndex != -1)
+                            push_list.splice(pIndex,1);
 
+                        res.send();
+                        //push_list.splice(index,1);
                     });
                 }
                 
