@@ -77,8 +77,18 @@ var resolve_result = (req) =>{
                         console.log("device")
                         console.log(device)
                      }
-                     device_list.push(device)
-                     req.app.set('device_list',device_list)
+                     device_list.push(device);
+                     req.app.set('device_list',device_list);
+
+
+                     var system_info = req.app.get('system_info');
+                     if(!system_info)
+                        system_info = [];
+
+                     system_info.push(response);
+
+                     
+                     req.app.set('system_info',system_info);
                      break;
 
                   case "set_monitor":
@@ -239,7 +249,7 @@ var resolve_result = (req) =>{
                      break;
                }
             }
-            resolve(pIndex)
+            resolve(pIndex);
          }else{
             reject("Nenhum request foi encontrado")
          }
