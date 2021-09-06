@@ -222,8 +222,9 @@ module.exports = ()=>{
                 if(device_list.length == 0 || dIndex == -1){
                     /**verifica se tem algum duplicado na lista de push */
                     for(var i =0;i<push_list.length;i++){
-                        if((push_list[i].tipo == 'set_monitor'|| push_list[i].tipo == 'get_serial') && push_list[i].devid == req.query.deviceId){
-                            push_list.splice(index,1)
+                        push_list[i].count++;
+                        if(push_list[i].count >= 200){
+                            push_list.splice(i,1);
                         }
                     }
                     var p = {};
@@ -323,7 +324,8 @@ module.exports = ()=>{
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
                     var index = push_list.findIndex(x => x.devid == req.query.deviceId);
                     if(index!= -1){
-                        
+                        console.log("Comando enviado: " + push_list[index]);
+
                         push_list[index].uuid = req.query.uuid;
                         req.app.set('push_list',push_list);
                         console.log("Lista Push");
@@ -607,14 +609,14 @@ module.exports = ()=>{
                     var push_list = req.app.get('push_list');
                     control.resolve_result(req).then(index=>{ //retorna o index para ser removido
                         
-                        console.log("Item computado:")
-                        console.log(push_list[index])
+                        console.log("Item computado:");
+                        console.log(push_list[index]);
                         push_list.splice(index,1);
                         req.app.set('push_list', push_list);
                         
                         res.send();
                     }).catch(error=>{
-                        console.log("Erro no Resultado" + error);
+                        console.log("Erro no Resultado " + error);
                         var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
                         if(pIndex != -1)
                             push_list.splice(pIndex,1);
