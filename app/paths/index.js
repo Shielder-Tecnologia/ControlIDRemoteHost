@@ -213,12 +213,7 @@ module.exports = ()=>{
                     }
                 }
 
-                for(var i =0;i<push_list.length;i++){
-                    push_list[i].count++;
-                    if(push_list[i].count >= 200){
-                        push_list.splice(i,1);
-                    }
-                }
+                
 
 
                 //se nao tiver nenhum device ou se n tiver o encontrado
@@ -320,7 +315,20 @@ module.exports = ()=>{
                         return;
                     }
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
-                    var index = push_list.findIndex(x => x.devid == req.query.deviceId);
+                    var index = -1;
+                    for(var i =0;i<push_list.length;i++){
+                        // push_list[i].count++;
+                        // if(push_list[i].count >= 200){
+                        //     push_list.splice(i,1);
+                        // }
+                        if(push_list[i].devid == req.query.deviceId){
+                            if(!push_list.hasOwnProperty('uuid')){
+                                index = i;
+                                break;
+                            }
+                        }
+                    }
+                    //var index = push_list.findIndex(x => x.devid == req.query.deviceId);
                     if(index!= -1){
                         console.log("Comando enviado: " + push_list[index]);
 
