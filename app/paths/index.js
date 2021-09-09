@@ -182,14 +182,14 @@ module.exports = ()=>{
             },
             '/push':(req,res,next) => {
                 //console.log("PUSH:")
-                var push_list = req.app.get('push_list')
-                var device_list = req.app.get('device_list')
+                var push_list = req.app.get('push_list');
+                var device_list = req.app.get('device_list');
 
                 data = device_list.filter(function( element ) {
                     return element !== undefined;
                  });
 
-                device_list = data
+                device_list = data;
                 
                 if(device_list){
                     var dIndex = device_list.findIndex(x => x.devid == req.query.deviceId);
@@ -200,8 +200,6 @@ module.exports = ()=>{
                     if(typeof device_list[dIndex] !== 'undefined') {
                         device_list[dIndex].lastOn = moment().valueOf();
                     }
-                        
-                    
                 }
                 
                 /**Verifica se algum dispositivo foi desconectado */
@@ -215,18 +213,18 @@ module.exports = ()=>{
                     }
                 }
 
-
+                for(var i =0;i<push_list.length;i++){
+                    push_list[i].count++;
+                    if(push_list[i].count >= 200){
+                        push_list.splice(i,1);
+                    }
+                }
 
 
                 //se nao tiver nenhum device ou se n tiver o encontrado
                 if(device_list.length == 0 || dIndex == -1){
                     /**verifica se tem algum duplicado na lista de push */
-                    for(var i =0;i<push_list.length;i++){
-                        push_list[i].count++;
-                        if(push_list[i].count >= 200){
-                            push_list.splice(i,1);
-                        }
-                    }
+                    
                     var p = {};
                     p.devid = req.query.deviceId;
                     //pegar o serial
