@@ -322,7 +322,7 @@ module.exports = ()=>{
                     //seleciona qual comando enviar baseado em qual dispositivo fez o push
                     var index = push_list.findIndex(x => x.devid == req.query.deviceId);
                     if(index!= -1){
-                        console.log("Comando enviado: " + push_list[index]);
+                        console.log("Comando enviado: " + req.query.uuid + " " + push_list[index].request);
 
                         push_list[index].uuid = req.query.uuid;
                         req.app.set('push_list',push_list);
