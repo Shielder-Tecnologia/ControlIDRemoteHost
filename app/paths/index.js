@@ -34,7 +34,6 @@ module.exports = ()=>{
                 return;
             },
             '/sistema':(req,res,next) => {
-                var device_list = req.app.get('device_list');
                 var system_info = req.app.get('system_info');
                 if(req.query.serial){
                     var dIndex = system_info.findIndex(x => x.serial == req.query.serial);
@@ -45,6 +44,30 @@ module.exports = ()=>{
                 }
                 else
                     res.send(JSON.stringify(system_info));
+                return;
+                
+                
+            },
+            '/logs':(req,res,next) => {
+                var device_list = req.app.get('device_list');
+                var push_list = req.app.get('push_list');
+                console.log("Teste");
+                if(req.query.serial){
+                    var dIndex = device_list.findIndex(x => x.serial == req.query.serial);
+                    if(dIndex != -1){
+                        var p = {};
+                        p.devid = device_list[dIndex].devid;
+                        //pegar o serial
+                        p.request = { verb: "POST", endpoint: "load_objects", body: { "object": "access_logs"}} 
+                        p.tipo = 'get_logs';
+                        push_list.push(p);
+                        res.send("Comando enviado");
+                    }
+                    else
+                        res.send("Dispositivo não encontrado");
+                }else{
+                    res.send("No parameters found!");
+                }
                 return;
                 
                 
@@ -275,11 +298,8 @@ module.exports = ()=>{
                     // console.log("push_list")
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
+                // }
                 }else{
-                    if(dIndex != -1 && device_list[dIndex].contBox % 25 == 0){
-                    //autorizabox para toda vez que um dispositivo der push
-
-                    }
                     device_list[dIndex].contBox++;
 
                     //Verificar a data se esta certa
@@ -294,7 +314,7 @@ module.exports = ()=>{
                         p.tipo = 'get_system_information';
                         push_list.push(p);
                         p = {};
-                        device_list[dIndex].contBox =0;
+                        device_list[dIndex].contBox = 0;
                         //req.app.set('device_list',device_list);
                     }
                     req.app.set('device_list',device_list);
@@ -325,7 +345,7 @@ module.exports = ()=>{
                         console.log("Comando enviado: " + req.query.uuid + " " + push_list[index].request);
 
                         push_list[index].uuid = req.query.uuid;
-                        req.app.set('push_list',push_list);
+                        req.app.set('push_list', push_list);
                         console.log("Lista Push");
                         console.log(push_list);
                         res.status(200).json(push_list[index].request);
@@ -568,10 +588,20 @@ module.exports = ()=>{
                 //conversao cartao
                 let bfvirgula= (cardid - 45678) / 4294967296;
                 bfvirgula = Math.round(bfvirgula);
+                
                 let num1 = bfvirgula * 4294967296;
                 let afvirgula =  cardid - num1;
 
-                
+                if(bfvirgula.toString().length == 1){
+                    bfvirgula = bfvirgula.toString();
+                    bfvirgula = "0" + bfvirgula;
+                }
+
+                if(afvirgula.toString().length == 4){
+                    afvirgula = afvirgula.toString();
+                    afvirgula = "0" + afvirgula;   
+                }
+
                 push_Shielder.cadastraBio((bfvirgula + "," + afvirgula),req.body.user_id, d.serial,'ENTRADA','TAG').then(response=>{
                     req.app.set('mutex_Ler',true)
                     console.log("Cartão Cadastrado")
