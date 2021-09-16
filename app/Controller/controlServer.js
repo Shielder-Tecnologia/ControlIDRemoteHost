@@ -240,9 +240,10 @@ var resolve_result = (req) =>{
                            var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
 
                            var codigo = "";
-                           if(logs.access_logs[i].card_value)
+                           if(logs.access_logs[i].card_value){
                               codigo = logs.access_logs[i].card_value;
                               codigo = codigo.slice(0,9);
+                           }
                               push_shielder.autorizaMorador(logs.access_logs[i].user_id, data ,d.serial, codigo).then(response=>{
                               
                            }).catch(error=>{
