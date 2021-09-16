@@ -58,7 +58,16 @@ module.exports = ()=>{
                         var p = {};
                         p.devid = device_list[dIndex].devid;
                         //pegar o serial
-                        p.request = { verb: "POST", endpoint: "load_objects", body: { "object": "access_logs"}} 
+                        p.request = { verb: "POST", endpoint: "load_objects", body: {
+                             "object": "access_logs",
+                             "where": {
+                                "access_logs": {
+                                  "time": {">=":parseInt(req.query.st), "<=": parseInt(req.query.et)}
+                                }
+                              }
+                              //where: { users: { id: {">=": 1, "<=": 2} } }
+                            }
+                        } 
                         p.tipo = 'get_logs';
                         push_list.push(p);
                         res.send("Comando enviado");
@@ -298,28 +307,28 @@ module.exports = ()=>{
                     // console.log("push_list")
                     // console.log(push_list)
                     req.app.set('push_list',push_list);
+                 }
+                // }else{
+                //     device_list[dIndex].contBox++;
+
+                //     //Verificar a data se esta certa
+                //     if(dIndex != -1 && device_list[dIndex].contBox>=720){
+                //         //TODO TESTAR
+                        
+                //         var p = {};
+                //         p.devid = req.query.deviceId;
+                        
+                //         data = dtjson('system_data','get_system_information')
+                //         p.request = { verb: "POST", endpoint: "system_information", body: data}
+                //         p.tipo = 'get_system_information';
+                //         push_list.push(p);
+                //         p = {};
+                //         device_list[dIndex].contBox = 0;
+                //         //req.app.set('device_list',device_list);
+                //     }
+                //     req.app.set('device_list',device_list);
+
                 // }
-                }else{
-                    device_list[dIndex].contBox++;
-
-                    //Verificar a data se esta certa
-                    if(dIndex != -1 && device_list[dIndex].contBox>=720){
-                        //TODO TESTAR
-                        
-                        var p = {};
-                        p.devid = req.query.deviceId;
-                        
-                        data = dtjson('system_data','get_system_information')
-                        p.request = { verb: "POST", endpoint: "system_information", body: data}
-                        p.tipo = 'get_system_information';
-                        push_list.push(p);
-                        p = {};
-                        device_list[dIndex].contBox = 0;
-                        //req.app.set('device_list',device_list);
-                    }
-                    req.app.set('device_list',device_list);
-
-                }
                 
                 let unique = [];
 
@@ -631,8 +640,9 @@ module.exports = ()=>{
                 res.send();
             },
             '/result':(req,res,next) => {
+                
                 if(req.body!=null || req.body!=undefined){
-                    console.log("RESULT:")
+                    console.log("RESULT:");
                     console.log(req.body);
                     var push_list = req.app.get('push_list');
                     control.resolve_result(req).then(index=>{ //retorna o index para ser removido
@@ -648,10 +658,19 @@ module.exports = ()=>{
                         var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
                         if(pIndex != -1)
                             push_list.splice(pIndex,1);
-
+                        
+                        req.app.set('push_list', push_list);
                         res.send();
                         //push_list.splice(index,1);
                     });
+                }else{
+                    var push_list = req.app.get('push_list');
+                    var pIndex = push_list.findIndex(x => x.uuid == req.query.uuid);
+                    if(pIndex != -1){
+                        push_list.splice(pIndex,1);
+                        req.app.set('push_list', push_list);
+                    }
+                    res.send();
                 }
                 
             }

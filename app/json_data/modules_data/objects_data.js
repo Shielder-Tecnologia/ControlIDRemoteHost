@@ -47,6 +47,9 @@ var remote_enroll_async = {
 var load_device = { 
 	"object": "devices"
 }
+var load_logs = { 
+	"object": "access_logs"
+}
 objects_data = {
     create_users : create_users,
     load_users : load_users,
@@ -59,7 +62,8 @@ objects_data = {
     delete_card : delete_card,
     remote_enroll_async: remote_enroll_async,
     load_device : load_device,
-    user_group : user_group
+    user_group : user_group,
+    load_logs : load_logs
 }
 module.exports = objects_data
 

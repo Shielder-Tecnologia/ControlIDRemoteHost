@@ -21,13 +21,16 @@ process.on('warning', e => console.warn(e.stack));
 
 var options = {
   inflate: true,
-  limit: '2mb',
+  limit: '50mb',
   type: 'application/octet-stream'
 };
 
-app.use(bodyParser.raw(options));
-app.use(bodyParser.json({limit: '5mb'}));
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.raw(options));
+// app.use(bodyParser.json({limit: '50mb'}));
+// app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.json({limit: '100mb'}));
+app.use(express.urlencoded({limit: '100mb', extended: true, parameterLimit: 50000}));
 
 app.use('/',routes.router)
 
@@ -90,7 +93,7 @@ var device_list = []
  */
 var push_list = []
 
-
+var cont_sys_data = 0;
    app.listen(app.get('port'), async function () {
 
       console.log("Example app listening at ", app.get('host'), app.get('port'));
@@ -101,29 +104,31 @@ var push_list = []
       console.log(device_list);
       try{
          setInterval(async function(){
-            
-            var reqs = app.get('requisitions');
-            // var timerReq = app.get('timerReq');
-            // reqs++;
-            // timerReq++;
-            // if(timerReq >=2){
-            //    //console.log("Número Total de requisições: " + reqs + "   Requisições por minuto: " +reqs/60);
-            //    timerReq = 0;
-            //    reqs = 0;
-            //    const used = process.memoryUsage();
-            //    //for (let key in used) {
-            //    //console.log(`Memory: ${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
-            //    //}
-            //    //console.log(process.memoryUsage());
-              
-            // }
-            
-            app.set('requisitions',reqs);
-            //app.set('timerReq',timerReq);
+            var dev_list = app.get('device_list');
+            var p_list = app.get('push_list');
+            cont_sys_data++;
+            if(cont_sys_data >= 60){
+               if(dev_list && dev_list.length>0){
+                  //TODO TESTAR
+                  for(let i = 0; i < dev_list.length; i++){
+                     var p = {};
+                     p.devid = dev_list[i].devid;
+                     
+                     data = dtjson('system_data','get_system_information');
+                     p.request = { verb: "POST", endpoint: "system_information", body: data}
+                     p.tipo = 'get_system_information';
+                     p_list.push(p);
+                     p = {};
+                     //device_list[dIndex].contBox = 0;
+                     //req.app.set('device_list',device_list);
+                     
+                  }
+                  app.set('push_list',p_list);
+                  cont_sys_data =0;
+              }
+              //app.set('device_list',device_list);
 
-            //console.log(app.get('device_list').length + " Lista de Dispositivos: "+ moment().format('MMMM Do YYYY, h:mm:ss a'))
-            //console.log(app.get('device_list'));
-            
+            }
             var response;
             try{
                if(device_list && device_list.length>0){
@@ -168,16 +173,20 @@ var push_list = []
          },5000)
          //AUTORIZABOX
          setInterval(async function(){
+            
+
+
+
             var response
             try{
-               device_list = app.get('device_list')
-               push_list = app.get('push_list')
+               device_list = app.get('device_list');
+               push_list = app.get('push_list');
                //console.log("LOGGGG")
                //console.log(device_list)
                if(device_list && device_list.length>0){
                   
                   for(let m = 0; m<device_list.length; m++){
-                     
+                     // if()
                      var reqs = app.get('requisitions');
                      reqs++;
                      app.set('requisitions',reqs);
@@ -212,7 +221,7 @@ var push_list = []
                            console.log(device_list[m].id)
    
                            control.get_request_set_relay(3000,device_list[m].devid,push_list).then(response=>{                                
-                                 push_list = response
+                                 push_list = response;
                            }).catch(error=>{
                                  console.log(error)
                            })
@@ -231,9 +240,9 @@ var push_list = []
                                     device_list[m].id = id[0];
                                     device_list[m].timeout = 0;
                                     control.get_request_set_relay(0,device_list[m].devid,push_list).then(response=>{                                
-                                       push_list = response
+                                       push_list = response;
                                     }).catch(error=>{
-                                       console.log(error)
+                                       console.log(error);
                                     })
                                  }else{
                                     device_list[m].id = response;

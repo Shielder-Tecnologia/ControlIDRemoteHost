@@ -218,6 +218,39 @@ var resolve_result = (req) =>{
                   case "set_push":
                      console.log("PUSH " + push_list[pIndex].devid+ " setado");
                      break;
+                  case "get_logs":
+                     console.log("logs: " );
+                     var logs = req.body.response;
+                     var logs = JSON.parse(req.body.response);
+                     //console.log(req.body.response.access_logs);
+                     for(let i =0; i<logs.access_logs.length;i++){
+                        //console.log(logs.access_logs[i].user_id)
+                        if(logs.access_logs[i].event==7){
+                           var date = new Date(logs.access_logs[i].time*1000);
+                           var datevalues = [
+                              date.getFullYear(),
+                              date.getMonth()+1,
+                              date.getDate(),
+                              date.getHours() +3,
+                              date.getMinutes(),
+                              date.getSeconds(),
+                           ];
+                           //('0' + deg).slice(-2)
+                           //('0' + datevalues[1]).slice(-2)
+                           var data = "'"+datevalues[0] + "-" + (('0' + datevalues[1]).slice(-2)) + "-" + (('0' + datevalues[2]).slice(-2)) + " " + (('0' + datevalues[3]).slice(-2))+":"+ (('0' + datevalues[4]).slice(-2)) + ":"+(('0' + datevalues[5]).slice(-2))+"'"
+
+                           var codigo = "";
+                           if(logs.access_logs[i].card_value)
+                              codigo = logs.access_logs[i].card_value.slice(0,9);
+                              push_shielder.autorizaMorador(logs.access_logs[i].user_id, data ,d.serial, codigo).then(response=>{
+                              
+                           }).catch(error=>{
+                              console.log(error)
+                          })
+                        }
+                     }
+                     //console.log(req.body);
+                     break;
                   case "get_system_information":
                      //var dtjson = 
                      var date = new Date(response.time * 1000);
@@ -863,8 +896,8 @@ let controlCopia = (response,device_list,push_list) =>{
             
             var tag = 0 
             if(responseArray[0] && responseArray[1])
-               tag = (Math.pow(2,32) * parseInt(responseArray[0])) + parseInt(responseArray[1])
-            console.log("tag"+tag)
+               tag = (Math.pow(2,32) * parseInt(responseArray[0],10)) + parseInt(responseArray[1],10);
+            console.log("tag"+tag);
             p.devid = device_list[dIndex].devid;
             p.request = { verb: "POST", endpoint: "create_objects", body: { 
                "object": "cards",
@@ -875,11 +908,11 @@ let controlCopia = (response,device_list,push_list) =>{
                   }
             ]}}
             p.user_id= parseInt(response[0].id);
-            p.tipo = 'create_card'
-            push_list.push(p)
+            p.tipo = 'create_card';
+            push_list.push(p);
          }
-         console.log("push copia")
-         resolve(push_list)
+         console.log("push copia");
+         resolve(push_list);
       }
 
    })
