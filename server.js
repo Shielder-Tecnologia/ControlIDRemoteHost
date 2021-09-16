@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express(); 
 config = require('./config/config.js');
+const dtjson = require('./app/json_data');
 const routes = require('./app');
 var moment = require('moment')
 

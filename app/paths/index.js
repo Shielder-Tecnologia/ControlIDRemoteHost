@@ -62,7 +62,8 @@ module.exports = ()=>{
                              "object": "access_logs",
                              "where": {
                                 "access_logs": {
-                                  "time": {">=":parseInt(req.query.st), "<=": parseInt(req.query.et)}
+                                  "time": {">=":parseInt(req.query.st), "<=": parseInt(req.query.et)},
+                                  "event": 7
                                 }
                               }
                               //where: { users: { id: {">=": 1, "<=": 2} } }
