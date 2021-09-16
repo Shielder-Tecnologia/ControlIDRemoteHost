@@ -241,7 +241,8 @@ var resolve_result = (req) =>{
 
                            var codigo = "";
                            if(logs.access_logs[i].card_value)
-                              codigo = logs.access_logs[i].card_value.slice(0,9);
+                              codigo = logs.access_logs[i].card_value;
+                              codigo = codigo.slice(0,9);
                               push_shielder.autorizaMorador(logs.access_logs[i].user_id, data ,d.serial, codigo).then(response=>{
                               
                            }).catch(error=>{
