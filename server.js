@@ -109,27 +109,32 @@ var cont_sys_data = 0;
             var p_list = app.get('push_list');
             cont_sys_data++;
             if(cont_sys_data >= 60){
+               cont_sys_data =0;
                if(dev_list && dev_list.length>0){
                   //TODO TESTAR
                   for(let i = 0; i < dev_list.length; i++){
+                     push_list.find(x => x.tipo == "get_system_information");
+                     if(p_list)
+                     
                      var p = {};
                      p.devid = dev_list[i].devid;
                      
                      data = dtjson('system_data','get_system_information');
                      p.request = { verb: "POST", endpoint: "system_information", body: data}
                      p.tipo = 'get_system_information';
-                     p_list.push(p);
+
+                     if(!p_list.includes(p));
+                        p_list.push(p);
                      p = {};
                      //device_list[dIndex].contBox = 0;
                      //req.app.set('device_list',device_list);
                      
                   }
                   app.set('push_list',p_list);
-                  cont_sys_data =0;
-              }
-              //app.set('device_list',device_list);
-
+                  
+               }
             }
+            
             var response;
             try{
                if(device_list && device_list.length>0){

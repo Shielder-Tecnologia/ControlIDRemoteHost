@@ -227,6 +227,7 @@ var resolve_result = (req) =>{
                         //console.log(logs.access_logs[i].user_id)
                         if(logs.access_logs[i].event==7){
                            var date = new Date(logs.access_logs[i].time*1000);
+                           
                            var datevalues = [
                               date.getFullYear(),
                               date.getMonth()+1,

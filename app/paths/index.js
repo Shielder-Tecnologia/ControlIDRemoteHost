@@ -504,23 +504,23 @@ module.exports = ()=>{
                                 req.app.set('requisitions',reqs);
                                 console.log("controleAutorizaVisitante convite log1 " + porta);
                                 push_Shielder.controleAutorizaVisitante(req.body.object_changes[0].values.user_id, data , d.serial,req.body.object_changes[0].values.card_value).then(response=>{
-                                console.log("controleAutorizaVisitante convite " + response);
+                                    console.log("controleAutorizaVisitante convite " + response);
 
-                                var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
-                                var last2 = hexString.slice(-2);
-                                var porta = parseInt(last2, 16);
-                                var stringRes = '' + response;
-                                var charZro = stringRes.charAt(0);
-                                
-                                if(charZro > 0){
+                                    var hexString = req.body.object_changes[0].values.identifier_id.toString(16);
+                                    var last2 = hexString.slice(-2);
+                                    var porta = parseInt(last2, 16);
+                                    var stringRes = '' + response;
+                                    var charZro = stringRes.charAt(0);
+                                    
+                                    if(charZro > 0){
 
-                                    control.post_request_open_relay(d.devid,push_list,porta,"CONVITE LIBERADO").then(response=>{                                
-                                        push_list = response;
-                                        req.app.set('push_list',push_list);
-                                    }).catch(error=>{
-                                        console.log(error)
-                                    })
-                                }
+                                        control.post_request_open_relay(d.devid,push_list,porta,"CONVITE LIBERADO").then(response=>{                                
+                                            push_list = response;
+                                            req.app.set('push_list',push_list);
+                                        }).catch(error=>{
+                                            console.log(error)
+                                        })
+                                    }
 
                                 
                                 console.log("Morador: "+ req.body.object_changes[0].values.user_id + " - "+ data + " - "+ d.devid)
