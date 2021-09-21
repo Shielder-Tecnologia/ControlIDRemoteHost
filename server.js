@@ -123,9 +123,15 @@ var cont_sys_data = 0;
                      p.request = { verb: "POST", endpoint: "system_information", body: data}
                      p.tipo = 'get_system_information';
 
-                     if(!p_list.includes(p));
+                     var unique = p_list.filter(function(item){
+                        if(item.devid == p.devid)
+                           return item;
+                     });
+                     var dIndex = unique.findIndex(x => x.tipo == p.tipo);
+                     if(dIndex == -1)
                         p_list.push(p);
                      p = {};
+
                      //device_list[dIndex].contBox = 0;
                      //req.app.set('device_list',device_list);
                      
