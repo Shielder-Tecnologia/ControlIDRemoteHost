@@ -108,7 +108,7 @@ var cont_sys_data = 0;
             var dev_list = app.get('device_list');
             var p_list = app.get('push_list');
             cont_sys_data++;
-            if(cont_sys_data >= 60){
+            if(cont_sys_data >= 300){
                cont_sys_data =0;
                if(dev_list && dev_list.length>0){
                   //TODO TESTAR
